@@ -1,0 +1,10 @@
+{
+  "_note": "PUBLISHED PROGRESS SNAPSHOT — this file is the static source of truth that ships in the repo. A fresh clone (empty localStorage) hydrates from here, so whoever pulls master replicates exactly the progress committed here. To publish your own progress: open the app, click 'Publish snapshot' to download a new progress.json, replace this file with it, then commit + push. No database involved.",
+  "version": 1,
+  "tracker": {},
+  "bank": {},
+  "cards": [],
+  "settings": {
+    "lcUsername": ""
+  }
+}
