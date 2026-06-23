@@ -23,6 +23,7 @@ export const KEYS = {
   cards: "biginterview_cards_v1",
   settings: "biginterview_settings_v1",
   secret: "biginterview_secret_v1", // LeetCode cookie — never exported
+  flight: "biginterview_flight_v1", // offline Flight Mode progress (local only)
 };
 
 function read(key, fallback) {
@@ -58,6 +59,11 @@ export const saveSettings = (v) => write(KEYS.settings, v);
 // ---- secret (LeetCode session cookie — local only, never exported) ----
 export const loadSecret = () => read(KEYS.secret, {});
 export const saveSecret = (v) => write(KEYS.secret, v);
+
+// ---- flight (offline Flight Mode: solved problems, teaser ratings, math stats) ----
+export const loadFlight = () =>
+  read(KEYS.flight, { coding: {}, teasers: {}, math: { rounds: [] }, design: {} });
+export const saveFlight = (v) => write(KEYS.flight, v);
 
 // ---- cards (flashcard deck) ----
 // Pattern cards are merged in by id so a fresh deck always has the seed deck and

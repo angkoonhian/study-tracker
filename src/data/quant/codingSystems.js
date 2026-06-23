@@ -1,0 +1,206 @@
+// Weeks 10-11 of the quant-developer interview-prep curriculum.
+// Week 10: quant coding patterns in Python (DSA-heavy).
+// Week 11: low-latency & performance in Python.
+// Category keys: code, design, prob, mental, markets, behave, mock, apply.
+// PYTHON ONLY — every task the user does is in Python. (Production HFT uses
+// C++, but that is context, not an exercise here.)
+
+export const W10_11 = [
+  // ============================ WEEK 10 ============================
+  {
+    w: 10,
+    d: 64,
+    title: "Arrays, Hashing & Two Pointers",
+    focus: "Drill array/hashing and two-pointer patterns framed on price and returns series.",
+    tasks: [
+      { c: "code", text: "Read DSA Guide → arrays-hashing and two-pointers-sliding-window handbooks; note the core templates" },
+      { c: "code", text: "Flight Mode → Coding: 3 arrays-hashing problems (two-sum, group-anagrams, top-k-frequent), each timed 20 min in Python" },
+      { c: "code", text: "Flight Mode → Coding: 2 two-pointer problems (two-sum-II, container-with-most-water), timed 15 min each" },
+      { c: "apply", text: "Write a Python function find_pairs(returns, target) that finds two days whose returns sum to a target, using a hash set (O(n))" },
+      { c: "apply", text: "Given a price list, compute max profit from one buy/sell (single-pass two-pointer); explain the O(n) vs O(n^2) tradeoff" },
+      { c: "prob", text: "Solve: expected number of distinct values when rolling a fair die 6 times; write the reasoning in one paragraph" },
+    ],
+  },
+  {
+    w: 10,
+    d: 65,
+    title: "Sliding Window & Prefix Sums",
+    focus: "Master rolling-statistics patterns with sliding windows and prefix sums on time series.",
+    tasks: [
+      { c: "code", text: "Re-read DSA Guide → two-pointers-sliding-window; summarize fixed vs variable window templates" },
+      { c: "code", text: "Flight Mode → Coding: 3 sliding-window problems (longest-substring-without-repeat, minimum-window-substring, max-sum-subarray-size-k), timed 20 min each in Python" },
+      { c: "apply", text: "Implement rolling_mean(prices, k) and rolling_max(prices, k) in O(n) — use a running sum and a monotonic deque respectively" },
+      { c: "apply", text: "Build a prefix-sum array over returns to answer range-sum queries (cumulative return between day i and j) in O(1)" },
+      { c: "apply", text: "Compute a k-day rolling volatility (std) in a single pass using prefix sums of x and x^2; verify against a NumPy baseline" },
+      { c: "mental", text: "Flight Mode → Mental Math: 10 percentage-change drills (e.g. +3% then -3% net effect) under 60s total" },
+    ],
+  },
+  {
+    w: 10,
+    d: 66,
+    title: "Heaps & Priority Queues",
+    focus: "Intensive on heaps/priority queues — the bread-and-butter of order matching and top-k.",
+    tasks: [
+      { c: "code", text: "Read DSA Guide → heaps-graphs (heap section); review heapq push/pop/heapify and the min-heap-as-max-heap negation trick" },
+      { c: "code", text: "Flight Mode → Coding: 4 heap problems (kth-largest-element, top-k-frequent, merge-k-sorted-lists, k-closest-points), timed 20 min each in Python" },
+      { c: "code", text: "Flight Mode → Coding: 1 two-heap problem (find-median-from-data-stream) — explain the balanced min/max heap invariant" },
+      { c: "apply", text: "Implement a streaming top-N largest trades tracker using a fixed-size min-heap (heapq) that evicts the smallest in O(log N)" },
+      { c: "markets", text: "Explain how a price-time priority order book uses heaps/sorted structures for best-bid/best-ask; note why pure heaps struggle with O(1) cancel" },
+      { c: "prob", text: "Solve: expected number of heap-pops to extract the top 3 of N random values; reason about the log N cost" },
+    ],
+  },
+  {
+    w: 10,
+    d: 67,
+    title: "Backtracking",
+    focus: "Intensive on backtracking — recursion, pruning, and state restoration.",
+    tasks: [
+      { c: "code", text: "Read DSA Guide → backtracking; write out the choose/explore/un-choose template and when to prune" },
+      { c: "code", text: "Flight Mode → Coding: 4 backtracking problems (subsets, permutations, combination-sum, word-search), timed 25 min each in Python" },
+      { c: "code", text: "Flight Mode → Coding: 1 harder backtracking problem (N-queens or palindrome-partitioning) — analyze time complexity" },
+      { c: "apply", text: "Write a Python backtracker that enumerates all portfolio allocations of an integer number of lots across N assets summing to a budget" },
+      { c: "apply", text: "Add memoization/pruning to one backtracking solution and measure the call-count reduction with a counter" },
+      { c: "mental", text: "Flight Mode → Brainteasers: 1 combinatorics puzzle (count valid arrangements); justify with the multiplication principle" },
+    ],
+  },
+  {
+    w: 10,
+    d: 68,
+    title: "Dynamic Programming",
+    focus: "Build DP intuition with Kadane and max-drawdown framings.",
+    tasks: [
+      { c: "code", text: "Read DSA Guide → dynamic-programming; contrast top-down memoization with bottom-up tabulation" },
+      { c: "code", text: "Flight Mode → Coding: 3 DP problems (climbing-stairs, coin-change, longest-increasing-subsequence), timed 20 min each in Python" },
+      { c: "code", text: "Flight Mode → Coding: 1 1D-DP problem (house-robber or best-time-to-buy-sell-with-cooldown), timed 25 min" },
+      { c: "apply", text: "Implement Kadane's algorithm for max-subarray; reframe it to find the best contiguous return streak in a returns series" },
+      { c: "apply", text: "Compute max drawdown of an equity curve in O(n) (running peak minus current); relate it to the Kadane scan structure" },
+      { c: "prob", text: "Solve via DP/recursion: probability of getting 3 heads in a row within 5 fair-coin flips" },
+    ],
+  },
+  {
+    w: 10,
+    d: 69,
+    title: "Trees, Graphs & Binary Search",
+    focus: "Round up tree traversal, graph search, and binary-search patterns.",
+    tasks: [
+      { c: "code", text: "Read DSA Guide → binary-trees, heaps-graphs (graph section), and binary-search handbooks" },
+      { c: "code", text: "Flight Mode → Coding: 2 tree problems (level-order-traversal, validate-BST), timed 20 min each in Python" },
+      { c: "code", text: "Flight Mode → Coding: 2 graph problems (number-of-islands, course-schedule), timed 25 min each — implement BFS and DFS in Python" },
+      { c: "code", text: "Flight Mode → Coding: 2 binary-search problems (search-in-rotated-array, find-min-in-rotated-array), timed 15 min each" },
+      { c: "apply", text: "Write binary search via bisect to find the insertion index for a new price into a sorted level array (order-book price levels)" },
+      { c: "mental", text: "Flight Mode → Mental Math: 8 log2 / power-of-two estimates (e.g. log2 of 1,000,000) to internalize binary-search depth" },
+    ],
+  },
+  {
+    w: 10,
+    d: 70,
+    title: "Week 10 Mixed Review",
+    focus: "Lighter review day: timed, unlabeled Python problems mixing all of week 10's patterns.",
+    tasks: [
+      { c: "mock", text: "Flight Mode → Coding: pick 3 unlabeled problems blind; identify the pattern first, then solve in Python, 20 min each" },
+      { c: "code", text: "Re-attempt the 2 problems you found hardest this week from memory, without looking at notes" },
+      { c: "apply", text: "Refactor one quant-framed solution (rolling stats, drawdown, or top-N trades) for clarity and add a 3-case test harness in Python" },
+      { c: "behave", text: "Draft a 90-second STAR story about debugging a tricky algorithmic bug under time pressure" },
+      { c: "prob", text: "Quick set: 3 short expected-value problems, 5 min total — check answers against first principles" },
+    ],
+  },
+
+  // ============================ WEEK 11 ============================
+  {
+    w: 11,
+    d: 71,
+    title: "Python Performance & Profiling",
+    focus: "Learn to measure before optimizing: timeit, cProfile, and where Python is genuinely slow.",
+    tasks: [
+      { c: "code", text: "Use timeit to benchmark list comprehension vs map vs explicit loop for squaring 1M ints; record the ratios in Python" },
+      { c: "code", text: "Profile a slow function with cProfile + pstats; sort by cumulative time and identify the top-3 hotspots" },
+      { c: "design", text: "Write notes on why CPython is slow per-op: interpreter dispatch, boxed objects, dynamic typing, and reference counting" },
+      { c: "apply", text: "Take a naive O(n^2) returns-correlation loop and reduce its constant factor (hoist lookups, avoid attribute access in loops); measure the gain" },
+      { c: "markets", text: "Summarize where latency matters in a trading stack (tick-to-trade path) and why hot loops are pushed out of pure Python" },
+      { c: "mental", text: "Flight Mode → Mental Math: estimate runtime — if one op is ~50ns, how long for 10^8 ops? Do 5 such back-of-envelope drills" },
+    ],
+  },
+  {
+    w: 11,
+    d: 72,
+    title: "NumPy Vectorization & Memory Layout",
+    focus: "Replace Python loops with vectorized NumPy and understand contiguous memory and broadcasting.",
+    tasks: [
+      { c: "code", text: "Rewrite a Python-loop rolling-mean over a returns array as a vectorized NumPy/cumsum version; benchmark the speedup with timeit" },
+      { c: "code", text: "Practice broadcasting: compute a pairwise return-difference matrix without explicit loops; verify shapes" },
+      { c: "design", text: "Write notes on C-contiguous vs F-contiguous arrays, strides, views vs copies, and why row-major access is cache-friendly" },
+      { c: "apply", text: "Vectorize the k-day rolling volatility from day 65 using NumPy cumsum of x and x^2; confirm it matches the pure-Python result" },
+      { c: "apply", text: "Demonstrate a 10x+ speedup by avoiding a Python for-loop on a 1M-element array (e.g. z-score normalization)" },
+      { c: "prob", text: "Use NumPy to Monte-Carlo estimate the probability that a random walk of 100 steps ends positive; compare to theory" },
+    ],
+  },
+  {
+    w: 11,
+    d: 73,
+    title: "Concurrency & the GIL",
+    focus: "Choose correctly among threading, asyncio, and multiprocessing given the GIL.",
+    tasks: [
+      { c: "design", text: "Write a one-page summary of the GIL: why threads don't parallelize CPU-bound Python, and when threads still help (I/O wait, C extensions releasing the GIL)" },
+      { c: "code", text: "Implement the same I/O-bound fetch task three ways in Python (threading, asyncio, sequential) and benchmark wall-clock time" },
+      { c: "code", text: "Use multiprocessing.Pool to parallelize a CPU-bound Monte-Carlo simulation; measure speedup vs core count" },
+      { c: "design", text: "Tabulate threading vs asyncio vs multiprocessing: best use-case, overhead, and data-sharing model for each" },
+      { c: "apply", text: "Build a tiny asyncio producer/consumer (asyncio.Queue) simulating a market-data feed feeding a strategy coroutine" },
+      { c: "mental", text: "Flight Mode → Brainteasers: 1 race-condition / ordering puzzle; explain why naive shared-counter increments lose updates" },
+    ],
+  },
+  {
+    w: 11,
+    d: 74,
+    title: "Fast Data Structures",
+    focus: "Pick the right built-in: deque, heapq, bisect, array, and dict internals.",
+    tasks: [
+      { c: "code", text: "Benchmark collections.deque vs list for O(1) appends/pops at both ends; show why list.pop(0) is O(n) in Python" },
+      { c: "code", text: "Use bisect.insort and bisect_left to maintain a sorted price-level list with O(log n) lookup; time it vs re-sorting" },
+      { c: "design", text: "Write notes on dict internals: open addressing, hashing, amortized O(1), and the cost of resizing / hash collisions" },
+      { c: "apply", text: "Implement a fixed-size ring buffer of the last N ticks using collections.deque(maxlen=N); compute rolling stats off it" },
+      { c: "apply", text: "Compare array.array('d', ...) vs a Python list of floats for memory footprint (sys.getsizeof) and iteration speed" },
+      { c: "prob", text: "Estimate expected probes in a hash table at 0.75 load factor; sanity-check with a quick Python simulation" },
+    ],
+  },
+  {
+    w: 11,
+    d: 75,
+    title: "Design: In-Memory Limit Order Book",
+    focus: "Design a Python limit order book with the right data structures and O(1) cancel.",
+    tasks: [
+      { c: "design", text: "Flight Mode → System Design → order book: read the prompt and outline price levels, FIFO queues per level, and the matching loop" },
+      { c: "design", text: "Choose data structures: dict price→level for O(1) lookup, an order-id→node map for O(1) cancel, and a sorted/heap structure for best price" },
+      { c: "code", text: "Implement add_order, cancel_order, and match in Python; cancel must be O(1) via the order-id map (logical delete or doubly-linked node)" },
+      { c: "code", text: "Add a market-order path that walks levels filling against resting orders by price-time priority; write 3 test scenarios" },
+      { c: "markets", text: "Explain price-time priority, partial fills, and how best-bid/best-ask are maintained as orders arrive and cancel" },
+      { c: "mental", text: "Flight Mode → Mental Math: compute weighted mid-price and spread from a small book snapshot in your head, 4 drills" },
+    ],
+  },
+  {
+    w: 11,
+    d: 76,
+    title: "Design: Feed Handler & Tick Store",
+    focus: "Design a Python market-data feed handler and tick store: parsing, sequence gaps, storage.",
+    tasks: [
+      { c: "design", text: "Flight Mode → System Design → feed handler: outline the parse → normalize → sequence-check → dispatch pipeline" },
+      { c: "code", text: "Implement a Python parser for a simple binary/CSV tick format into normalized tick dicts/namedtuples; handle malformed lines" },
+      { c: "code", text: "Add sequence-gap detection (track last seq number, detect skips/duplicates) and a buffer to reorder out-of-order messages" },
+      { c: "design", text: "Flight Mode → System Design → tick store: compare append-only flat files, columnar (Parquet), and partition-by-day layouts for tick storage" },
+      { c: "apply", text: "Write a tick store in Python that appends ticks partitioned by symbol/day and supports a time-range read query" },
+      { c: "prob", text: "Given a 0.1% message-drop rate, compute the expected number of gaps over 1M messages; reason about burst vs uniform loss" },
+    ],
+  },
+  {
+    w: 11,
+    d: 77,
+    title: "Week 11 Review + Buffer",
+    focus: "Lighter day: consolidate performance/concurrency learnings and clear any backlog.",
+    tasks: [
+      { c: "mock", text: "Flight Mode → System Design: re-pitch either the order book or feed handler aloud in 10 min, covering data structures and complexity" },
+      { c: "code", text: "Revisit one optimization from this week and squeeze a further measurable speedup; record before/after timeit numbers" },
+      { c: "apply", text: "Finish any unfinished week-11 implementation (LOB, ring buffer, feed handler) and add a small test for it in Python" },
+      { c: "behave", text: "Prepare a 90-second story on a time you optimized something for performance — quantify the impact" },
+      { c: "prob", text: "Mixed quick-fire: 3 probability/expected-value problems carried over from the week, 8 min total" },
+    ],
+  },
+];

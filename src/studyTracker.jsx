@@ -5,10 +5,13 @@ import ProblemBank from "./ProblemBank.jsx";
 import Flashcards from "./Flashcards.jsx";
 import Dashboard from "./Dashboard.jsx";
 import Today from "./Today.jsx";
+import FlightMode from "./FlightMode.jsx";
+import { QUANT_PLAN, QUANT_WEEKS } from "./data/quantPlan.js";
 import { GlobalNav, page as pageStyle } from "./ui/theme.jsx";
 import {
   loadTracker, saveTracker, loadBank, saveBank, loadCards, saveCards,
-  loadSettings, saveSettings, exportAll, importAll, resetToPublished, KEYS,
+  loadSettings, saveSettings, loadFlight, saveFlight,
+  exportAll, importAll, resetToPublished, KEYS,
 } from "./store/storage.js";
 
 // ---------------------------------------------------------------------------
@@ -147,6 +150,9 @@ const CATS = {
   code: { label: "Coding", color: "#0F7A4A", bg: "#E2F2EA" },
   behave: { label: "Behavioral", color: "#9333A8", bg: "#F2E6F7" },
   mock: { label: "Mock / Sim", color: "#B91C3B", bg: "#FAE6EB" },
+  prob: { label: "Probability & Stats", color: "#0E7490", bg: "#E0F2F4" },
+  mental: { label: "Brainteasers & Mental Math", color: "#6D28D9", bg: "#EDE7FB" },
+  markets: { label: "Markets & Microstructure", color: "#BE185D", bg: "#FBE6F0" },
 };
 
 // Each day: { w, d, title, focus, tasks:[{id,c,text}] }
@@ -459,6 +465,10 @@ const PLAN = [
       {c:"apply", text:"For every subsequent onsite, repeat Day 47's per-onsite prep cycle"},
       {c:"mock", text:"Insert an extra full-loop sim before any high-priority onsite"},
     ]},
+  // ── Quant track (Weeks 8-13, days 50-91) appended after the Foundations
+  //    weeks. Existing day numbers/task order are untouched, so saved progress
+  //    is preserved (ids are d{day.d}t{index}).
+  ...QUANT_PLAN,
 ];
 
 // build stable task ids
@@ -485,9 +495,10 @@ export default function StudyTracker() {
   const [bank, setBank] = usePersistedState(loadBank, saveBank);
   const [cards, setCards] = usePersistedState(loadCards, saveCards);
   const [settings, setSettings] = usePersistedState(loadSettings, saveSettings);
-  const [openWeek, setOpenWeek] = useState(1);
+  const [flight, setFlight] = usePersistedState(loadFlight, saveFlight);
+  const [openWeek, setOpenWeek] = useState(QUANT_WEEKS[0]);
   const [filter, setFilter] = useState("all");
-  // "today" | "tracker" | "bank" | "cards" | "dashboard" | "framework" | "roles"
+  // "today" | "tracker" | "bank" | "cards" | "dashboard" | "flight" | "framework" | "roles"
   const [view, setView] = useState("today");
 
   const toggle = useCallback((id) => {
@@ -563,6 +574,12 @@ export default function StudyTracker() {
     5: "Mocks + Screens Converting",
     6: "Peak Sharpness + Tuning",
     7: "Full-Loop Sim + Offer Phase",
+    8: "⭐ Quant: Probability & Expected Value",
+    9: "⭐ Quant: Statistics & Stochastic Processes",
+    10: "⭐ Quant: Python Coding Patterns",
+    11: "⭐ Quant: Low-Latency & Performance (Python)",
+    12: "⭐ Quant: Markets & Microstructure",
+    13: "⭐ Quant: Mental Math, Mocks & Fit",
   };
 
   if (view === "framework") {
@@ -586,6 +603,9 @@ export default function StudyTracker() {
         {view === "cards" && <Flashcards cards={cards} setCards={setCards} />}
         {view === "dashboard" && (
           <Dashboard done={done} bank={bank} cards={cards} plan={PLAN} />
+        )}
+        {view === "flight" && (
+          <FlightMode flight={flight} setFlight={setFlight} />
         )}
       </div>
     );
@@ -625,11 +645,11 @@ export default function StudyTracker() {
             <div>
               <div style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
                 color: "#7E9BC4", marginBottom: 8, fontFamily: "system-ui" }}>
-                49-Day Plan · System-Design-Weighted
+                Quant-Developer Track · Python · Probability · Low-Latency
               </div>
               <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700,
                 color: "#F4F8FE", lineHeight: 1.15 }}>
-                Big Tech Interview Tracker
+                Quant Interview Tracker
               </h1>
             </div>
             <div style={{ textAlign: "right", fontFamily: "system-ui" }}>

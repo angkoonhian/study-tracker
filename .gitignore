@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Vendored Pyodide runtime for offline Flight Mode (~13 MB) — re-create with
+# `npm run vendor:pyodide`. Too large to commit.
+public/pyodide
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

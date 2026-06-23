@@ -37,6 +37,7 @@ export function GlobalNav({ view, setView }) {
     ["bank", "📚 Problem Bank"],
     ["cards", "🃏 Flashcards"],
     ["dashboard", "📊 Dashboard"],
+    ["flight", "✈️ Flight Mode"],
   ];
   return (
     <div style={{
@@ -48,7 +49,7 @@ export function GlobalNav({ view, setView }) {
         gap: 8, alignItems: "center", flexWrap: "wrap", fontFamily: C.sys,
       }}>
         <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1,
-          color: C.blue, marginRight: 6 }}>BIGINTERVIEW</span>
+          color: C.blue, marginRight: 6 }}>QUANTPREP</span>
         {items.map(([k, label]) => {
           const active = view === k;
           return (
@@ -76,7 +77,7 @@ const ghostBtn = {
   cursor: "pointer", fontFamily: C.sys, fontWeight: 600,
 };
 
-export function Btn({ children, onClick, kind = "default", disabled, style }) {
+export function Btn({ children, onClick, kind = "default", disabled, style, type = "button" }) {
   const kinds = {
     default: { bg: "rgba(255,255,255,.05)", bd: "#2A3C56", fg: C.text },
     primary: { bg: C.blue, bd: C.blue, fg: "#08101F" },
@@ -84,7 +85,7 @@ export function Btn({ children, onClick, kind = "default", disabled, style }) {
     danger: { bg: "transparent", bd: "#5A2A38", fg: C.red },
   }[kind];
   return (
-    <button onClick={onClick} disabled={disabled} style={{
+    <button type={type} onClick={onClick} disabled={disabled} style={{
       background: kinds.bg, border: `1px solid ${kinds.bd}`, color: kinds.fg,
       borderRadius: 10, padding: "8px 14px", fontSize: 13, fontWeight: 600,
       cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,

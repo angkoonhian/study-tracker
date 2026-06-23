@@ -2,226 +2,177 @@ import { useState } from "react";
 
 const ROLE_GROUPS = [
   {
-    group: "Big Tech (FAANG+)",
+    group: "Quant Developer / Quant SWE",
     color: "#6FA8FF",
     border: "#2F66C4",
+    blurb: "The most natural pivot from a software engineering seat. You build the systems researchers and traders run on.",
     roles: [
       {
-        company: "Google",
-        title: "Software Engineer, Google Ads",
-        location: "Singapore",
-        fit: "Java/Python, data structures & algorithms. Strong fit with your Java background.",
-        link: "https://www.google.com/about/careers/applications/jobs/results?location=Singapore&q=software%20engineer",
-        resume: "bigtech",
+        company: "Quant Developer",
+        title: "Quant Software Engineer (core platform)",
+        location: "Pod & prop shops",
+        track: "primary",
+        what: "Build and own the engineering backbone of a trading desk: market-data ingestion, order/execution gateways, backtesting and simulation frameworks, position/PnL services, and the research-to-production pipeline. You are the bridge between researchers (who write signals) and live trading (which must not break). At a pod like Millennium this often means owning a desk's tooling end to end; the work is real systems engineering, not glue scripts.",
+        skills: [
+          "Python as the primary language — clean APIs, async I/O, pandas/numpy/polars, profiling and vectorization, packaging.",
+          "Data engineering: time-series storage, parquet/Arrow, kdb/clickhouse exposure, idempotent pipelines, handling messy vendor feeds.",
+          "Systems design for trading: order book modeling, market-data fan-out, gateways, idempotency, backtester vs live parity.",
+          "Solid CS fundamentals: data structures & algorithms, concurrency, latency vs throughput trade-offs.",
+          "C++ shows up as production reality at some HFT shops for the hot path — good to recognize, not something you need to study to break in on the Python side.",
+        ],
+        interview: "Recruiter screen → 1-2 Python/DSA coding rounds (LeetCode-medium flavor, but cleaner-code expectations than big tech) → a system design round centered on something trading-shaped (design an order book, a market-data feed handler, a backtester, a rate-limited gateway) → often a lighter probability/brainteaser round → team/manager fit. Some shops add a take-home or pair-programming session.",
+        screen: "Can you write correct, idiomatic Python under time pressure? Do you reason about edge cases, failure modes, and data integrity the way someone touching real money must? Do you understand enough markets/microstructure to model an order book without hand-holding? They screen hard for engineering maturity and ownership over raw algorithm-puzzle speed.",
+        comp: "Strong total comp — base often comparable to senior big-tech, with bonus tied to desk/firm performance. At top pods and prop shops all-in can exceed FAANG, with more variance because the bonus is performance-linked.",
       },
       {
-        company: "Google",
-        title: "Software Engineer, Payments Data Platform",
-        location: "Singapore",
-        fit: "2 yrs exp, large-scale data + distributed systems. Excellent fit given GIC fintech experience.",
-        link: "https://www.google.com/about/careers/applications/jobs/results?location=Singapore&q=software%20engineer",
-        resume: "fintech",
-      },
-      {
-        company: "Meta",
-        title: "Software Engineer, Product",
-        location: "Singapore",
-        fit: "Full stack web/mobile with React. Your React/full-stack experience aligns directly.",
-        link: "https://www.metacareers.com/jobs?q=software%20engineer&location[0]=Singapore",
-        resume: "bigtech",
-      },
-      {
-        company: "Meta",
-        title: "Full Stack Software Engineer",
-        location: "Singapore",
-        fit: "Full stack role — direct match with your profile.",
-        link: "https://www.metacareers.com/jobs?q=full%20stack%20engineer&location[0]=Singapore",
-        resume: "bigtech",
-      },
-      {
-        company: "Amazon",
-        title: "Software Development Engineer",
-        location: "Singapore",
-        fit: "Java/Python/TypeScript. They value microservices and distributed systems experience.",
-        link: "https://www.amazon.jobs/en/search?base_query=software+development+engineer&loc_query=Singapore",
-        resume: "bigtech",
-      },
-      {
-        company: "Microsoft",
-        title: "Software Engineer (various teams)",
-        location: "Singapore",
-        fit: "APAC HQ in Singapore. Values Java, TypeScript, React skills.",
-        link: "https://jobs.careers.microsoft.com/global/en/search?lc=Singapore&l=en_us&pg=1&pgSz=20&o=Relevance",
-        resume: "bigtech",
-      },
-      {
-        company: "Apple",
-        title: "Software Engineer, Early Career",
-        location: "Singapore",
-        fit: "Early career track, good for ~3 yrs experience. Apple’s IST group manages large-scale services.",
-        link: "https://jobs.apple.com/en-sg/search?location=singapore-SGP&team=SFTWR",
-        resume: "bigtech",
-      },
-      {
-        company: "Apple",
-        title: "Software Engineer, Apple Online Store",
-        location: "Singapore",
-        fit: "Full stack web development. Good alignment with your e-commerce and full-stack experience.",
-        link: "https://jobs.apple.com/en-sg/search?location=singapore-SGP&team=SFTWR",
-        resume: "bigtech",
-      },
-      {
-        company: "TikTok / ByteDance",
-        title: "Backend Software Engineer",
-        location: "Singapore",
-        fit: "Backend services for large-scale consumer app. Your Spring Boot microservices at GIC are relevant.",
-        link: "https://careers.tiktok.com/position?keywords=software%20engineer&location=CT_163&project=",
-        resume: "bigtech",
-      },
-      {
-        company: "TikTok / ByteDance",
-        title: "Backend Software Engineer (Transaction)",
-        location: "Singapore",
-        fit: "Transaction systems — your fintech/trade editor experience at GIC is a strong match.",
-        link: "https://careers.tiktok.com/position?keywords=backend%20engineer&location=CT_163&project=",
-        resume: "fintech",
-      },
-      {
-        company: "TikTok / ByteDance",
-        title: "Software Engineer (Backend/Fullstack) - Trust & Safety",
-        location: "Singapore",
-        fit: "Full stack role. Good all-around match.",
-        link: "https://careers.tiktok.com/position?keywords=fullstack&location=CT_163&project=",
-        resume: "bigtech",
+        company: "Quant Developer",
+        title: "Execution / Low-Latency Services Engineer",
+        location: "HFT & market-making",
+        track: "primary",
+        what: "Same family as above but tilted toward the latency-sensitive path: smart order routers, execution algos, feed handlers, and the services that sit microseconds from the exchange. Python is heavily used for the control plane, tooling, and research harnesses around these systems even where the hot path is native.",
+        skills: [
+          "Everything from core quant dev, plus a sharper focus on performance, measurement, and tail latency.",
+          "Comfort reasoning about queues, backpressure, and what happens under bursty load.",
+          "Understanding of exchange connectivity and market microstructure at a practical level.",
+        ],
+        interview: "Very similar loop — Python coding, a latency-flavored design round, and probability. Expect deeper follow-ups on 'what breaks at scale / under load' and how you'd measure it.",
+        screen: "Precision and a measurement mindset. They want engineers who instinctively ask 'how fast, how do we know, and what's the failure mode' rather than guessing.",
+        comp: "Top of the quant-dev band; market-making and HFT shops pay aggressively for strong systems engineers.",
       },
     ],
   },
   {
-    group: "Fintech / Finance",
+    group: "Quant Researcher / Quant Analyst",
     color: "#5FD79E",
     border: "#27613F",
+    blurb: "The signal side. Heavier on statistics and probability, lighter on production systems — though Python is still the daily tool.",
     roles: [
       {
-        company: "Stripe",
-        title: "Full Stack Engineer, Expansion",
-        location: "Singapore",
-        fit: "2+ yrs backend/full stack. Payments domain — excellent match with GIC fintech background.",
-        link: "https://stripe.com/jobs/search?office_locations=Asia+Pacific--Singapore",
-        resume: "fintech",
+        company: "Quant Researcher",
+        title: "Quantitative Researcher (alpha / signal research)",
+        location: "Pod & prop shops",
+        track: "research",
+        what: "Hunt for predictive signal: form hypotheses about what moves prices, build features from data, fit and validate models, and turn surviving ideas into strategies. The day-to-day is research in Python — exploratory analysis, statistical testing, and rigorous backtesting with brutal attention to overfitting and look-ahead bias. Researchers lean on quant devs to productionize what works.",
+        skills: [
+          "Probability & statistics at depth: distributions, expectation/variance, conditional probability, hypothesis testing, regression.",
+          "Time-series and ML: stationarity, cross-validation that respects time, regularization, feature engineering, awareness of overfitting.",
+          "Python for research: numpy, pandas/polars, scikit-learn, statsmodels, notebook-to-pipeline discipline.",
+          "Scientific skepticism — distinguishing real edge from noise and data-mined artifacts.",
+        ],
+        interview: "Probability-heavy. Expect multiple rounds of probability and statistics problems (combinatorics, expected value, Bayesian reasoning, Markov chains), a stats/ML discussion, often a data/research case or take-home where you analyze a dataset in Python, and a discussion of your past research. Coding exists but is secondary to quantitative reasoning.",
+        screen: "Raw quantitative horsepower and research judgment. Can you reason precisely under uncertainty, design an honest experiment, and avoid fooling yourself? They probe how you'd validate a signal and what would make you distrust a good-looking backtest.",
+        comp: "High and highly performance-linked. Base similar to quant dev; bonus can dwarf it when your research makes money, with corresponding variance.",
       },
       {
-        company: "Goldman Sachs",
-        title: "Engineering Roles",
-        location: "Singapore",
-        fit: "Your GIC sovereign wealth fund experience is a rare differentiator. Java/Spring Boot in trade systems is highly relevant.",
-        link: "https://higher.gs.com/roles/engineering?location=Singapore",
-        resume: "fintech",
-      },
-      {
-        company: "JPMorgan Chase",
-        title: "Software Engineer Program",
-        location: "Singapore",
-        fit: "For experienced SWEs. No prior financial services exp required. Your GIC background gives you a significant edge.",
-        link: "https://careers.jpmorgan.com/global/en/search?q=software+engineer&loc=Singapore",
-        resume: "fintech",
-      },
-      {
-        company: "Bloomberg",
-        title: "Software Engineer, Data Technologies",
-        location: "Singapore",
-        fit: "Distributed systems, data processing for financial data. Your GIC data platform work is relevant.",
-        link: "https://careers.bloomberg.com/job/search?lc=singapore",
-        resume: "fintech",
-      },
-      {
-        company: "PayPal",
-        title: "Software Engineer (Full Stack)",
-        location: "Singapore (Hybrid)",
-        fit: "REST APIs, Spring, SQL. Your NestJS/Spring Boot/React stack aligns perfectly.",
-        link: "https://paypal.eightfold.ai/careers?query=software%20engineer&location=Singapore",
-        resume: "fintech",
-      },
-      {
-        company: "Visa",
-        title: "Software Engineer",
-        location: "Singapore",
-        fit: "Payments/fintech domain matches your GIC experience. 200+ SWE roles in Singapore.",
-        link: "https://corporate.visa.com/en/jobs/?q=software+engineer&location=Singapore",
-        resume: "fintech",
+        company: "Quant Analyst",
+        title: "Quantitative Analyst (modeling / risk / desk support)",
+        location: "Banks, pods, asset managers",
+        track: "research",
+        what: "A broader, sometimes more applied cousin of the researcher: pricing and risk modeling, desk analytics, strategy support, and turning quantitative questions from traders/PMs into models and tools. More common as a title at banks and multi-strats; scope ranges from near-research to near-dev.",
+        skills: [
+          "Strong applied statistics and probability.",
+          "Python for modeling and analytics; comfort with financial/market data.",
+          "Communication — translating between traders/PMs and quantitative work.",
+        ],
+        interview: "Probability and stats screening similar to the researcher track, plus more domain/markets questions and a fit-with-the-desk emphasis. Often a Python data exercise.",
+        screen: "Quantitative competence plus the ability to work directly with a desk and explain your reasoning clearly.",
+        comp: "Solid; varies widely by employer — pods/prop pay more than banks for comparable seats.",
       },
     ],
   },
   {
-    group: "Tech Companies (Southeast Asia)",
+    group: "Quant Trader",
     color: "#C084FC",
     border: "#7C3AED",
+    blurb: "Pricing risk in real time. Least code-centric of the quant roles — the bar is mental speed, probabilistic intuition, and markets feel.",
     roles: [
       {
-        company: "Databricks",
-        title: "Software Engineer, Fullstack",
-        location: "Singapore",
-        fit: "3+ yrs exp building production systems in Python/Scala/Java. AI/ML platform work.",
-        link: "https://www.databricks.com/company/careers?location=Singapore",
-        resume: "bigtech",
+        company: "Quant Trader",
+        title: "Quantitative / Market-Making Trader",
+        location: "Prop & market-making",
+        track: "trading",
+        what: "Quote and manage risk in real time — make markets, run execution, and decide when to lean into or out of positions. You think in expected value and probabilities continuously, lean on the researchers' and devs' tooling, and live with immediate feedback on every decision. Strong programming helps you automate and analyze, but the core skill is fast, sound decision-making under uncertainty.",
+        skills: [
+          "Fast, accurate mental math and estimation under pressure.",
+          "Probability and expected-value intuition — sizing bets, reading odds, updating on new information.",
+          "Markets and microstructure intuition; comfort with risk and being wrong often but profitably.",
+          "Enough Python to analyze your own trading and build small tools.",
+        ],
+        interview: "Famous for probability and mental-math games: rapid arithmetic drills, EV and betting/market-making games (someone makes a market, you decide to buy/sell), poker-style and Monty-Hall-style probability puzzles, and sequential games that test how you update and size under uncertainty. Often a markets-curiosity conversation. Coding is minimal.",
+        screen: "Speed, composure, and calibrated probabilistic thinking. Do you stay sharp under pressure, size decisions sensibly, and learn fast from feedback? They want people who are comfortable acting on edge without complete information.",
+        comp: "Among the highest ceilings in the industry and the most variance — heavily tied to the book/desk you run. Top traders earn far above any engineering seat; early seats carry more uncertainty.",
+      },
+    ],
+  },
+  {
+    group: "Pod / Multi-Strat vs Prop / HFT",
+    color: "#FFB86C",
+    border: "#9A5A1E",
+    blurb: "You already sit at a multi-strat pod (Millennium). Here's how the two worlds differ so you target the right loop and culture.",
+    roles: [
+      {
+        company: "Pod / Multi-Strat",
+        title: "Millennium · Citadel · Point72 style",
+        location: "Multi-strategy hedge funds",
+        track: "context",
+        what: "Capital is allocated to many semi-independent PM 'pods,' each running its own strategies under tight risk limits. Quant devs and researchers often embed with a specific desk/PM, so the work is closer to that desk's needs and you see business context directly. Breadth of strategies, more business-facing collaboration, and a strong risk-management culture. Your current Millennium SWE seat is the most credible internal/lateral bridge into a pod quant-dev role.",
+        skills: [
+          "Pragmatic Python engineering and data work tied to a desk's strategies.",
+          "Comfort with ambiguity and shifting priorities as PMs' needs change.",
+          "Relationship and communication skills — you serve specific PMs/traders.",
+        ],
+        interview: "Loops resemble the quant-dev/researcher tracks above but with more team/desk fit and 'how do you work with a PM' emphasis. Bar is high on engineering and judgment; somewhat less obsessive about nanosecond latency than pure HFT.",
+        screen: "Strong engineering plus the ability to partner with a desk and operate under risk discipline.",
+        comp: "Excellent; bonus is tied to your pod's and the firm's performance, so upside and variance track the desk you support.",
       },
       {
-        company: "Atlassian",
-        title: "Engineering Roles",
-        location: "Singapore",
-        fit: "Language agnostic hiring. 50 roles in Singapore. Your full-stack React + Java is a direct match.",
-        link: "https://www.atlassian.com/company/careers/all-jobs?location=Singapore&team=Engineering",
-        resume: "bigtech",
-      },
-      {
-        company: "Grab",
-        title: "Software Engineer, Fullstack",
-        location: "Singapore",
-        fit: "Products for passengers, drivers, merchants. Golang, Redis, MySQL, ReactJS. Excellent match.",
-        link: "https://www.grab.careers/en/search-jobs/?search=software+engineer&location=Singapore",
-        resume: "bigtech",
-      },
-      {
-        company: "Grab",
-        title: "Software Engineer, Backend",
-        location: "Singapore",
-        fit: "Backend microservices on AWS. Your Spring Boot microservices experience translates well.",
-        link: "https://www.grab.careers/en/search-jobs/?search=backend+engineer&location=Singapore",
-        resume: "bigtech",
-      },
-      {
-        company: "Shopee",
-        title: "Backend Engineer",
-        location: "Singapore",
-        fit: "Financial systems (ShopeePay) and marketplace engineering. Full-stack and fintech exp is a strong fit.",
-        link: "https://careers.shopee.sg/jobs?department_id=109&level=2",
-        resume: "fintech",
-      },
-      {
-        company: "Sea Group",
-        title: "Software Engineering Roles",
-        location: "Singapore",
-        fit: "Parent of Shopee, Garena, SeaMoney. Frontend and backend roles across gaming, e-commerce, fintech.",
-        link: "https://career.sea.com/",
-        resume: "fintech",
-      },
-      {
-        company: "Spotify",
-        title: "Backend Engineer (various)",
-        location: "Remote / Stockholm / London",
-        fit: "Various specializations. Supports remote work — check for APAC-eligible roles.",
-        link: "https://www.lifeatspotify.com/jobs?c=engineering&l=all",
-        resume: "bigtech",
+        company: "Prop / HFT",
+        title: "Jane Street · HRT · Optiver style",
+        location: "Proprietary trading firms",
+        track: "context",
+        what: "Trade the firm's own capital, often in market-making and high-frequency strategies. Flatter, deeply technical cultures where engineering, research, and trading sit very close together. The intellectual bar — especially on probability, problem-solving, and clean code — is famously high, and the interview loops are correspondingly puzzle- and rigor-heavy. C++ is the production reality on the hot path at several of these shops, but plenty of Python-centric tooling and research work exists alongside it.",
+        skills: [
+          "Exceptional fundamentals: probability, clean problem-solving, careful coding.",
+          "For the Python-side seats: strong Python plus data/research or systems chops.",
+          "Genuine curiosity about markets and a high tolerance for hard puzzles.",
+        ],
+        interview: "Multi-stage and demanding: several rounds of probability/brainteasers, strong coding (clean and correct, not just passing), and design/reasoning rounds. Expect a higher puzzle density than at a pod.",
+        screen: "Sheer problem-solving ability and rigor. They optimize for raw talent and clean thinking over domain experience, then train the rest.",
+        comp: "Top of the market, especially at the most selective firms; structure is more firm-wide than single-pod-linked.",
       },
     ],
   },
 ];
 
-const RESUME_TAGS = {
-  bigtech: { label: "Big Tech CV", color: "#6FA8FF", bg: "rgba(111,168,255,.12)", border: "rgba(111,168,255,.35)" },
-  fintech: { label: "Fintech CV", color: "#5FD79E", bg: "rgba(95,215,158,.12)", border: "rgba(95,215,158,.35)" },
+const TRACK_TAGS = {
+  primary: { label: "Best fit from SWE", color: "#6FA8FF", bg: "rgba(111,168,255,.12)", border: "rgba(111,168,255,.35)" },
+  research: { label: "Probability-heavy", color: "#5FD79E", bg: "rgba(95,215,158,.12)", border: "rgba(95,215,158,.35)" },
+  trading: { label: "Mental-math / EV", color: "#C084FC", bg: "rgba(192,132,252,.12)", border: "rgba(192,132,252,.35)" },
+  context: { label: "Context", color: "#FFB86C", bg: "rgba(255,184,108,.12)", border: "rgba(255,184,108,.35)" },
 };
 
 const TOTAL_ROLES = ROLE_GROUPS.reduce((s, g) => s + g.roles.length, 0);
+
+function Section({ heading, color, items }) {
+  if (!items) return null;
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{
+        fontSize: 11, fontWeight: 800, letterSpacing: 1.2,
+        textTransform: "uppercase", color, marginBottom: 5,
+        fontFamily: "system-ui",
+      }}>{heading}</div>
+      {Array.isArray(items) ? (
+        <ul style={{ margin: 0, paddingLeft: 18, color: "#9DB2D2",
+          fontSize: 13, lineHeight: 1.55 }}>
+          {items.map((it, i) => <li key={i} style={{ marginBottom: 3 }}>{it}</li>)}
+        </ul>
+      ) : (
+        <div style={{ fontSize: 13.5, color: "#9DB2D2", lineHeight: 1.6 }}>{items}</div>
+      )}
+    </div>
+  );
+}
 
 export default function JobRoles({ onBack }) {
   const [expandedGroup, setExpandedGroup] = useState(0);
@@ -264,18 +215,18 @@ export default function JobRoles({ onBack }) {
             <div>
               <div style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
                 color: "#7E9BC4", marginBottom: 8, fontFamily: "system-ui" }}>
-                Curated for Your Profile
+                SWE → Quant · Roles Reference
               </div>
               <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700,
                 color: "#F4F8FE", lineHeight: 1.15 }}>
-                Target Roles & Applications
+                Quant Roles & Interview Loops
               </h1>
             </div>
             <div style={{ textAlign: "right", fontFamily: "system-ui" }}>
               <div style={{ fontSize: 42, fontWeight: 800, color: "#6FA8FF",
                 lineHeight: 1 }}>{TOTAL_ROLES}</div>
               <div style={{ fontSize: 12, color: "#7E9BC4", marginTop: 4 }}>
-                roles across {ROLE_GROUPS.length} categories
+                roles across {ROLE_GROUPS.length} tracks
               </div>
             </div>
           </div>
@@ -284,18 +235,18 @@ export default function JobRoles({ onBack }) {
 
       {/* Body */}
       <div style={{ maxWidth: 920, margin: "26px auto 0", padding: "0 22px" }}>
-        {/* Fit summary */}
+        {/* Profile / orientation */}
         <div style={{
           padding: "16px 20px", marginBottom: 20,
           background: "linear-gradient(135deg,#13243F,#0E1B30)",
           border: "1px solid #243650", borderRadius: 14,
           fontSize: 13.5, lineHeight: 1.65, color: "#A9BCD8",
         }}>
-          <strong style={{ color: "#9CC0F5" }}>Your profile:</strong>{" "}
-          Full Stack SWE · GIC (fintech/trade systems, Spring Boot microservices) ·
-          OST Technologies (IoT, React/NestJS) · Skilio (Angular/NestJS/Firebase) ·
-          JS/TS, Java, Python · React, Angular, Vue, Next.js · Node.js, NestJS, Spring Boot ·
-          PostgreSQL, MySQL, MongoDB
+          <strong style={{ color: "#9CC0F5" }}>Where you stand:</strong>{" "}
+          Software Engineer at <strong>Millennium</strong> (multi-strategy pod hedge fund) aiming to move into quant.
+          Your strongest, most credible pivot is <strong>Quant Developer / Quant SWE</strong> — it leans directly on
+          your engineering experience. <strong>Python</strong> is the language to emphasize across the dev and research
+          coding rounds; probability and stats are the muscles to build for the research and trading loops.
         </div>
 
         {ROLE_GROUPS.map((grp, gi) => {
@@ -322,7 +273,7 @@ export default function JobRoles({ onBack }) {
                   <div style={{ fontSize: 18, fontWeight: 700 }}>{grp.group}</div>
                   <div style={{ fontSize: 12.5, color: "#8AA1C2",
                     marginTop: 3, fontFamily: "system-ui" }}>
-                    {grp.roles.length} roles · {[...new Set(grp.roles.map(r => r.company))].join(", ")}
+                    {grp.blurb}
                   </div>
                 </div>
                 <div style={{ fontSize: 18, color: grp.color,
@@ -333,88 +284,70 @@ export default function JobRoles({ onBack }) {
               {isOpen && (
                 <div style={{ marginTop: 10, display: "flex",
                   flexDirection: "column", gap: 8 }}>
-                  {grp.roles.map((role, ri) => (
-                    <div key={ri} className="role-card" style={{
-                      background: "linear-gradient(180deg,#101D33,#0C1626)",
-                      border: "1px solid #1F2F47",
-                      borderRadius: 13, padding: "16px 18px",
-                      animationDelay: `${ri * 0.04}s`,
-                    }}>
-                      <div style={{ display: "flex", alignItems: "baseline",
-                        gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 12, fontWeight: 800,
-                          fontFamily: "system-ui", color: grp.color,
-                          letterSpacing: 1 }}>{role.company.toUpperCase()}</span>
-                        <span style={{ fontSize: 16, fontWeight: 700,
-                          color: "#EAF0F8" }}>{role.title}</span>
-                        <span style={{ marginLeft: "auto", display: "flex", gap: 6,
-                          alignItems: "center", flexShrink: 0 }}>
-                          {role.resume && (() => {
-                            const rt = RESUME_TAGS[role.resume];
-                            return (
+                  {grp.roles.map((role, ri) => {
+                    const tt = TRACK_TAGS[role.track];
+                    return (
+                      <div key={ri} className="role-card" style={{
+                        background: "linear-gradient(180deg,#101D33,#0C1626)",
+                        border: "1px solid #1F2F47",
+                        borderRadius: 13, padding: "16px 18px",
+                        animationDelay: `${ri * 0.04}s`,
+                      }}>
+                        <div style={{ display: "flex", alignItems: "baseline",
+                          gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
+                          <span style={{ fontSize: 12, fontWeight: 800,
+                            fontFamily: "system-ui", color: grp.color,
+                            letterSpacing: 1 }}>{role.company.toUpperCase()}</span>
+                          <span style={{ fontSize: 16, fontWeight: 700,
+                            color: "#EAF0F8" }}>{role.title}</span>
+                          <span style={{ marginLeft: "auto", display: "flex", gap: 6,
+                            alignItems: "center", flexShrink: 0 }}>
+                            {tt && (
                               <span style={{ fontSize: 10.5, fontWeight: 700,
-                                fontFamily: "system-ui", color: rt.color,
-                                background: rt.bg, border: `1px solid ${rt.border}`,
+                                fontFamily: "system-ui", color: tt.color,
+                                background: tt.bg, border: `1px solid ${tt.border}`,
                                 borderRadius: 10, padding: "2px 10px",
                                 whiteSpace: "nowrap", letterSpacing: 0.3 }}>
-                                {rt.label}
+                                {tt.label}
                               </span>
-                            );
-                          })()}
-                          <span style={{ fontSize: 11.5,
-                            color: "#7E9BC4", fontFamily: "system-ui",
-                            border: "1px solid #23344E", borderRadius: 10,
-                            padding: "2px 10px", whiteSpace: "nowrap" }}>
-                            {role.location}
+                            )}
+                            <span style={{ fontSize: 11.5,
+                              color: "#7E9BC4", fontFamily: "system-ui",
+                              border: "1px solid #23344E", borderRadius: 10,
+                              padding: "2px 10px", whiteSpace: "nowrap" }}>
+                              {role.location}
+                            </span>
                           </span>
-                        </span>
-                      </div>
+                        </div>
 
-                      <div style={{ fontSize: 13.5, color: "#8DA4C4",
-                        lineHeight: 1.55, marginBottom: 10 }}>
-                        {role.fit}
+                        <Section heading="What the role does" color={grp.color} items={role.what} />
+                        <Section heading="Core skills" color={grp.color} items={role.skills} />
+                        <Section heading="Interview process / loop" color={grp.color} items={role.interview} />
+                        <Section heading="What they screen for" color={grp.color} items={role.screen} />
+                        {role.comp && <Section heading="Comp framing" color={grp.color} items={role.comp} />}
                       </div>
-
-                      <a href={role.link} target="_blank" rel="noreferrer"
-                        style={{
-                          display: "inline-flex", alignItems: "center", gap: 6,
-                          fontSize: 12.5, fontWeight: 600,
-                          color: grp.color, textDecoration: "none",
-                          background: `${grp.color}12`,
-                          border: `1px solid ${grp.color}44`,
-                          borderRadius: 8, padding: "6px 14px",
-                          fontFamily: "system-ui",
-                          transition: "background .15s",
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = `${grp.color}22`}
-                        onMouseLeave={e => e.currentTarget.style.background = `${grp.color}12`}
-                      >
-                        Apply / View Listing →
-                      </a>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
           );
         })}
 
-        {/* Recommendations */}
+        {/* Game plan */}
         <div style={{
           marginTop: 28, padding: "20px 24px",
           background: "linear-gradient(135deg,#13243F,#0E1B30)",
           border: "1px solid #243650", borderRadius: 14,
           fontSize: 14, lineHeight: 1.65, color: "#A9BCD8",
         }}>
-          <strong style={{ color: "#5FD79E" }}>Top priority applications:</strong>
+          <strong style={{ color: "#5FD79E" }}>Suggested path from your SWE seat:</strong>
           <ol style={{ margin: "10px 0 0", paddingLeft: 22, color: "#C5D4E9" }}>
-            <li><strong>Stripe</strong> — payments domain, 2+ yrs required, direct fintech match</li>
-            <li><strong>Grab</strong> — Singapore HQ, ReactJS + backend microservices</li>
-            <li><strong>Databricks</strong> — 3+ yrs required, high-growth AI/ML platform</li>
-            <li><strong>Google (Payments)</strong> — 2 yrs required, fintech-adjacent</li>
-            <li><strong>Meta</strong> — full stack React, Singapore office</li>
-            <li><strong>TikTok (Transaction)</strong> — maps directly to GIC trade work</li>
-            <li><strong>Goldman Sachs / JPMorgan</strong> — your GIC sovereign wealth fund experience is a rare differentiator</li>
+            <li><strong>Quant Developer / Quant SWE</strong> — primary target; your engineering background carries most of the loop.</li>
+            <li><strong>Lean on the internal bridge</strong> — being a Millennium SWE is real credibility for a pod quant-dev seat; explore lateral moves alongside external ones.</li>
+            <li><strong>Sharpen Python</strong> — idiomatic, fast, clean; numpy/pandas plus the DSA you already know.</li>
+            <li><strong>Learn trading system design</strong> — order books, market-data feeds, backtesters, gateways.</li>
+            <li><strong>Build probability fluency</strong> — enough for the dev round now; deeper if you drift toward researcher or trader.</li>
           </ol>
         </div>
 
@@ -425,9 +358,9 @@ export default function JobRoles({ onBack }) {
           fontSize: 13, lineHeight: 1.6, color: "#8DA4C4",
         }}>
           <strong style={{ color: "#FFB86C" }}>Note:</strong>{" "}
-          Links point to each company's career search page filtered for Singapore SWE roles.
-          Specific listings change frequently — use these as starting points and bookmark
-          the ones that match. Apply to 10–12 in your first wave as the study plan recommends.
+          Comp figures are framing, not quotes — quant pay is heavily performance-linked and varies by firm,
+          desk, and year. Loops differ between shops; treat each track here as the shape to prepare for, then
+          tailor once you know which firm and seat you're interviewing for.
         </div>
       </div>
     </div>

@@ -1,8 +1,9 @@
 import { useState } from "react";
 
 // ---------------------------------------------------------------------------
-//  THE 7-STEP SYSTEM DESIGN FRAMEWORK
-//  Faithful to SystemDesign_7Step_Framework.pdf — Twitter/X running example.
+//  THE 7-STEP QUANT / LOW-LATENCY SYSTEM DESIGN FRAMEWORK
+//  Tuned for hedge-fund / trading-systems interviews — in-memory limit order
+//  book / matching engine as the running example. Python-first.
 //  Each step: What it is → Why it exists → What you do → Running example →
 //  What this sounds like out loud → Pitfalls.
 // ---------------------------------------------------------------------------
@@ -11,11 +12,11 @@ const ACCENT = "#6FA8FF";
 
 const AT_A_GLANCE = [
   { n: 1, step: "Requirements",      one: "Decide what you're building and at what scale, before designing anything", time: "~5 min" },
-  { n: 2, step: "Estimates",         one: "Put rough numbers on scale so later choices are justified, not arbitrary", time: "~5 min" },
-  { n: 3, step: "API design",        one: "Define the contract; this anchors the data model and components",          time: "~5 min" },
-  { n: 4, step: "Data model",        one: "Entities, schema, and the storage choice — with a reason tied to access patterns", time: "~7 min" },
-  { n: 5, step: "High-level design", one: "The boxes-and-arrows diagram; walk the request path end to end",            time: "~8 min" },
-  { n: 6, step: "Deep dive",         one: "Go deep on 1–2 components; show real depth and find the bottleneck",        time: "~10 min" },
+  { n: 2, step: "Estimates",         one: "Put numbers on message rate, latency budget, and memory so choices are justified", time: "~5 min" },
+  { n: 3, step: "API design",        one: "Define the contract — order/cancel/market-data ops; this anchors the data model", time: "~5 min" },
+  { n: 4, step: "Data model",        one: "Entities, in-memory structures, and storage — chosen for the hot-path access pattern", time: "~7 min" },
+  { n: 5, step: "High-level design", one: "The boxes-and-arrows diagram; walk the order/tick path end to end",          time: "~8 min" },
+  { n: 6, step: "Deep dive",         one: "Go deep on 1–2 components; find the latency bottleneck and the correctness risk", time: "~10 min" },
   { n: 7, step: "Tradeoffs / wrap",  one: "State tradeoffs, failure modes, monitoring; what you'd do with more time",  time: "~5 min" },
 ];
 
@@ -28,29 +29,29 @@ const STEPS = [
     whatItIs:
       "Pinning down exactly what system you're being asked to build, and at what scale, before you design a single component. It is a conversation, not a monologue — you ask, the interviewer answers, you write it down.",
     whyItExists:
-      "\"Design Twitter\" is deliberately under-specified. Do they mean the timeline? DMs? Search? Trending? Notifications? If you start designing without scoping, you will either build the wrong thing or try to build everything and run out of time. Interviewers are explicitly evaluating whether you clarify ambiguity before acting — it's one of the graded axes, and at big tech it maps directly to a core trait (\"deals with ambiguity\"). Skipping this step doesn't just lose time; it loses a signal they are actively scoring.",
+      "\"Design a matching engine\" is deliberately under-specified. Is it equities or futures? Price-time priority or pro-rata? Single instrument or many? Do they care about the wire protocol, or just the in-memory book? If you start designing without scoping, you'll either build the wrong thing or try to build everything and run out of time. Interviewers at trading firms are explicitly evaluating whether you nail down correctness and latency requirements before acting — getting the matching semantics or the determinism guarantee wrong is a fatal flaw, and they want to see you surface those constraints yourself. Skipping this step doesn't just lose time; it loses a signal they are actively scoring.",
     whatYouDo: [
-      { lead: "Separate functional from non-functional.", body: "Functional = what it does (post a tweet, follow a user, view a feed). Non-functional = the qualities (scale, latency, availability, consistency)." },
-      { lead: "Explicitly scope IN and OUT.", body: "Say out loud what you will and won't cover. \"I'll focus on posting tweets and the home timeline; I'll treat search and DMs as out of scope unless you'd like me to cover them.\" This shows judgment and protects your time." },
-      { lead: "Ask the four questions that change the design:", body: "(a) scale — how many users / how much traffic? (b) read vs write ratio? (c) latency target — is this user-facing real-time or can it be async? (d) consistency — does stale data for a few seconds matter?" },
+      { lead: "Separate functional from non-functional.", body: "Functional = what it does (accept a limit order, cancel an order, match crossing orders, publish fills). Non-functional = the qualities (throughput, tail latency, determinism, correctness, recoverability)." },
+      { lead: "Explicitly scope IN and OUT.", body: "Say out loud what you will and won't cover. \"I'll focus on the in-memory limit order book for one instrument with price-time priority; I'll treat the FIX gateway, clearing, and multi-instrument sharding as out of scope unless you'd like me to cover them.\" This shows judgment and protects your time." },
+      { lead: "Ask the four questions that change the design:", body: "(a) throughput — peak messages/sec (orders + cancels + market data)? (b) latency target — tick-to-trade budget, and is it p50 or p99/p99.9 that matters? (c) order types and matching policy — limit/market/IOC/FOK, price-time vs pro-rata? (d) determinism & recovery — must replaying the same input stream reproduce identical fills, and what's the RTO after a crash?" },
       { lead: "Write the answers down", body: "(on the whiteboard / shared doc). You will refer back to them in every later step to justify decisions." },
     ],
     example: {
-      title: "Design Twitter/X",
+      title: "Design an in-memory limit order book / matching engine",
       body: [
-        { type: "kv", label: "Functional (in scope)", text: "a user can post a tweet; a user can follow other users; a user can view a home timeline of tweets from people they follow, newest first." },
-        { type: "kv", label: "Out of scope (stated explicitly)", text: "search, DMs, trending, ads, notifications — \"happy to come back to these if time allows.\"" },
-        { type: "kv", label: "Non-functional", text: "~200M daily active users; massively read-heavy (people read feeds far more than they post — roughly 100:1); home timeline should load in under ~200 ms; eventual consistency is acceptable (a tweet appearing in followers' feeds a few seconds late is fine; this is a huge simplification and you should say so)." },
+        { type: "kv", label: "Functional (in scope)", text: "accept a new limit order (side, price, qty); cancel/amend a resting order by id; match incoming orders against the book under price-time priority; emit fills (executions) and book updates." },
+        { type: "kv", label: "Out of scope (stated explicitly)", text: "the FIX/binary order-entry gateway, risk pre-trade checks, clearing/settlement, and multi-symbol sharding — \"happy to come back to these if time allows.\"" },
+        { type: "kv", label: "Non-functional", text: "single hot instrument, ~100K–1M order messages/sec at peak; tick-to-trade target on the order of single-digit microseconds at p99 (the engine must be deterministic — replaying the same ordered input must produce byte-identical fills, since that's how we reconcile and audit); strong correctness over availability — a wrong fill is far worse than a brief outage; must recover and rebuild book state from a durable event log. State that the production hot path would be C++/Rust, but I'll design and prototype the logic in Python." },
       ],
     },
     script: [
-      "Before I design anything, let me clarify scope. When you say 'design Twitter,' I'm going to assume the core is: posting tweets, following users, and a home timeline. I'll treat search, DMs, and trending as out of scope unless you want them. A few questions: roughly what scale are we targeting — hundreds of millions of users? And is this read-heavy as I'd expect, where reads massively outnumber writes? And is eventual consistency acceptable for the timeline — is it OK if a tweet shows up in followers' feeds a couple of seconds late?",
-      "Great — so to summarize what I'm building: [restate the scoped requirements]. I'll keep these on the board and refer back as I make decisions.",
+      "Before I design anything, let me clarify scope. When you say 'design a matching engine,' I'm going to assume the core is: the in-memory limit order book for a single instrument with price-time priority — accept orders, cancel orders, match, and publish fills. I'll treat the order-entry gateway, pre-trade risk, and multi-symbol sharding as out of scope unless you want them. A few questions: what throughput are we targeting — hundreds of thousands of messages a second? What's the latency budget, and is it p50 or the tail, p99/p99.9, that you grade on? Price-time priority or pro-rata, and which order types — IOC, FOK? And on determinism: do we need the engine to reproduce identical fills when we replay the same input stream, for audit and recovery?",
+      "Great — so to summarize what I'm building: [restate the scoped requirements]. I'll keep these on the board and refer back as I make decisions. One framing note: I'll design and prototype in Python, and call out where production would drop to C++/Rust on the hot path.",
     ],
     pitfalls: [
-      { lead: "Designing during this step.", body: "Resist. No databases, no boxes yet. Just scope." },
-      { lead: "Asking no questions.", body: "Silence here reads as 'jumps to solutions without understanding the problem' — a documented negative signal." },
-      { lead: "Accepting the prompt literally.", body: "'Design Twitter' in full is a year of work; un-scoped, you'll fail by trying to cover everything." },
+      { lead: "Designing during this step.", body: "Resist. No data structures, no boxes yet. Just scope." },
+      { lead: "Not pinning the matching policy.", body: "Price-time vs pro-rata changes the whole book structure; assuming silently reads as inexperience with exchanges." },
+      { lead: "Ignoring determinism.", body: "Not asking whether replay must reproduce identical fills misses the constraint that dominates trading-system design." },
     ],
   },
 
@@ -60,32 +61,32 @@ const STEPS = [
     name: "Estimates",
     time: "~5 min",
     whatItIs:
-      "Quick \"back-of-the-envelope\" math to attach rough numbers to the scale you just clarified: queries per second (QPS), storage growth, bandwidth. Precision is irrelevant — order of magnitude is everything.",
+      "Quick \"back-of-the-envelope\" math to attach numbers to the scale you just clarified: message rate (messages/sec), the per-message latency budget, and memory footprint of the live book. Precision is irrelevant — order of magnitude (and the latency budget breakdown) is everything.",
     whyItExists:
-      "Every later decision — do I need a cache, do I need to shard the database, one server or a thousand — is only defensible relative to a number. Without estimates, \"I'll add a cache\" is a buzzword; with them, \"at ~350K timeline reads/sec a single DB can't serve this, so a cache is mandatory\" is engineering. Estimates convert opinions into justified decisions. Interviewers specifically listen for whether your architecture is driven by the numbers or decorated with them afterward.",
+      "Every later decision — can this run single-threaded, do I need lock-free structures, can the book fit in L3 cache, must I avoid the GC on the hot path — is only defensible relative to a number. Without estimates, \"I'll make it fast\" is a buzzword; with them, \"at a 2 µs p99 budget and 500K msg/sec, a single message gets ~2 µs and ~150 ns of GC pause is unacceptable, so the hot path must be allocation-free\" is engineering. Estimates convert opinions into justified decisions. Quant interviewers specifically listen for whether your architecture is driven by the latency budget or decorated with it afterward.",
     whatYouDo: [
-      { lead: "Start from the scale figure", body: "you established in step 1 (e.g. 200M DAU)." },
-      { lead: "Estimate writes:", body: "DAU × actions per user per day, divided by 86,400 sec/day, to get average QPS. Multiply by ~2–3 for peak." },
-      { lead: "Estimate reads", body: "using the read:write ratio from step 1 (often the dominant number for a feed system)." },
-      { lead: "Estimate storage:", body: "writes/day × size per item × 365 → storage/year. Round hard." },
+      { lead: "Start from the rate figure", body: "you established in step 1 (e.g. peak ~500K order messages/sec on the hot instrument)." },
+      { lead: "Turn the latency target into a per-message budget:", body: "if the tick-to-trade p99 budget is a few microseconds, divide it across parse → risk → match → publish so each stage has a number to hit." },
+      { lead: "Estimate memory of the live book:", body: "resting orders × bytes per order + price-level index → does it fit in cache / a single node's RAM? Round hard." },
+      { lead: "Estimate the durable event log:", body: "messages/day × bytes per event → log volume/day for replay and audit (this drives recovery, not the hot path)." },
       { lead: "Say the numbers out loud and write them down.", body: "Then immediately state the implication — that's the whole point of doing it." },
     ],
     example: {
-      title: "Design Twitter/X",
+      title: "Design an in-memory limit order book / matching engine",
       body: [
-        { type: "kv", label: "Writes (tweets)", text: "say 200M DAU, each posts ~2 tweets/day → 400M tweets/day ÷ 86,400 ≈ ~4,600 tweets/sec average, call it ~10K/sec at peak." },
-        { type: "kv", label: "Reads (timeline loads)", text: "read-heavy at ~100:1 → on the order of ~hundreds of thousands of timeline reads/sec. This is the number that dominates the design." },
-        { type: "kv", label: "Storage", text: "400M tweets/day × ~300 bytes ≈ 120 GB/day ≈ ~44 TB/year of tweet text alone (media handled separately, far larger)." },
-        { type: "kv", label: "The implications you state immediately", text: "(1) read volume is orders of magnitude above write volume → the system must be optimized for reads, caching is not optional; (2) yearly storage is large but not exotic → a sharded store is needed but it's a known problem; (3) the read:write asymmetry is the single most important fact and it will drive the timeline design in step 6." },
+        { type: "kv", label: "Message rate", text: "~500K messages/sec at peak on the hot instrument (orders + cancels + amends), bursting higher around the open/close. That's a new message roughly every 2 µs — so the engine must process one message in single-digit microseconds just to keep up." },
+        { type: "kv", label: "Latency budget", text: "tick-to-trade p99 target ~5 µs, split: ~1 µs parse/decode, ~1 µs pre-trade risk, ~2 µs match against the book, ~1 µs publish fill. The p99/p99.9 tail dominates — a single GC pause or page fault blows the budget. This is the number that drives the design." },
+        { type: "kv", label: "Memory", text: "say ~1M resting orders × ~64 bytes ≈ 64 MB, plus a price-level index — comfortably fits in RAM and largely in cache, so the entire live book stays in-process; no database is on the hot path." },
+        { type: "kv", label: "The implications you state immediately", text: "(1) the per-message budget is microseconds → the match path must be single-threaded, branch-predictable, and allocation-free (in Python: no per-message object churn; in production C++/Rust); (2) the book fits in memory → state lives in-process, persistence is an append-only event log off the hot path; (3) the tail latency, not the average, is the single most important fact and it will drive the deep dive in step 6." },
       ],
     },
     script: [
-      "Let me put rough numbers on this. With ~200 million daily users posting a couple of tweets each, that's about 400 million tweets a day — roughly 4–5 thousand writes per second average, maybe 10K at peak. But it's read-heavy, so timeline reads are on the order of hundreds of thousands per second. That asymmetry is the key fact: this is overwhelmingly a read-optimization problem, so caching and how I build the timeline will be the heart of the design. Storage is tens of terabytes a year for text — large, so I'll need to shard, but that's a solved problem.",
+      "Let me put numbers on this. At ~500K messages a second peak, a new message arrives every ~2 microseconds, so the engine has to process one in single-digit microseconds just to keep up. The latency target is what really drives the design: if tick-to-trade p99 is around 5 microseconds, I can split it roughly one microsecond for decode, one for risk, two for the actual match, one to publish — and the tail matters far more than the average, because a single GC pause or page fault blows the whole budget. The live book is small — a million resting orders is tens of megabytes — so it lives entirely in process and largely in cache; there's no database on the hot path, just an append-only event log off to the side for replay and audit. So the takeaways: single-threaded allocation-free match path, in-memory state, and tail latency is the thing I'll deep-dive.",
     ],
     pitfalls: [
-      { lead: "False precision.", body: "Nobody wants 4,629.6 QPS. 'A few thousand per second' is the right resolution. Round aggressively." },
-      { lead: "Numbers with no conclusion.", body: "Computing QPS and then not saying what it implies wastes the step. Always end with '…therefore'." },
-      { lead: "Spending 12 minutes here.", body: "It's a 5-minute sanity check, not an actuarial exercise." },
+      { lead: "False precision.", body: "Nobody wants 487,213 msg/sec. 'Half a million per second' is the right resolution. Round aggressively." },
+      { lead: "Optimizing the average, ignoring the tail.", body: "In trading, p99.9 latency is what's graded. Quoting only p50 misses the point of the system." },
+      { lead: "Numbers with no conclusion.", body: "Computing a budget and not saying what it implies wastes the step. Always end with '…therefore'." },
     ],
   },
 
@@ -97,27 +98,27 @@ const STEPS = [
     whatItIs:
       "Defining the small set of operations the system exposes — the method names, their inputs, and their outputs. Think of it as the contract between the client and your system.",
     whyItExists:
-      "The API is the bridge between \"what it does\" (step 1) and \"how data is shaped\" (step 4). Defining it forces precision: to write getTimeline(userId, pagination) you must decide it's paginated, which forces you to think about how the feed is stored and retrieved. Candidates who skip this tend to produce vague data models and hand-wave the read path. The API is also where you naturally surface auth, pagination, and idempotency — all things interviewers like to see raised unprompted.",
+      "The API is the bridge between \"what it does\" (step 1) and \"how data is shaped\" (step 4). Defining it forces precision: to write submit(order) you must decide what's in an order — a client-assigned id, side, price, qty, time-in-force — which forces you to think about how the book is structured and how cancels find their order. Candidates who skip this tend to produce vague data models and hand-wave the match path. The order-entry API is also where you naturally surface idempotency, sequencing, and the inbound/outbound split — all things trading-systems interviewers like to see raised unprompted.",
     whatYouDo: [
-      { lead: "List only the core endpoints", body: "that map to your in-scope functional requirements — usually 3 to 5. Don't design a hundred endpoints." },
-      { lead: "Specify inputs and outputs at a signature level.", body: "You do not need full request/response JSON; the shape and key fields are enough." },
-      { lead: "Decide REST vs something else briefly.", body: "REST/HTTP is the safe default; mention gRPC or WebSockets only if the problem needs low latency or push (e.g. chat)." },
-      { lead: "Flag the cross-cutting concerns:", body: "pagination for any list endpoint, an idempotency key for writes that must not double-apply, auth via a token. One sentence each." },
+      { lead: "List only the core operations", body: "that map to your in-scope functional requirements — usually 3 to 5. Inbound: submit, cancel, amend. Outbound: the market-data / execution stream. Don't design a hundred messages." },
+      { lead: "Specify inputs and outputs at a signature level.", body: "You do not need a full binary wire spec; the shape and key fields are enough. Show it as Python — a typed dataclass and method signatures." },
+      { lead: "Decide the transport briefly.", body: "Internally it's a single ordered command stream into the engine (in-process queue / ring buffer); externally, low-latency order entry is a binary protocol over kernel-bypass (e.g. a FIX-like or proprietary binary format) — mention it, don't dwell." },
+      { lead: "Flag the cross-cutting concerns:", body: "every command carries a monotonic sequence number so the engine is deterministic on replay; a client order id makes submits idempotent (a retried submit must not create a duplicate order); cancels/amends reference the resting order by id. One sentence each." },
     ],
     example: {
-      title: "Design Twitter/X",
+      title: "Design an in-memory limit order book / matching engine",
       body: [
-        { type: "code", text: "postTweet(userId, content)        → { tweetId, timestamp }\nfollowUser(followerId, followeeId) → { success }\ngetHomeTimeline(userId, cursor, limit) → { tweets[], nextCursor }" },
-        { type: "kv", label: "Notes you say aloud", text: "the timeline endpoint is cursor-paginated (not offset — offset breaks on a constantly-changing feed); postTweet should accept an idempotency key so a retried request doesn't create duplicate tweets; all endpoints are authenticated via a token resolved to userId at the gateway." },
+        { type: "code", text: "from dataclasses import dataclass\n\n@dataclass(frozen=True, slots=True)\nclass NewOrder:\n    seq: int          # monotonic, assigned by the sequencer\n    client_oid: str   # idempotency key\n    side: str         # 'B' | 'S'\n    price: int        # integer ticks — never float\n    qty: int\n    tif: str          # 'GTC' | 'IOC' | 'FOK'\n\nengine.submit(order: NewOrder)   -> list[Fill]\nengine.cancel(seq: int, oid: str) -> CancelAck | Reject\nengine.amend(seq: int, oid: str, new_qty: int) -> AmendAck | Reject\n# outbound: stream of Fill / BookUpdate events to subscribers" },
+        { type: "kv", label: "Notes you say aloud", text: "prices are integer ticks, never floats — float comparison would make matching non-deterministic and is an instant red flag; every command carries a monotonic seq so replaying the stream reproduces identical fills; client_oid makes submit idempotent so a gateway retry can't double-insert; submit returns the fills it generated synchronously and the same events are also published on the outbound stream." },
       ],
     },
     script: [
-      "The core API is small. postTweet takes a user and content and returns a tweet ID and timestamp. followUser is straightforward. The important one is getHomeTimeline — it takes a user and a pagination cursor and returns a page of tweets plus the next cursor. I'm using cursor-based pagination deliberately, because offset pagination breaks when the underlying feed is changing every second. I'd also have postTweet accept an idempotency key so a client retry doesn't double-post.",
+      "The core API is small and one-directional into the engine. submit takes an order — and I'll be explicit that price is an integer number of ticks, never a float, because float comparison would make matching non-deterministic, which is fatal here. cancel and amend reference a resting order by its client order id. Every command carries a monotonic sequence number assigned upstream by a sequencer, which is what lets me replay the stream and get byte-identical fills for audit and recovery. The client order id also makes submit idempotent, so if the gateway retries I don't double-insert. submit returns the fills it produced, and the same fill and book-update events go out on the outbound market-data stream. I'd write all of this in Python as a frozen dataclass with slots.",
     ],
     pitfalls: [
-      { lead: "Designing 20 endpoints.", body: "Stay to the in-scope core; breadth here is wasted time." },
-      { lead: "Offset pagination on a live feed.", body: "Classic mistake; cursor-based is the expected answer." },
-      { lead: "Full JSON schemas.", body: "Signatures and key fields are enough; verbosity costs you the clock." },
+      { lead: "Floating-point prices.", body: "Using float for price/qty breaks determinism and exact matching — interviewers treat it as a red flag. Use integer ticks." },
+      { lead: "No sequence number.", body: "Without a monotonic seq on every command you can't guarantee deterministic replay — the property the whole system depends on." },
+      { lead: "Designing 20 message types.", body: "Stay to submit/cancel/amend plus the outbound stream; breadth here is wasted time." },
     ],
   },
 
@@ -127,30 +128,30 @@ const STEPS = [
     name: "Data Model",
     time: "~7 min",
     whatItIs:
-      "The entities the system stores, their key fields and relationships, and the storage technology choice (SQL vs a specific NoSQL family) — with the choice justified by the access pattern, never by fashion.",
+      "The entities the system holds — chiefly the in-memory data structures of the live book — plus where any durable state lives (the event log, the end-of-day tick store), with each structure choice justified by the hot-path access pattern, never by fashion.",
     whyItExists:
-      "This is where many otherwise-good candidates lose the round, by saying \"I'll use NoSQL because it scales.\" That is a non-answer. The data model is graded on whether your storage choice follows from how the data is read and written. The interviewer wants to see you reason: \"the access pattern is X, therefore this store, with this as the partition key, indexed this way.\" It also sets up step 6 — the bottleneck is almost always here.",
+      "This is where many otherwise-good candidates lose a trading-systems round, by saying \"I'll keep orders in a dict\" or \"I'll use a sorted list\" without reasoning about the operations the matcher performs millions of times a second. The data model is graded on whether your structure choice follows from the match-path access pattern: best-bid/best-ask in O(1), price-level updates and cancels-by-id fast, FIFO within a price level for time priority. The interviewer wants \"the access pattern is X, therefore this structure, with this complexity.\" It also sets up step 6 — the latency bottleneck is almost always here.",
     whatYouDo: [
-      { lead: "List the core entities", body: "and their important fields: e.g. User, Tweet, Follow (the relationship)." },
-      { lead: "State the access patterns first,", body: "then choose storage to fit them. \"I need to look up tweets by author, and fetch a user's followers fast\" drives the choice — not the other way around." },
-      { lead: "Pick storage with a stated reason.", body: "SQL when relationships/transactions matter and scale is moderate; a key-value or wide-column store when you need massive horizontal scale on a known access pattern; name the actual tradeoff." },
-      { lead: "Specify the partition/shard key and key indexes.", body: "This is the detail that separates senior-sounding answers — \"shard tweets by authorId so a user's tweets are co-located.\"" },
+      { lead: "List the core entities", body: "and their key fields: Order (id, side, price, qty, ts); PriceLevel (a FIFO queue of resting orders at one price); Book (the two sides, bids and asks)." },
+      { lead: "State the hot-path access patterns first,", body: "then choose structures to fit them. \"On every message I read best bid/ask, walk price levels from the top while crossing, append at the back of a level for time priority, and cancel a specific resting order by id\" drives the choice — not the other way around." },
+      { lead: "Pick in-memory structures with a stated reason.", body: "Each side as a price-indexed structure giving O(1) top-of-book and ordered traversal (e.g. an array/bucket of price levels for a dense tick grid, or a balanced tree / skiplist if prices are sparse); each price level a FIFO (deque) for time priority; a hash map order_id → (price level, node) so cancel is O(1). Name the actual tradeoff (array = fastest but assumes bounded price range; tree = general but pointer-chasing hurts cache)." },
+      { lead: "Specify where durable state lives — off the hot path.", body: "An append-only event log (the sequenced command stream) for replay/recovery; a columnar tick store / time-series DB for end-of-day analytics and backtests. \"Persistence never sits on the match path.\"" },
     ],
     example: {
-      title: "Design Twitter/X",
+      title: "Design an in-memory limit order book / matching engine",
       body: [
-        { type: "kv", label: "Entities", text: "User (id, handle, name); Tweet (id, authorId, content, createdAt); Follow (followerId, followeeId, createdAt)." },
-        { type: "kv", label: "Access patterns", text: "(1) write a tweet; (2) get a user's recent tweets by authorId; (3) get a user's followers / followees; (4) assemble a home timeline (the hard one — deferred to step 6)." },
-        { type: "kv", label: "Storage choice with reasoning", text: "the Tweet store is write-heavy, append-mostly, and accessed by a known key (authorId + time) at huge scale → a wide-column / key-value store sharded by authorId fits the access pattern and scales horizontally. The Follow graph is relationship data with simpler patterns; it can live in a sharded relational store or a dedicated graph/KV structure. \"I'm choosing the wide-column store specifically because the dominant access is 'give me tweets for these author IDs, newest first' — a partition-key + sort-key query it's perfect for, not because 'NoSQL scales.'\"" },
+        { type: "kv", label: "Entities", text: "Order (id, side, price_ticks, qty, ts); PriceLevel (FIFO deque of resting Orders + total volume); Book (bids and asks, each price-indexed; plus order_id → location map)." },
+        { type: "kv", label: "Hot-path access patterns", text: "(1) read best bid / best ask — O(1); (2) on an incoming order, walk levels from the top while it crosses and match FIFO within each level; (3) insert a resting order at the back of its price level (time priority); (4) cancel/amend by order id — O(1) lookup; (5) all off-hot-path: append every command to the event log; periodically flush trades/ticks to the tick store." },
+        { type: "kv", label: "Structure choice with reasoning", text: "for a liquid instrument with a bounded, dense tick range I'd use a flat array of price levels indexed by tick offset → O(1) top-of-book and cache-friendly sequential scans while sweeping the book, plus a deque per level for FIFO time priority, plus a dict order_id → (level, node) for O(1) cancel. \"I'm choosing the array specifically because the dominant access is 'sweep from the top tick downward and pop FIFO,' which an array does with great cache locality — not a tree, whose pointer-chasing would blow the latency tail. If prices were sparse/unbounded I'd switch to a sorted map.\" In Python I'd prototype with dict-of-deques and note the array layout is what you'd do in C++/Rust for cache behavior." },
       ],
     },
     script: [
-      "Three entities: User, Tweet, and the Follow relationship. Before I pick a database I'll state the access patterns: I write tweets, I read a given author's recent tweets, I read a user's follower list, and I assemble timelines — which I'll deep-dive separately. Given the dominant pattern is 'fetch tweets for a set of author IDs, newest first,' at very high scale, I'll store tweets in a wide-column store sharded by author ID, so a user's tweets are co-located and time-sortable. I want to be explicit that I'm choosing this for the access pattern, not because NoSQL is trendy — if the dominant need were multi-entity transactions I'd argue for relational instead.",
+      "Three entities: the Order, a PriceLevel which is a FIFO queue of orders at one price, and the Book which is the two sides plus a map from order id to where each order rests. Before I pick structures I'll state the hot-path access patterns: read top of book in O(1), sweep price levels from the top while an incoming order crosses, match FIFO within each level for time priority, insert resting orders at the back, and cancel by id in O(1). Given that dominant pattern of 'sweep from the best price downward,' for a liquid instrument with a dense tick grid I'd index each side as a flat array of price levels — O(1) top of book and cache-friendly sequential scans — with a deque per level for time priority and a dict from order id to its node for O(1) cancels. I'm choosing the array for cache locality on the sweep, not a tree whose pointer-chasing hurts the latency tail; if prices were sparse I'd use a sorted map instead. The event log and the tick store are durable but deliberately off the match path. I'd prototype this in Python as dict-of-deques.",
     ],
     pitfalls: [
-      { lead: "'NoSQL because it scales.'", body: "The single most common fatal hand-wave. Always tie the store to the access pattern." },
-      { lead: "No partition key.", body: "'A sharded store' without saying the shard key is incomplete; the key is the interesting decision." },
-      { lead: "Skipping access patterns.", body: "Choosing a DB before stating how data is read is backwards and reads as inexperience." },
+      { lead: "'A sorted list of orders.'", body: "Re-sorting on every insert is O(n log n) per message — fatal. Always tie the structure to the per-message operations." },
+      { lead: "No O(1) cancel.", body: "Forgetting the order_id → location map means cancels scan the book; cancels are a huge fraction of traffic." },
+      { lead: "Putting a database on the hot path.", body: "Any disk/network I/O per message destroys the latency budget; persistence is async, off to the side." },
     ],
   },
 
@@ -160,29 +161,29 @@ const STEPS = [
     name: "High-Level Design",
     time: "~8 min",
     whatItIs:
-      "The boxes-and-arrows diagram: client → load balancer → services → data stores, plus the path a request takes through them. The first time you actually draw the system.",
+      "The boxes-and-arrows diagram: gateway → sequencer → matching engine → publisher → (downstream consumers), plus the durable log and the path a message takes through them. The first time you actually draw the system.",
     whyItExists:
-      "This is the shared picture you and the interviewer reason about for the rest of the session. Its purpose is coverage and a walkthrough, not depth yet — show that the end-to-end path exists and is coherent. Candidates who jump here first (skipping 1–4) draw a plausible-looking diagram they can't justify; candidates who arrive here having done 1–4 can defend every box. The diagram earns its credibility from the prior steps.",
+      "This is the shared picture you and the interviewer reason about for the rest of the session. Its purpose is coverage and a walkthrough, not depth yet — show that the end-to-end order/tick path exists and is coherent. Candidates who jump here first (skipping 1–4) draw a plausible diagram they can't justify; candidates who arrive here having done 1–4 can defend every box. The diagram earns its credibility from the prior steps.",
     whatYouDo: [
-      { lead: "Draw the standard spine:", body: "client → load balancer / API gateway → stateless application services → datastores, with a cache alongside the read path." },
-      { lead: "Separate the write path from the read path.", body: "For a feed system these are very different and you'll deep-dive the read path in step 6 — set that up here." },
-      { lead: "Walk one request end to end, out loud.", body: "\"A tweet POST hits the gateway, authenticates, goes to the Tweet service, writes to the store, and triggers fan-out…\" Narrating the path is the deliverable, not the boxes themselves." },
-      { lead: "Keep components stateless where possible", body: "and say so — it's what makes horizontal scaling trivial and you want that observation on the record." },
+      { lead: "Draw the standard trading spine:", body: "order-entry gateway → sequencer (assigns the monotonic seq and writes the durable event log) → single-threaded matching engine (the in-memory book) → market-data publisher → downstream consumers (risk/PnL, OMS, market-data feed)." },
+      { lead: "Separate the order-entry (inbound) path from the market-data (outbound) path.", body: "Inbound is the latency-critical match path; outbound fans out fills and book updates. You'll deep-dive the match path in step 6 — set that up here." },
+      { lead: "Walk one order end to end, out loud.", body: "\"A new order hits the gateway, the sequencer stamps a seq and appends to the log, the engine matches it against the book, and the publisher emits fills…\" Narrating the path is the deliverable, not the boxes themselves." },
+      { lead: "Make the engine single-threaded and explain why.", body: "One ordered input stream into a single-writer engine is what gives determinism and removes locking from the hot path — say so explicitly; you scale by sharding instruments across engines, not by threading one book." },
     ],
     example: {
-      title: "Design Twitter/X",
+      title: "Design an in-memory limit order book / matching engine",
       body: [
-        { type: "kv", label: "Components", text: "Client → API Gateway / LB → (Tweet Service, Timeline Service, Follow Service — all stateless) → Tweet store (sharded), Follow store, plus a Timeline Cache on the read path and a message queue connecting the write path to timeline construction." },
-        { type: "kv", label: "Write path", text: "client posts → gateway authenticates → Tweet Service persists the tweet → publishes a \"new tweet\" event to a queue → (fan-out work happens asynchronously — deep-dived next)." },
-        { type: "kv", label: "Read path", text: "client requests timeline → gateway → Timeline Service → reads the pre-built timeline from the Timeline Cache (ideally a single fast lookup) → returns a page." },
+        { type: "kv", label: "Components", text: "Gateway (decode/validate) → Sequencer (monotonic seq + append-only event log) → Matching Engine (single-threaded, in-memory book) → Publisher (fills + book updates) → consumers: real-time PnL/risk service, OMS / smart order router, and the market-data feed; the event log feeds the tick store for backtests offline." },
+        { type: "kv", label: "Order-entry (inbound) path", text: "client order → gateway decodes & validates → sequencer assigns seq and durably appends → engine matches against the in-memory book, mutating it and generating fills (the latency-critical path — deep-dived next)." },
+        { type: "kv", label: "Market-data (outbound) path", text: "engine emits fill + book-update events → publisher broadcasts to consumers (PnL/risk, OMS, feed); consumers are downstream and never block the matcher." },
       ],
     },
     script: [
-      "Here's the high-level shape. Clients hit a gateway that handles auth and load-balances to stateless services — a Tweet service, a Timeline service, a Follow service. Tweets persist to the sharded store. The key structural decision: the write path and read path are decoupled by a queue. When you post, we persist and publish an event; timeline construction happens asynchronously off that event. When you read your timeline, you ideally hit a pre-computed result in the timeline cache — one fast lookup. Let me trace a tweet through end to end: [walk the write path, then the read path]. Everything except the datastores is stateless, so we scale horizontally by adding instances.",
+      "Here's the high-level shape. Orders hit a gateway that decodes and validates, then a sequencer that stamps a monotonic sequence number and appends the command to a durable event log — that log is what makes the whole thing replayable and recoverable. The sequenced stream feeds a single-threaded matching engine holding the in-memory book; I'm deliberately keeping it single-writer because one ordered input into one engine gives me determinism and zero locking on the hot path — I scale by sharding instruments across engines, not by threading one book. The engine emits fills and book updates to a publisher, which fans out to the PnL/risk service, the OMS or smart order router, and the market-data feed. Let me trace one order end to end: [walk inbound, then outbound]. The downstream consumers never block the matcher.",
     ],
     pitfalls: [
       { lead: "Drawing this first.", body: "Without steps 1–4 you can't defend the boxes; interviewers probe and it collapses." },
-      { lead: "Boxes with no walkthrough.", body: "The narrated request path is the actual signal, not the picture." },
+      { lead: "Multi-threading the single book.", body: "Locking one book across threads kills determinism and adds tail latency; the senior answer is single-writer + shard by instrument." },
       { lead: "Going deep here.", body: "Depth is step 6. Here you want a complete, coherent skeleton — breadth over depth." },
     ],
   },
@@ -194,36 +195,36 @@ const STEPS = [
     nameSuffix: " — where you earn the hire",
     time: "~10 min",
     whatItIs:
-      "Picking one or two components — usually the bottleneck — and going genuinely deep: the hard tradeoff, the failure mode, the scaling mechanism. This is the longest step and the one that most determines the outcome at mid-level.",
+      "Picking one or two components — usually the latency bottleneck or the correctness risk — and going genuinely deep: the hard tradeoff, the failure mode, the recovery mechanism. This is the longest step and the one that most determines the outcome.",
     whyItExists:
-      "Steps 1–5 prove competence; step 6 separates a hire from a no-hire. A surface-level design that never goes deep reads as junior. The interviewer is now probing: \"what breaks first, and how do you fix it.\" At mid-level, the documented decisive signal is not the initial design but how you handle this deep dive and its follow-ups. This is the step to spend your strongest minutes on.",
+      "Steps 1–5 prove competence; step 6 separates a hire from a no-hire. A surface-level design that never goes deep reads as junior. The interviewer is now probing: \"what's your tail latency, what breaks first, and how do you recover deterministically.\" In trading-systems rounds the decisive signal is not the initial design but how you handle this deep dive and its follow-ups about the latency tail and correctness. This is the step to spend your strongest minutes on.",
     whatYouDo: [
-      { lead: "Name the bottleneck explicitly", body: "and why it's the bottleneck (point back at your estimates from step 2)." },
+      { lead: "Name the bottleneck explicitly", body: "and why it's the bottleneck (point back at your latency budget from step 2). Usually it's the match path's tail latency and the determinism/recovery guarantee." },
       { lead: "Present the real tradeoff", body: "with at least two options, their costs, and a defended choice — not one magic answer." },
-      { lead: "Bring in the mechanisms:", body: "caching, sharding, replication, queues, consistency — and say precisely where and why each applies." },
-      { lead: "Address failure:", body: "what happens when a node/region dies, where data can be lost, how the system degrades." },
+      { lead: "Bring in the mechanisms:", body: "single-writer threading, allocation-free hot path, the durable event log, snapshots, busy-spin vs blocking — and say precisely where and why each applies." },
+      { lead: "Address failure:", body: "what happens when the engine crashes mid-stream, how you rebuild the exact book, where a fill could be lost or duplicated, and how a primary/replica failover stays deterministic." },
     ],
     example: {
-      title: "Design Twitter/X — the timeline (the classic deep dive)",
+      title: "Design the matching engine — determinism, tail latency, and recovery (the classic deep dive)",
       body: [
-        { type: "kv", label: "The bottleneck", text: "from step 2, reads dominate at hundreds of thousands/sec. Building each home timeline on-demand by querying every followee at read time is far too slow. So the core question is fan-out: when do we do the work?" },
-        { type: "kv", label: "Option A — fan-out on read (pull)", text: "store tweets only by author; build the timeline at read time by querying all followees and merging. Pro: cheap writes, no duplication. Con: brutally slow reads for users following many people — and reads are the dominant load. Fails the latency target." },
-        { type: "kv", label: "Option B — fan-out on write (push)", text: "when a user tweets, immediately push the tweet ID into the precomputed timeline cache of every follower. Pro: timeline reads become a single fast lookup — perfect for a read-heavy system. Con: a celebrity with 100M followers causes 100M writes per tweet (the \"celebrity / hot-key\" problem)." },
-        { type: "kv", label: "The defended answer — hybrid", text: "fan-out on write for the vast majority of users (cheap, gives fast reads); for celebrities above a follower threshold, don't fan out — instead the follower's timeline is assembled at read time by merging their precomputed timeline with the small number of celebrities they follow, fetched live. This bounds the worst case on both sides. \"This hybrid is the standard real-world answer because it directly trades a manageable amount of read-time merge work to eliminate the unbounded celebrity write amplification.\"" },
-        { type: "kv", label: "Failure & consistency", text: "the fan-out runs off the queue asynchronously, so a fan-out worker dying delays a tweet appearing in some feeds by seconds — acceptable, because in step 1 we established eventual consistency is fine. The queue must be durable so events aren't lost on worker failure; at-least-once delivery plus idempotent timeline insertion handles retries." },
+        { type: "kv", label: "The bottleneck", text: "from step 2, the per-message budget is single-digit microseconds and the p99.9 tail is what's graded. The matcher is single-threaded by design, so the question isn't throughput — it's keeping the tail flat (no GC pauses, no allocations, no page faults) while guaranteeing the engine can be reproduced exactly after a crash." },
+        { type: "kv", label: "Option A — rebuild state from the event log on recovery", text: "persist only the sequenced command log; on restart, replay every command from seq 0 to rebuild the book. Pro: dead simple, perfectly deterministic, single source of truth. Con: replaying a full trading day can take minutes — too slow if RTO is seconds." },
+        { type: "kv", label: "Option B — periodic snapshots + tail replay", text: "checkpoint the full book state every N seconds (off the hot path, e.g. a background thread copying an immutable snapshot); on restart, load the latest snapshot and replay only the commands after it. Pro: fast recovery (RTO in seconds). Con: snapshotting must not pause the matcher and must capture a consistent seq boundary." },
+        { type: "kv", label: "The defended answer — log + snapshots, single-writer, allocation-free", text: "keep the durable sequenced log as the source of truth and add periodic consistent snapshots taken at a known seq so recovery = load snapshot + replay the short tail. Hot path stays single-threaded and allocation-free: pre-allocated order pools and ring buffers so there's no GC churn (in Python, reuse __slots__ objects and avoid per-message allocation; note the real hot path is C++/Rust where you'd pin threads, busy-spin on the input ring, and use kernel-bypass NICs). \"This trades a bit of snapshot machinery for a fast, deterministic recovery without ever touching the latency tail of the live matcher.\"" },
+        { type: "kv", label: "Failure & determinism", text: "for HA, run a hot replica fed the identical sequenced stream — because matching is deterministic, the replica's book is byte-identical, so failover is just promoting it; no state transfer needed. A fill is never lost because it's derived from a durably-logged command; on replay the same command yields the same fill, and the client_oid/seq make re-emitted fills idempotent for downstream consumers." },
       ],
     },
     script: [
-      "The bottleneck is the timeline read — from my estimates, reads are hundreds of thousands per second, so I cannot build feeds on demand. The real question is fan-out timing. Option one, fan-out on read: cheap writes but the read does a huge merge across everyone you follow — and reads are my dominant load, so this fails the latency goal. Option two, fan-out on write: when you tweet I push it into every follower's precomputed timeline, so reads become one fast lookup — ideal for read-heavy — but a celebrity with a hundred million followers means a hundred million writes per tweet. So I'd go hybrid: fan-out on write for normal users, but above a follower threshold I skip fan-out and merge those few celebrity accounts in at read time. That bounds both the write amplification and the read cost. The fan-out is async off a durable queue, which is fine because we agreed eventual consistency is acceptable; I make the timeline insert idempotent so at-least-once retries don't duplicate.",
+      "The bottleneck isn't throughput — the matcher is single-threaded on purpose. It's the latency tail and the recovery guarantee. From my budget, p99.9 is what's graded, so the enemy is anything that causes a pause: GC, allocation, page faults. So the hot path is allocation-free — pre-allocated order pools and ring buffers, no per-message object churn; in Python I'd reuse slotted objects, and I'd note that in production this path is C++ or Rust with pinned threads busy-spinning on the input ring. On recovery there's a real tradeoff. Option one: persist only the sequenced command log and replay from zero — perfectly deterministic but replaying a whole day takes minutes. Option two: add periodic snapshots of the book at a known sequence number, taken off the hot path, so recovery is load-the-snapshot plus replay the short tail — seconds instead of minutes. I'd take the second, keeping the log as the source of truth. And for HA I'd run a hot replica fed the identical sequenced stream: because matching is deterministic, its book is byte-identical, so failover is just promoting the replica — no state transfer. No fill is ever lost because every fill derives from a durably-logged command, and seq plus client order id make re-emitted fills idempotent downstream.",
     ],
     pitfalls: [
-      { lead: "Staying shallow.", body: "'I'd add a cache' with no mechanism is a no-hire at mid-level. Go to the tradeoff and the failure mode." },
-      { lead: "One magic solution.", body: "Present options and defend a choice; a single unexamined answer looks like memorization." },
-      { lead: "Ignoring failure.", body: "'What happens when this dies' is the follow-up you must reach before they ask it." },
+      { lead: "Staying shallow.", body: "'I'd make it fast' with no mechanism is a no-hire. Go to the tail-latency tradeoff and the recovery model." },
+      { lead: "Ignoring determinism on failover.", body: "Proposing state transfer instead of replaying the same stream into a replica misses the whole point of a deterministic engine." },
+      { lead: "Snapshotting on the hot path.", body: "A checkpoint that pauses the matcher blows the latency budget; it must be off the hot path at a known seq boundary." },
     ],
     callout: {
       title: "This is your highest-leverage practice target",
-      body: "In your study plan, the five follow-up drills — \"what breaks at 10×,\" \"why this DB,\" \"node failure,\" \"consistency risk,\" \"monitoring\" — all live in this step. When you practice, spend the majority of each design's effort here, because this is the step the interview outcome actually turns on.",
+      body: "In your study plan, the five follow-up drills — \"what's the p99.9 and what blows it,\" \"why this data structure,\" \"engine crash recovery,\" \"determinism / correctness risk,\" \"monitoring\" — all live in this step. When you practice, spend the majority of each design's effort here, because this is the step the interview outcome actually turns on.",
     },
   },
 
@@ -235,28 +236,28 @@ const STEPS = [
     whatItIs:
       "A deliberate closing: state the tradeoffs you made, the failure modes, how you'd monitor the system in production, and what you'd do with more time. A short, structured landing — not trailing off.",
     whyItExists:
-      "Junior answers end with \"…and that's the design.\" Senior answers end by acknowledging that every decision had a cost. This step signals engineering maturity: you know nothing is free, you've thought about operating the thing, not just building it. Mentioning monitoring unprompted is a specific, documented strong signal of real production experience — and you have that experience, so make sure it lands.",
+      "Junior answers end with \"…and that's the design.\" Strong answers end by acknowledging that every decision had a cost. This step signals engineering maturity: you know nothing is free, you've thought about operating and observing a latency-sensitive system, not just building it. Mentioning latency monitoring and a kill-switch unprompted is a specific strong signal of real trading-systems experience — make sure it lands.",
     whatYouDo: [
-      { lead: "Restate 2–3 key tradeoffs in one line each:", body: "\"I chose eventual consistency for timeline freshness to get read latency and availability — the cost is a few seconds of staleness, which we agreed was acceptable.\"" },
-      { lead: "Name the main failure modes", body: "and how the system degrades (not crashes): queue backlog delays feeds; a cache region loss falls back to slower rebuild; etc." },
-      { lead: "Add observability explicitly:", body: "the metrics, logs, and traces you'd watch (timeline read latency p99, fan-out lag, queue depth) and what you'd alert on. Say this even if not asked." },
-      { lead: "End with \"with more time I'd…\"", body: "naming the things you scoped out in step 1 (search, DMs, media pipeline) — closing the loop shows you never forgot them." },
+      { lead: "Restate 2–3 key tradeoffs in one line each:", body: "\"I chose a single-threaded engine for determinism and a flat latency tail — the cost is that one book is capped at one core's throughput, which I handle by sharding instruments across engines.\"" },
+      { lead: "Name the main failure modes", body: "and how the system degrades safely: engine crash → recover from snapshot + log replay; sequencer failover → promote the deterministic hot replica; downstream consumer lag → it buffers, never blocks the matcher." },
+      { lead: "Add observability explicitly:", body: "the metrics you'd watch (tick-to-trade p99/p99.9, GC pause count, input-queue depth, gap/sequence errors, fill-reconciliation mismatches) and what you'd alert on — plus a risk kill-switch. Say this even if not asked." },
+      { lead: "End with \"with more time I'd…\"", body: "naming the things you scoped out in step 1 (the order-entry gateway, pre-trade risk, multi-instrument sharding, the tick store/backtester) — closing the loop shows you never forgot them." },
     ],
     example: {
-      title: "Design Twitter/X",
+      title: "Design an in-memory limit order book / matching engine",
       body: [
-        { type: "kv", label: "Tradeoffs", text: "eventual consistency for read speed and availability; the hybrid fan-out trades read-time merge cost to kill celebrity write amplification; denormalized precomputed timelines trade storage and write complexity for fast reads." },
-        { type: "kv", label: "Failure modes", text: "fan-out workers down → feeds lag by seconds but recover (degrade, not fail); timeline cache region loss → rebuild from the tweet store, slower but correct." },
-        { type: "kv", label: "Monitoring", text: "alert on timeline read p99 latency, fan-out lag (event → visible-in-feed), queue depth, cache hit rate. \"I'd treat fan-out lag as a primary SLI since it's the user-visible freshness of the product.\"" },
-        { type: "kv", label: "With more time", text: "search (a separate inverted-index service), the media pipeline (object storage + CDN), trending, and DMs — all explicitly scoped out earlier." },
+        { type: "kv", label: "Tradeoffs", text: "single-threaded engine trades per-book throughput for determinism and a flat tail (recovered by sharding instruments); integer-tick prices trade a little ergonomics for exact, reproducible matching; allocation-free hot path trades code simplicity for no GC pauses; log + snapshots trade some machinery for fast deterministic recovery." },
+        { type: "kv", label: "Failure modes", text: "engine crash → rebuild exact book from latest snapshot + tail replay (degrade: brief halt, never wrong); sequencer/engine failover → promote the byte-identical hot replica, no state transfer; a slow downstream consumer (PnL, feed) buffers and lags but never back-pressures the matcher." },
+        { type: "kv", label: "Monitoring", text: "alert on tick-to-trade p99 and p99.9 latency, GC pause count/duration, input-queue depth, sequence-gap errors, and end-of-day fill reconciliation against the replica. \"I'd treat p99.9 tick-to-trade as the primary SLI, and wire a risk kill-switch that halts order acceptance on a breach.\"" },
+        { type: "kv", label: "With more time", text: "the order-entry gateway and binary protocol, pre-trade risk checks, multi-instrument sharding across engine cores, and the offline path — flushing the event log into a columnar tick store to feed the backtesting engine — all explicitly scoped out earlier." },
       ],
     },
     script: [
-      "To wrap up: the main tradeoffs were eventual consistency for read latency and availability, the hybrid fan-out to bound the celebrity case, and denormalized timelines that cost storage and write complexity to make reads fast. On failure: fan-out workers going down degrades freshness by seconds rather than breaking anything, and a cache loss rebuilds from the tweet store. For production I'd monitor timeline read p99, fan-out lag — which I'd treat as the key freshness SLI — queue depth, and cache hit rate, with alerts on each. With more time I'd design the pieces I scoped out: search, the media/CDN path, trending, and DMs.",
+      "To wrap up: the main tradeoffs were the single-threaded engine for determinism and a flat latency tail — capped at one core per book, which I handle by sharding instruments — integer-tick prices for exact reproducible matching, and an allocation-free hot path to avoid GC pauses. On failure: an engine crash recovers the exact book from a snapshot plus tail replay, failover just promotes the byte-identical hot replica with no state transfer, and a slow downstream consumer buffers without ever back-pressuring the matcher. For production I'd monitor tick-to-trade p99 and p99.9, GC pauses, input-queue depth, sequence gaps, and end-of-day fill reconciliation against the replica — and I'd wire a risk kill-switch that halts order acceptance on a latency or risk breach. With more time I'd design the pieces I scoped out: the order-entry gateway, pre-trade risk, multi-instrument sharding, and the offline path feeding the tick store and backtester.",
     ],
     pitfalls: [
       { lead: "Trailing off.", body: "'Yeah, that's about it' wastes the maturity signal. Land it deliberately." },
-      { lead: "No monitoring.", body: "Omitting observability forfeits a documented strong signal you can easily earn — and that you genuinely have the background for." },
+      { lead: "No latency monitoring or kill-switch.", body: "Omitting tail-latency SLIs and a risk halt forfeits a strong trading-systems signal you can easily earn." },
       { lead: "Forgetting the scoped-out items.", body: "Naming them again proves the step-1 scoping was deliberate, not forgetful." },
     ],
   },
@@ -333,7 +334,7 @@ export default function FrameworkGuide({ onBack }) {
               fontFamily: "system-ui",
             }}
           >
-            System Design · Reference
+            Quant · Low-Latency System Design · Reference
           </div>
           <h1
             style={{
@@ -344,7 +345,7 @@ export default function FrameworkGuide({ onBack }) {
               lineHeight: 1.15,
             }}
           >
-            The 7-Step System Design Framework
+            The 7-Step Quant System Design Framework
           </h1>
           <div
             style={{
@@ -355,9 +356,10 @@ export default function FrameworkGuide({ onBack }) {
               fontFamily: "system-ui",
             }}
           >
-            A deep reference — what each step is, why it exists, and exactly
-            what to say. Worked end-to-end with one running example: "Design
-            Twitter/X"
+            A deep reference for hedge-fund / trading-systems interviews — what
+            each step is, why it exists, and exactly what to say. Python-first,
+            worked end-to-end with one running example: "Design an in-memory
+            limit order book / matching engine."
           </div>
 
           {/* Step nav chips */}
@@ -406,17 +408,20 @@ export default function FrameworkGuide({ onBack }) {
             Each step has five parts:{" "}
             <b>(1) What it is</b> in one line, <b>(2) Why it exists</b> — the
             failure it prevents, <b>(3) What you actually do</b>,{" "}
-            <b>(4) The running Twitter example</b>, and{" "}
+            <b>(4) The running matching-engine example</b>, and{" "}
             <b>(5) a script box</b> showing roughly what it sounds like spoken
-            aloud. Read it once start-to-finish, then keep it open beside your
-            first 3–4 practice designs and consciously walk the steps. After
-            ~4 reps you won't need it.
+            aloud. The examples are quant / low-latency (limit order book,
+            market-data feed handler, tick store, backtester, PnL/risk, OMS)
+            and Python-first. Read it once start-to-finish, then keep it open
+            beside your first 3–4 practice designs and consciously walk the
+            steps. After ~4 reps you won't need it.
           </p>
           <p style={{ ...pStyle, marginTop: 8 }}>
             <b>The time budget for a 45-minute interview</b> is shown per
             step. Total ≈ 45 min. The single biggest pacing mistake is spending
             15 minutes on requirements and never reaching the deep dive — the
-            timings exist to prevent exactly that.
+            timings exist to prevent exactly that. The emphasis throughout is
+            latency, throughput, determinism, and correctness — not web-scale.
           </p>
         </Callout>
 
