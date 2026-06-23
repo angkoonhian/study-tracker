@@ -574,12 +574,12 @@ export default function StudyTracker() {
     5: "Mocks + Screens Converting",
     6: "Peak Sharpness + Tuning",
     7: "Full-Loop Sim + Offer Phase",
-    8: "⭐ Quant: Probability & Expected Value",
-    9: "⭐ Quant: Statistics & Stochastic Processes",
-    10: "⭐ Quant: Python Coding Patterns",
-    11: "⭐ Quant: Low-Latency & Performance (Python)",
-    12: "⭐ Quant: Markets & Microstructure",
-    13: "⭐ Quant: Mental Math, Mocks & Fit",
+    8: "Quant: Probability & Expected Value",
+    9: "Quant: Statistics & Stochastic Processes",
+    10: "Quant: Python Coding Patterns",
+    11: "Quant: Low-Latency & Performance (Python)",
+    12: "Quant: Markets & Microstructure",
+    13: "Quant: Mental Math, Mocks & Fit",
   };
 
   if (view === "framework") {
@@ -686,7 +686,7 @@ export default function StudyTracker() {
               borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui",
               fontWeight: 600 }}>
-              🎯 Target Roles →
+              Target Roles →
             </button>
             <button onClick={() => setView("framework")} style={{
               background: "rgba(111,168,255,.08)",
@@ -694,19 +694,19 @@ export default function StudyTracker() {
               borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui",
               fontWeight: 600 }}>
-              📐 7-Step Framework →
+              7-Step Framework →
             </button>
             <button onClick={publishSnapshot} title="Download progress.json to commit to your repo" style={{
               background: "rgba(95,215,158,.08)", border: "1px solid #27613F",
               color: "#5FD79E", borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui", fontWeight: 600 }}>
-              ⬆ Publish snapshot
+              Publish snapshot
             </button>
             <label title="Restore from a progress.json" style={{
               background: "rgba(111,168,255,.08)", border: "1px solid #2F66C4",
               color: "#9CC0F5", borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui", fontWeight: 600 }}>
-              ⬇ Import
+              Import
               <input type="file" accept="application/json" onChange={importSnapshot}
                 style={{ display: "none" }} />
             </label>

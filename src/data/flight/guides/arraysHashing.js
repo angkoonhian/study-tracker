@@ -2,7 +2,7 @@ export default {
   id: "arrays-hashing",
   title: "Arrays & Hashing",
   subtitle: "Frequency counts, complement search, prefix sums, and the O(1)-lookup mindset",
-  emoji: "🗂️",
+  emoji: "",
   intro: `Almost every array problem that isn't about sorting or two pointers is secretly a hashing problem. The moment you find yourself writing a nested loop to ask "have I seen this before?" or "does the matching element exist?", a hash map or hash set collapses that O(n²) scan into a single O(n) pass. Learning to feel that reflex — to swap a search for a lookup — is the single highest-leverage skill in this category.\n\nThe data structures are small: Python's dict (hash map), set (hash set), and the three workhorses from collections — Counter, defaultdict, and OrderedDict. The patterns built on top of them are a handful: frequency counting, complement search (the two-sum family), grouping by a canonical key (anagrams), prefix sums (subarray-sum problems), seen-sets for dedup and sequence detection, and in-place marking that abuses the array itself as a hash table.\n\nThis handbook walks through each pattern with correct, stdlib-only Python, then closes with the failure modes (mutable keys, worst-case collisions, dict-order assumptions), a common-bugs table, a study plan of classic problems mapped to the pattern each teaches, and a one-page cheat sheet with a trigger-to-pattern lookup.`,
   sections: [
     {

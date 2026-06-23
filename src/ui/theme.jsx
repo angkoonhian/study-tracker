@@ -32,12 +32,14 @@ export const page = {
 
 export function GlobalNav({ view, setView }) {
   const items = [
-    ["today", "🔥 Today"],
-    ["tracker", "🗓 Tracker"],
-    ["bank", "📚 Problem Bank"],
-    ["cards", "🃏 Flashcards"],
-    ["dashboard", "📊 Dashboard"],
-    ["flight", "✈️ Flight Mode"],
+    ["today", "Today"],
+    ["tracker", "Tracker"],
+    ["bank", "Problem Bank"],
+    ["dsa", "DSA"],
+    ["trading", "Trading Prep"],
+    ["cards", "Flashcards"],
+    ["flight", "Flight Mode"],
+    ["dashboard", "Dashboard"],
   ];
   return (
     <div style={{
@@ -63,8 +65,8 @@ export function GlobalNav({ view, setView }) {
           );
         })}
         <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <button onClick={() => setView("roles")} style={ghostBtn}>🎯 Roles</button>
-          <button onClick={() => setView("framework")} style={ghostBtn}>📐 Framework</button>
+          <button onClick={() => setView("roles")} style={ghostBtn}>Roles</button>
+          <button onClick={() => setView("framework")} style={ghostBtn}>Framework</button>
         </div>
       </div>
     </div>

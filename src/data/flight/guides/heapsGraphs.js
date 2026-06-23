@@ -2,7 +2,7 @@ export default {
   id: "heaps-graphs",
   title: "Heaps, Priority Queues & Graphs",
   subtitle: "A complete reference: data structures, algorithms, patterns, and problem archetypes",
-  emoji: "⛰️",
+  emoji: "",
   intro: `This guide covers two of the most important interview topics in one document, because they are deeply linked: heaps power Dijkstra's algorithm and Prim's MST, and union-find quietly underpins Kruskal's. By the end, you should be able to look at any LeetCode graph or heap problem and immediately know which pattern to apply.\n\nPart I builds heaps and priority queues from the ground up: the data structure, Python's heapq, the standard patterns (top K, merge K sorted, two-heap median, scheduling). Part II is a thorough graph tour: representations, BFS, DFS, connected components, cycle detection, topological sort, union-find, shortest paths (BFS, Dijkstra, Bellman-Ford), MST (Prim's, Kruskal's), bipartite checking, and grid problems. Heaps and graphs meet most explicitly in the shortest-path and MST sections.\n\nPart I: Heaps & Priority Queues. A priority queue is an abstract data type: it stores items and lets you efficiently retrieve the one with the highest (or lowest) priority. A heap is the standard concrete implementation. The two terms get used interchangeably, but technically the priority queue is the interface and the heap is the data structure that delivers it.`,
   sections: [
     {

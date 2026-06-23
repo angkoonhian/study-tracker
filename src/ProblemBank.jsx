@@ -140,7 +140,7 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
                   <span style={{ fontFamily: C.sys, fontSize: 12, color: C.faint, minWidth: 44 }}>#{p.id}</span>
                   <a href={lc(p.slug)} target="_blank" rel="noreferrer" style={{
                     flex: 1, color: C.text, textDecoration: "none", fontSize: 14.5, fontWeight: 500,
-                  }}>{p.title}{p.paid ? <span style={{ color: C.amber, fontSize: 11 }}> 🔒</span> : null}</a>
+                  }}>{p.title}{p.paid ? <span style={{ color: C.amber, fontSize: 11 }}> [paid]</span> : null}</a>
                   <div style={{ display: "flex", gap: 5 }}>
                     {p.topics.slice(0, 2).map((t) => (
                       <span key={t} style={tagStyle}>{topicLabel(t)}</span>
@@ -155,7 +155,7 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
                   <button onClick={() => addCard(p)} disabled={hasCard} title="Add flashcard"
                     style={{ ...iconBtn, color: hasCard ? C.green : C.blue,
                       borderColor: hasCard ? "#27613F" : "#2A3C56",
-                      cursor: hasCard ? "default" : "pointer" }}>{hasCard ? "✓🃏" : "+🃏"}</button>
+                      cursor: hasCard ? "default" : "pointer" }}>{hasCard ? "✓" : "+"}</button>
                 </div>
               );
             })}

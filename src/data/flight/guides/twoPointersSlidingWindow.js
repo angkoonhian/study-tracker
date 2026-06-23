@@ -2,7 +2,7 @@ export default {
   id: "two-pointers-sliding-window",
   title: "Two Pointers & Sliding Window",
   subtitle: "Two coordinated indices that turn O(n²) brute force into a single O(n) sweep.",
-  emoji: "↔️",
+  emoji: "",
   intro: `Two pointers and sliding window are the same idea seen from two angles: instead of re-scanning the array from scratch for every candidate, you maintain a small amount of state and move one or two indices across the data exactly once. The payoff is dropping a nested-loop O(n²) solution down to O(n) time and usually O(1) extra space.
 
 "Two pointers" is the umbrella term for any algorithm driven by two indices. They come in three flavors: pointers starting at opposite ends and moving toward each other (works on sorted data or symmetric problems like palindromes), pointers moving in the same direction at different speeds (in-place array surgery, cycle detection), and a pair of cursors walking two separate sorted sequences (merging).

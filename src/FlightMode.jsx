@@ -21,11 +21,11 @@ const DIFF_COLOR = { Easy: C.green, Medium: C.amber, Hard: C.red };
 const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 const MODES = [
-  ["coding", "⌨️ Coding"],
-  ["guide", "📖 DSA Guide"],
-  ["teasers", "🧠 Brainteasers"],
-  ["math", "🔢 Mental Math"],
-  ["design", "🏗 System Design"],
+  ["coding", "Coding"],
+  ["guide", "DSA Guide"],
+  ["teasers", "Brainteasers"],
+  ["math", "Mental Math"],
+  ["design", "System Design"],
 ];
 
 export default function FlightMode({ flight, setFlight }) {
@@ -35,7 +35,7 @@ export default function FlightMode({ flight, setFlight }) {
     <div style={wrap}>
       <SectionTitle
         kicker="Offline · no wifi required"
-        title="✈️ Flight Mode"
+        title="Flight Mode"
         right={<OfflineBadge />}
       />
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
@@ -140,7 +140,7 @@ function CodingMode({ flight, setFlight }) {
                         borderRadius: 8, padding: "7px 9px", cursor: "pointer", color: C.text,
                         fontFamily: C.sys, fontSize: 12.5, display: "flex", gap: 7, alignItems: "center",
                       }}>
-                        <span>{st?.solved ? "✅" : st?.attempts ? "🟡" : "⚪️"}</span>
+                        <span>{st?.solved ? "✓" : st?.attempts ? "•" : "◦"}</span>
                         <span style={{ flex: 1 }}>{p.title}</span>
                         <span style={{ color: DIFF_COLOR[p.difficulty], fontSize: 10 }}>{p.difficulty[0]}</span>
                       </button>
@@ -209,20 +209,20 @@ function CodingProblem({ problem, flight, setFlight }) {
         <div style={{ display: "flex", gap: 8, padding: "10px 14px", borderTop: `1px solid ${C.border}`,
           alignItems: "center", flexWrap: "wrap" }}>
           <Btn kind="primary" onClick={run} disabled={running}>
-            {running ? "Running…" : "▶ Run tests"}
+            {running ? "Running…" : "Run tests"}
           </Btn>
           <Btn onClick={() => setCode(problem.starter)} disabled={running}>↺ Reset code</Btn>
-          <Btn onClick={() => setShowHint((v) => !v)}>{showHint ? "Hide hint" : "💡 Hint"}</Btn>
-          <Btn onClick={() => setShowSol((v) => !v)}>{showSol ? "Hide solution" : "👁 Solution"}</Btn>
+          <Btn onClick={() => setShowHint((v) => !v)}>{showHint ? "Hide hint" : "Hint"}</Btn>
+          <Btn onClick={() => setShowSol((v) => !v)}>{showSol ? "Hide solution" : "Solution"}</Btn>
           <span style={{ fontFamily: C.sys, fontSize: 11.5, color: C.faint }}>
-            {problem.tests.length} sample · 🔒 {(problem.hidden || []).length} hidden
+            {problem.tests.length} sample · {(problem.hidden || []).length} hidden
           </span>
           {status && <span style={{ fontFamily: C.sys, fontSize: 12, color: C.muted }}>{status}</span>}
         </div>
       </Panel>
 
       {showHint && <Panel style={{ borderColor: "#3a3320" }}>
-        <span style={{ color: C.amber, fontFamily: C.sys, fontSize: 13 }}>💡 {problem.hint}</span>
+        <span style={{ color: C.amber, fontFamily: C.sys, fontSize: 13 }}>{problem.hint}</span>
       </Panel>}
 
       {out && <RunOutput out={out} />}
@@ -269,7 +269,7 @@ function RunOutput({ out }) {
         <div style={{ marginTop: 10 }}>
           <div style={{ fontFamily: C.sys, fontSize: 12.5, fontWeight: 700,
             color: out.hiddenPassed === out.hiddenTotal ? C.green : C.red, marginBottom: firstHiddenFail ? 6 : 0 }}>
-            {out.hiddenPassed === out.hiddenTotal ? "🔒 ✓" : "🔒 ✗"} Hidden tests {out.hiddenPassed}/{out.hiddenTotal} passed
+            {out.hiddenPassed === out.hiddenTotal ? "✓" : "✗"} Hidden tests {out.hiddenPassed}/{out.hiddenTotal} passed
           </div>
           {firstHiddenFail && (
             <>
@@ -503,7 +503,7 @@ function DesignMode({ flight, setFlight }) {
               border: `1px solid ${x.id === selId ? C.borderHi : "transparent"}`,
               borderRadius: 8, padding: "8px 9px", cursor: "pointer", color: C.text,
               fontFamily: C.sys, fontSize: 12.5, display: "flex", gap: 7 }}>
-              <span>{flight.design?.[x.id]?.reviewed ? "✅" : "⚪️"}</span>
+              <span>{flight.design?.[x.id]?.reviewed ? "✓" : "◦"}</span>
               <span>{x.title}</span>
             </button>
           ))}
@@ -535,7 +535,7 @@ function DesignMode({ flight, setFlight }) {
             fontFamily: C.sys, fontSize: 13.5, resize: "vertical" }} />
 
         <div style={{ display: "flex", gap: 8 }}>
-          <Btn kind="primary" onClick={() => setReveal((v) => !v)}>{reveal ? "Hide model answer" : "👁 Model answer"}</Btn>
+          <Btn kind="primary" onClick={() => setReveal((v) => !v)}>{reveal ? "Hide model answer" : "Model answer"}</Btn>
           <Btn kind={saved.reviewed ? "green" : "default"} onClick={() => patch({ reviewed: !saved.reviewed })}>
             {saved.reviewed ? "✓ Reviewed" : "Mark reviewed"}
           </Btn>

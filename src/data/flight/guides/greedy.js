@@ -2,7 +2,7 @@ export default {
   id: "greedy",
   title: "Greedy Algorithms",
   subtitle: "Recognising when greedy works, and the patterns that show up over and over",
-  emoji: "🪙",
+  emoji: "",
   intro: `Greedy is the most psychologically difficult algorithm category. The code is usually trivial — sort something, then sweep through it making the locally optimal choice. The hard part is knowing that the locally optimal choice gives the globally optimal answer. Get it wrong and your algorithm produces convincing-looking nonsense.\n\nThis guide focuses on recognition. We cover what makes a problem amenable to greedy, the two main proof techniques (exchange argument and dominance), the five recurring patterns (intervals, jump games, gas station, partitioning, priority-queue greedy), and the trap of applying greedy when DP is actually required. The code is usually short; the thinking is everything.\n\nTable of contents:\n1. What makes a problem greedy\n2. Proving a greedy works\n3. Pattern A: interval scheduling\n4. Pattern B: jump games\n5. Pattern C: gas station and circular sweeps\n6. Pattern D: partition and grouping\n7. Pattern E: priority-queue greedy\n8. When greedy fails\n9. Common bugs\n10. Study plan\n11. Cheat sheet`,
   sections: [
     {

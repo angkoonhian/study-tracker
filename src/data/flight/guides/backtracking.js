@@ -2,7 +2,7 @@ export default {
   id: "backtracking",
   title: "Backtracking",
   subtitle: "Subsets, permutations, combinations, partitions, and the universal template",
-  emoji: "🔁",
+  emoji: "",
   intro: `Backtracking is the technique for enumerating all valid configurations of something — all subsets, all permutations, all ways to partition a string, all placements of N queens. It's recursion plus state mutation plus a critical "undo" step that lets the same state buffer be reused across many branches of exploration.\n\nBacktracking is intimidating because the recursion tree branches wildly and the state mutations make tracing confusing. But the template is almost identical across every problem: choose, recurse, un-choose. Master the template on subsets and permutations, and the rest of the backtracking family — combinations, partitions, N-queens, word search, sudoku — follows the same shape.`,
   sections: [
     {

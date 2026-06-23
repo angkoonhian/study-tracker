@@ -2,7 +2,7 @@ export default {
   id: "tries",
   title: "Tries (Prefix Trees)",
   subtitle: "The data structure that makes prefixes a superpower",
-  emoji: "🌲",
+  emoji: "",
   intro: `A trie (pronounced "try", from re**trie**val) is a tree-shaped data structure that stores a set of strings by sharing their common prefixes. Every node represents a prefix; the path of characters from the root down to a node spells that prefix. A boolean flag on each node marks whether the prefix ending there is also a complete inserted word.\n\nWhy not just use a hash set? A hash set answers "is this exact word present?" in O(L) (you still have to hash all L characters). What it cannot do cheaply is answer prefix questions: "how many words start with 'ca'?", "give me every word with prefix 'pre'", "does any inserted word match the pattern 'b.d'?". A trie answers all of those by walking the shared structure. That single capability — prefix navigation — is the entire reason tries exist and the signal you should reach for one.\n\nUse a trie when the problem mentions: prefixes, autocomplete / typeahead, dictionary or word-dictionary matching, "starts with", searching many words against a grid (Word Search II), wildcard matching over a word set, or bitwise prefixes of integers (maximum XOR). Reach for a hash set instead when you only ever need exact membership and never touch prefixes.\n\nThis handbook covers the structure, two standard encodings, the canonical Trie template, the core LeetCode patterns (wildcard search, Word Search II, longest word, replace words, maximum XOR via a binary trie), the bugs that bite everyone, and a one-page cheat sheet.`,
   sections: [
     {

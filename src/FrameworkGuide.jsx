@@ -579,7 +579,7 @@ function StepCard({ step }) {
             padding: "3px 10px",
           }}
         >
-          ⏱ {step.time}
+          {step.time}
         </span>
       </div>
 

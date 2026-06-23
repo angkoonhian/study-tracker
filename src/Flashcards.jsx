@@ -57,7 +57,7 @@ function Overview({ cards, due, onReview }) {
         ? <Btn kind="primary" onClick={onReview} style={{ fontSize: 15, padding: "12px 22px" }}>
             Start review — {due.length} card{due.length === 1 ? "" : "s"} due →
           </Btn>
-        : <Panel style={{ color: C.green }}>🎉 Nothing due. Come back later, or add cards in “Manage deck”.</Panel>}
+        : <Panel style={{ color: C.green }}>Nothing due. Come back later, or add cards in “Manage deck”.</Panel>}
     </>
   );
 }
@@ -72,7 +72,7 @@ function Review({ cards, setCards, onDone }) {
   if (idx >= queue.length) {
     return (
       <Panel style={{ textAlign: "center", padding: "40px 20px" }}>
-        <div style={{ fontSize: 40 }}>✅</div>
+        <div style={{ fontSize: 40 }}>✓</div>
         <div style={{ fontSize: 20, fontWeight: 700, margin: "10px 0" }}>Session complete</div>
         <div style={{ color: C.muted, marginBottom: 18 }}>You reviewed {graded} card{graded === 1 ? "" : "s"}.</div>
         <Btn kind="primary" onClick={onDone}>Back to overview</Btn>

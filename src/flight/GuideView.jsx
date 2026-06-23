@@ -54,7 +54,6 @@ export default function GuidesMode() {
               border: `1px solid ${g.id === id ? C.borderHi : "transparent"}`,
               borderRadius: 8, padding: "8px 10px", cursor: "pointer", color: C.text,
               fontFamily: C.sys, fontSize: 13, display: "flex", gap: 8, alignItems: "center" }}>
-              <span style={{ fontSize: 15 }}>{g.emoji}</span>
               <span>{g.title}</span>
             </button>
           ))}
@@ -64,7 +63,7 @@ export default function GuidesMode() {
       {/* reader */}
       <div style={{ minWidth: 0 }}>
         <div style={{ marginBottom: 16 }}>
-          <h1 style={{ margin: "0 0 4px", fontSize: 30, color: "#F4F8FE" }}>{guide.emoji} {guide.title}</h1>
+          <h1 style={{ margin: "0 0 4px", fontSize: 30, color: "#F4F8FE" }}>{guide.title}</h1>
           <div style={{ fontFamily: C.sys, fontSize: 15, color: C.muted, fontStyle: "italic" }}>{guide.subtitle}</div>
         </div>
 
@@ -85,7 +84,7 @@ export default function GuidesMode() {
         {guide.cheatsheet && guide.cheatsheet.length > 0 && (
           <Panel style={{ background: "linear-gradient(180deg,#10241c,#0c1626)", borderColor: "#27613F", marginBottom: 30 }}>
             <div style={{ fontFamily: C.sys, fontSize: 12, color: C.green, letterSpacing: 1,
-              textTransform: "uppercase", marginBottom: 10, fontWeight: 700 }}>📋 Cheat sheet</div>
+              textTransform: "uppercase", marginBottom: 10, fontWeight: 700 }}>Cheat sheet</div>
             <ul style={{ margin: 0, paddingLeft: 20, color: C.text, fontFamily: C.sys, fontSize: 13.5, lineHeight: 1.8 }}>
               {guide.cheatsheet.map((c, i) => <li key={i}>{c}</li>)}
             </ul>

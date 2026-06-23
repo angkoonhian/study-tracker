@@ -2,7 +2,7 @@ export default {
   id: "dynamic-programming",
   title: "Dynamic Programming",
   subtitle: "A complete reference: from recursion to tabulation, every pattern that matters",
-  emoji: "🧮",
+  emoji: "",
   intro: `Dynamic programming is the single biggest topic in algorithmic interviews — and the one people fear most. The good news: DP is not about memorising tricks. It is a small set of patterns applied with a consistent method. Once you internalise the method, the patterns become recognisable and the solutions almost write themselves.\n\nThis guide covers what DP is, the recursion-to-tabulation pyramid, the five-step method that solves every DP problem, and the seven sub-patterns that account for nearly every DP question you will see: 1D linear DP, grid DP, sequence DP, knapsack, interval DP, state-machine DP, and tree DP. Each pattern is taught with worked examples, the build-up from recursion to tabulation, and notes on space optimisation. The final sections cover recognition signals, common bugs, a 30-problem study plan, and a cheat sheet.\n\nTable of contents: (1) What is dynamic programming, (2) The recursion-to-tabulation pyramid, (3) The five-step method, (4) Pattern A: 1D linear DP, (5) Pattern B: 2D grid DP, (6) Pattern C: sequence and string DP, (7) Pattern D: knapsack family, (8) Pattern E: interval DP, (9) Pattern F: state-machine DP, (10) Pattern G: DP on trees, (11) Memoisation vs tabulation, (12) Space optimisation, (13) Common bugs, (14) Recognising DP in the wild, (15) Study plan, (16) One-page cheat sheet.`,
   sections: [
     {

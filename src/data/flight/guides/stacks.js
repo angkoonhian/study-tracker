@@ -2,7 +2,7 @@ export default {
   id: "stacks",
   title: "Stacks & Monotonic Stacks",
   subtitle: "LIFO bookkeeping and the O(n) trick for nearest-greater/smaller queries",
-  emoji: "🥞",
+  emoji: "",
   intro: `A stack is the simplest possible data structure that still unlocks hard problems: it is just a list you only touch at one end, yet it powers parsing, expression evaluation, undo systems, and the famous "monotonic stack" family of array problems.
 
 In Python a plain list IS a stack. \`append\` pushes, \`pop\` pops, \`[-1]\` peeks — all amortized O(1). There is no need to reach for \`collections.deque\` unless you also need fast pops from the front (a queue).

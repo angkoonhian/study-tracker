@@ -2,7 +2,7 @@ export default {
   id: "linked-lists",
   title: "Linked Lists",
   subtitle: "Pointer manipulation, dummy nodes, two pointers, and every classic problem",
-  emoji: "🔗",
+  emoji: "",
   intro: `Linked lists are deceptively hard. The data structure itself is trivial — nodes with a value and a next pointer — but the manipulation patterns are subtle enough that experienced engineers still get them wrong. Most linked-list bugs come from mismanaging a tiny set of pointer updates during reversals, deletions, or merges. This guide drills the patterns that handle those updates cleanly.\n\nWe cover the node structure and the dummy node trick, the two-pointer family (fast/slow for cycle detection, gap-based for nth-from-end), the canonical reversal (and its variants: reverse in groups, reverse between positions), merging, and the design problems that combine linked lists with hashmaps (LRU cache).\n\nTable of contents:\n1. Foundations: the node structure\n2. The dummy node trick\n3. Reversal (the most important technique)\n4. Two-pointer patterns\n5. Cycle detection (Floyd's tortoise and hare)\n6. Merging linked lists\n7. Reordering and partitioning\n8. Designing with linked lists (LRU cache)\n9. Common bugs\n10. Study plan\n11. Cheat sheet`,
   sections: [
     {

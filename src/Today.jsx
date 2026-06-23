@@ -47,14 +47,13 @@ export default function Today({ done, toggleTask, bank, setBank, cards, plan, se
 
       {nothingDue && (
         <Panel style={{ color: C.green, fontSize: 15 }}>
-          🎉 You're all caught up. No cards due, no re-solves scheduled, and today's plan is done. Nice work.
+          You're all caught up. No cards due, no re-solves scheduled, and today's plan is done. Nice work.
         </Panel>
       )}
 
       {/* Flashcards due */}
       {dueCards.length > 0 && (
         <Panel style={{ marginBottom: 14, display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ fontSize: 30 }}>🃏</div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 16, fontWeight: 700 }}>{dueCards.length} flashcard{dueCards.length === 1 ? "" : "s"} due</div>
             <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>Spaced repetition keeps patterns & concepts fresh.</div>
