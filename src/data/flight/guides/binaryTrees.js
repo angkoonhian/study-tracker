@@ -2,7 +2,7 @@ export default {
   id: "binary-trees",
   title: "Binary Trees",
   subtitle: "A complete reference guide: foundations, traversals, patterns, and problem archetypes.",
-  emoji: "🌳",
+  emoji: "",
   intro: `This guide is designed to take you from zero knowledge of trees to recognising any LeetCode tree problem on sight. It covers the data structure, the four core traversals, the universal recursion template, seven problem archetypes (with worked examples for each), the bugs that catch people out, and a 22-problem study plan.\n\nTable of contents:\n1. Foundations\n2. The four core traversals\n3. The universal recursive pattern\n4. Problem archetypes A through G\n5. Common bugs to watch for\n6. A study plan\n7. One-page mental cheat sheet`,
   sections: [
     {

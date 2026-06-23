@@ -1,15 +1,27 @@
-// Independent verifier: exec each problem's `solution`, run every VISIBLE and
-// HIDDEN test's `call`, assert it matches `expected` under the problem's checker
-// (exact/unordered/seteq) in python3. Mirrors the in-browser runner.
-import { CODING } from "../src/data/flight/coding.js";
+// Independent verifier for the Trading Prep coding dataset: exec each problem's
+// `solution`, run every VISIBLE and HIDDEN test's `call`, assert it matches
+// `expected` under the problem's checker (exact/unordered/seteq). Mirrors the
+// in-browser runner (src/flight/pyRunner.js).
+//
+// NOTE: on this machine the `python3` command is a broken Windows app-execution
+// stub, so we resolve the first working interpreter among python3/python/py.
+import { TRADING_CODING } from "../src/data/trading/codingTrading.js";
 import { CHECK_PY } from "../src/flight/pyRunner.js";
 import { spawnSync } from "node:child_process";
 import { writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+function resolvePython() {
+  for (const bin of ["python3", "python", "py"]) {
+    const r = spawnSync(bin, ["--version"], { encoding: "utf8" });
+    if (r.status === 0) return bin;
+  }
+  throw new Error("No working python interpreter found (tried python3, python, py)");
+}
+
 let pyProblems = "";
-for (const p of CODING) {
+for (const p of TRADING_CODING) {
   const allTests = [...p.tests, ...(p.hidden || [])];
   const mode = JSON.stringify(p.checker || "exact");
   const tests = allTests
@@ -32,7 +44,7 @@ def _check(pid, mode, call, actual, expected):
     if not __cmp(mode, actual, expected):
         FAILS.append((pid, call, repr(actual), repr(expected)))
 ${pyProblems}
-print("PROBLEMS:", ${CODING.length}, "TESTS:", TOTAL[0])
+print("PROBLEMS:", ${TRADING_CODING.length}, "TESTS:", TOTAL[0])
 if FAILS:
     print("FAILURES:", len(FAILS))
     for f in FAILS:
@@ -41,21 +53,19 @@ if FAILS:
 print("ALL PASS")
 `;
 
-// Resolve the first working interpreter; on some machines `python3` is a broken
-// Windows app-execution stub, so fall back to `python`/`py`.
-function resolvePython() {
-  for (const bin of ["python3", "python", "py"]) {
-    const r = spawnSync(bin, ["--version"], { encoding: "utf8" });
-    if (r.status === 0) return bin;
-  }
-  throw new Error("No working python interpreter found (tried python3, python, py)");
+let bin;
+try {
+  bin = resolvePython();
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
 }
 
 // Write to a temp file rather than passing via `-c`: the inlined program can
 // exceed the OS command-line length limit (notably ~32K on Windows).
-const tmp = join(tmpdir(), `verify-flight-${process.pid}.py`);
+const tmp = join(tmpdir(), `verify-trading-${process.pid}.py`);
 writeFileSync(tmp, py);
-const res = spawnSync(resolvePython(), [tmp], { encoding: "utf8" });
+const res = spawnSync(bin, [tmp], { encoding: "utf8" });
 try { rmSync(tmp); } catch { /* ignore */ }
 process.stdout.write(res.stdout || "");
 process.stderr.write(res.stderr || "");

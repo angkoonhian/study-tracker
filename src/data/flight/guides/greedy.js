@@ -2,7 +2,7 @@ export default {
   id: "greedy",
   title: "Greedy Algorithms",
   subtitle: "Recognising when greedy works, and the patterns that show up over and over",
-  emoji: "🪙",
+  emoji: "",
   intro: `Greedy is the most psychologically difficult algorithm category. The code is usually trivial — sort something, then sweep through it making the locally optimal choice. The hard part is knowing that the locally optimal choice gives the globally optimal answer. Get it wrong and your algorithm produces convincing-looking nonsense.\n\nThis guide focuses on recognition. We cover what makes a problem amenable to greedy, the two main proof techniques (exchange argument and dominance), the five recurring patterns (intervals, jump games, gas station, partitioning, priority-queue greedy), and the trap of applying greedy when DP is actually required. The code is usually short; the thinking is everything.\n\nTable of contents:\n1. What makes a problem greedy\n2. Proving a greedy works\n3. Pattern A: interval scheduling\n4. Pattern B: jump games\n5. Pattern C: gas station and circular sweeps\n6. Pattern D: partition and grouping\n7. Pattern E: priority-queue greedy\n8. When greedy fails\n9. Common bugs\n10. Study plan\n11. Cheat sheet`,
   sections: [
     {
@@ -73,7 +73,7 @@ export default {
         { type: "diagram", kind: "grid", data: {
           cells: [[1,3],[2,4],[3,5],[4,7],[6,8]],
           highlight: [[0,0],[0,1],[2,0],[2,1],[4,0],[4,1]],
-          colors: { "0,0":"#5FD79E","0,1":"#5FD79E","2,0":"#5FD79E","2,1":"#5FD79E","4,0":"#5FD79E","4,1":"#5FD79E" }
+          colors: { "0,0":"#1a7f37","0,1":"#1a7f37","2,0":"#1a7f37","2,1":"#1a7f37","4,0":"#1a7f37","4,1":"#1a7f37" }
         }, caption: `Intervals sorted by END time (each row is [start,end]). Greedy keeps rows in green: [1,3] then [3,5] (start 3 >= last_end 3) then [6,8]. Rows [2,4] and [4,7] conflict with an already-chosen interval and are skipped. Result: 3 non-overlapping intervals.` },
         { type: "callout", text: `Why end time and not start time? The interval that finishes earliest leaves the most room for future intervals. Sorting by start would prioritise an interval that begins early but runs long, which blocks many future options.` },
         { type: "h3", text: "3.2 Non-overlapping intervals (remove the fewest)" },
@@ -106,7 +106,7 @@ export default {
         { type: "code", code: `def canJump(nums):\n    farthest = 0\n    for i, n in enumerate(nums):\n        if i > farthest:\n            return False                # gap we can't cross\n        farthest = max(farthest, i + n)\n    return True` },
         { type: "diagram", kind: "array", data: {
           values: [2,3,1,1,4],
-          pointers: [{ name: "i", index: 1, color: "#6FA8FF" }],
+          pointers: [{ name: "i", index: 1, color: "#2f8d46" }],
           highlight: [4],
           labels: { "0":"jump", "4":"reachable" }
         }, caption: `nums = max jump length at each index. Sweeping i: at i=0 farthest=0+2=2, at i=1 farthest=max(2,1+3)=4 — the last index (green) is now reachable, so canJump returns True. The blue pointer is the current i; green is the farthest-reachable frontier.` },
@@ -127,7 +127,7 @@ export default {
         { type: "code", code: `def canCompleteCircuit(gas, cost):\n    if sum(gas) < sum(cost):\n        return -1\n    tank = 0\n    start = 0\n    for i in range(len(gas)):\n        tank += gas[i] - cost[i]\n        if tank < 0:\n            start = i + 1                     # everything before fails\n            tank = 0\n    return start` },
         { type: "diagram", kind: "array", data: {
           values: [-2,-2,-2,3,3],
-          pointers: [{ name: "start", index: 3, color: "#5FD79E" }],
+          pointers: [{ name: "start", index: 3, color: "#1a7f37" }],
           highlight: [3],
           labels: { "0":"gas-cost", "3":"valid start" }
         }, caption: `Net gas (gas[i] - cost[i]) per station, total = 0 so a solution exists. Sweeping: tank goes negative across indices 0-2, so start jumps to i+1 each time, landing on index 3 (green). From station 3 the tank stays non-negative around the circle: 3, 6, then wrapping 4, 2, 0. Valid start = 3.` },

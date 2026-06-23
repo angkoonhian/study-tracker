@@ -8,9 +8,10 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test \"src/**/*.test.mjs\"",
+    "test": "node --import ./src/store/json-loader.mjs --test \"src/**/*.test.mjs\"",
     "fetch:leetcode": "node scripts/fetch-leetcode.mjs",
     "verify:flight": "node scripts/verify-flight-coding.mjs",
+    "verify:trading": "node scripts/verify-trading-coding.mjs",
     "vendor:pyodide": "npm install --no-save pyodide && rm -rf public/pyodide && mkdir -p public/pyodide && cp -R node_modules/pyodide/. public/pyodide/"
   },
   "dependencies": {

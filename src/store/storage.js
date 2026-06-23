@@ -24,6 +24,7 @@ export const KEYS = {
   settings: "biginterview_settings_v1",
   secret: "biginterview_secret_v1", // LeetCode cookie — never exported
   flight: "biginterview_flight_v1", // offline Flight Mode progress (local only)
+  trading: "biginterview_trading_v1",
 };
 
 function read(key, fallback) {
@@ -65,6 +66,11 @@ export const loadFlight = () =>
   read(KEYS.flight, { coding: {}, teasers: {}, math: { rounds: [] }, design: {} });
 export const saveFlight = (v) => write(KEYS.flight, v);
 
+// ---- trading (publishable: Trading Prep coding solved + trivia seen) ----
+export const loadTrading = () =>
+  read(KEYS.trading, seed.trading || { coding: {}, trivia: {} });
+export const saveTrading = (v) => write(KEYS.trading, v);
+
 // ---- cards (flashcard deck) ----
 // Pattern cards are merged in by id so a fresh deck always has the seed deck and
 // new seed cards reach existing users — without overwriting their srs schedule.
@@ -89,6 +95,7 @@ export function exportAll() {
     cards: loadCards().map(({ srs, id }) => ({ id, srs })), // schedule only; defs come from code+catalog
     cardsFull: loadCards(), // full card objects so manual/auto cards survive a restore
     settings: loadSettings(),
+    trading: loadTrading(),
   };
 }
 
@@ -99,11 +106,12 @@ export function importAll(obj) {
   if (obj.cardsFull) saveCards(obj.cardsFull);
   else if (obj.cards) saveCards(obj.cards);
   if (obj.settings) saveSettings(obj.settings);
+  if (obj.trading) saveTrading(obj.trading);
 }
 
 // Clear the live working copy so the next load falls back to the committed seed.
 export function resetToPublished() {
-  for (const k of [KEYS.tracker, KEYS.bank, KEYS.cards, KEYS.settings]) {
+  for (const k of [KEYS.tracker, KEYS.bank, KEYS.cards, KEYS.settings, KEYS.trading]) {
     try { localStorage.removeItem(k); } catch { /* ignore */ }
   }
 }

@@ -2,7 +2,7 @@ export default {
   id: "two-pointers-sliding-window",
   title: "Two Pointers & Sliding Window",
   subtitle: "Two coordinated indices that turn O(n²) brute force into a single O(n) sweep.",
-  emoji: "↔️",
+  emoji: "",
   intro: `Two pointers and sliding window are the same idea seen from two angles: instead of re-scanning the array from scratch for every candidate, you maintain a small amount of state and move one or two indices across the data exactly once. The payoff is dropping a nested-loop O(n²) solution down to O(n) time and usually O(1) extra space.
 
 "Two pointers" is the umbrella term for any algorithm driven by two indices. They come in three flavors: pointers starting at opposite ends and moving toward each other (works on sorted data or symmetric problems like palindromes), pointers moving in the same direction at different speeds (in-place array surgery, cycle detection), and a pair of cursors walking two separate sorted sequences (merging).
@@ -53,7 +53,7 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return None` },
         { type: "diagram", kind: "array", data: {
           values: [1, 3, 4, 6, 8, 11],
-          pointers: [{ name: "L", index: 0, color: "#6FA8FF" }, { name: "R", index: 5, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 0, color: "#2f8d46" }, { name: "R", index: 5, color: "#1a7f37" }],
           highlight: [0, 5]
         }, caption: "Sorted two-sum, target 10: 1+11=12 > target, so move R inward (decrease the sum). If the sum were too small, move L." },
         { type: "callout", text: `Why correct: suppose nums[left]+nums[right] < target. Then nums[left] paired with anything <= nums[right] is also too small, so nums[left] can be safely dropped — advancing left loses no valid pair. The symmetric argument justifies right -= 1.` },
@@ -72,7 +72,7 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return best` },
         { type: "diagram", kind: "array", data: {
           values: [1, 8, 6, 2, 5, 4, 8, 3, 7],
-          pointers: [{ name: "L", index: 0, color: "#6FA8FF" }, { name: "R", index: 8, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 0, color: "#2f8d46" }, { name: "R", index: 8, color: "#1a7f37" }],
           highlight: [0, 8],
           labels: { "0": "h=1", "8": "h=7" }
         }, caption: "Container with most water: area = width(8) * min(1,7) = 8. The left wall (1) is shorter, so move L inward — raising the limiting wall is the only way to grow area." },
@@ -127,7 +127,7 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return slow + 1` },
         { type: "diagram", kind: "array", data: {
           values: [1, 1, 2, 2, 3, 4],
-          pointers: [{ name: "slow", index: 1, color: "#5FD79E" }, { name: "fast", index: 4, color: "#6FA8FF" }],
+          pointers: [{ name: "slow", index: 1, color: "#1a7f37" }, { name: "fast", index: 4, color: "#2f8d46" }],
           highlight: [4],
           labels: { "1": "write", "4": "read" }
         }, caption: "Remove duplicates: slow marks the last written unique (the write cursor); fast scans ahead. When nums[fast] differs from nums[slow], advance slow and copy. nums[:slow+1] holds the uniques." },
@@ -141,7 +141,7 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return nums` },
         { type: "diagram", kind: "array", data: {
           values: [1, 0, 3, 0, 5, 0],
-          pointers: [{ name: "slow", index: 1, color: "#5FD79E" }, { name: "fast", index: 2, color: "#6FA8FF" }],
+          pointers: [{ name: "slow", index: 1, color: "#1a7f37" }, { name: "fast", index: 2, color: "#2f8d46" }],
           highlight: [1],
           labels: { "1": "next non-zero slot" }
         }, caption: "Move zeroes: slow points at the next slot for a non-zero. fast scans; on each non-zero it swaps into slow and advances slow. Everything left of slow is already compacted non-zeros." },
@@ -254,7 +254,7 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return best` },
         { type: "diagram", kind: "array", data: {
           values: [2, 1, 5, 1, 3, 2],
-          pointers: [{ name: "evict", index: 1, color: "#E0A23B" }, { name: "R", index: 4, color: "#5FD79E" }],
+          pointers: [{ name: "evict", index: 1, color: "#E0A23B" }, { name: "R", index: 4, color: "#1a7f37" }],
           window: [2, 4],
           highlight: [2, 3, 4]
         }, caption: "Fixed window k=3: window [2,4] sum = 5+1+3 = 9. To advance, add nums[R+1] and evict nums[right-k+1] (the amber edge at index 1, just left of the window). The window size never changes." },
@@ -280,18 +280,18 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return best` },
         { type: "diagram", kind: "array", data: {
           values: ["a", "b", "c", "a", "b", "b"],
-          pointers: [{ name: "L", index: 0, color: "#6FA8FF" }, { name: "R", index: 2, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 0, color: "#2f8d46" }, { name: "R", index: 2, color: "#1a7f37" }],
           window: [0, 2]
         }, caption: "Snapshot 1 — \"abca...\": window [0,2] = \"abc\", all distinct and valid. R keeps expanding while no duplicate appears." },
         { type: "diagram", kind: "array", data: {
           values: ["a", "b", "c", "a", "b", "b"],
-          pointers: [{ name: "L", index: 0, color: "#6FA8FF" }, { name: "R", index: 3, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 0, color: "#2f8d46" }, { name: "R", index: 3, color: "#1a7f37" }],
           window: [0, 3],
           highlight: [0, 3]
         }, caption: "Snapshot 2 — R reaches index 3 ('a'): the window [0,3] now has a duplicate 'a' (indices 0 and 3). INVALID, so we must contract from the left." },
         { type: "diagram", kind: "array", data: {
           values: ["a", "b", "c", "a", "b", "b"],
-          pointers: [{ name: "L", index: 1, color: "#6FA8FF" }, { name: "R", index: 3, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 1, color: "#2f8d46" }, { name: "R", index: 3, color: "#1a7f37" }],
           window: [1, 3]
         }, caption: "Snapshot 3 — L advanced past the first 'a' to index 1: window [1,3] = \"bca\" is valid again. Length 3, matching the best so far. Each char enters once and leaves once → O(n)." },
         { type: "h3", text: "7.2 Minimum window substring (smallest window of s covering all of t)" },
@@ -365,12 +365,12 @@ The hardest part of these problems is rarely the code; it is recognizing the tri
     return 0 if best == float('inf') else best` },
         { type: "diagram", kind: "array", data: {
           values: [2, 3, 1, 2, 4, 3],
-          pointers: [{ name: "L", index: 0, color: "#6FA8FF" }, { name: "R", index: 3, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 0, color: "#2f8d46" }, { name: "R", index: 3, color: "#1a7f37" }],
           window: [0, 3]
         }, caption: "Min subarray sum, target 7: expand R until sum 2+3+1+2 = 8 >= 7. Window [0,3] is now VALID — record length 4, then try to shrink." },
         { type: "diagram", kind: "array", data: {
           values: [2, 3, 1, 2, 4, 3],
-          pointers: [{ name: "L", index: 3, color: "#6FA8FF" }, { name: "R", index: 4, color: "#5FD79E" }],
+          pointers: [{ name: "L", index: 3, color: "#2f8d46" }, { name: "R", index: 4, color: "#1a7f37" }],
           window: [3, 4],
           highlight: [3, 4]
         }, caption: "After contracting and advancing R: window [3,4] = 2+4 = 6 < 7 invalid; once R hits index 5, [3,5] = 2+4+3 = 9 valid with length 3. For SHORTEST we record inside the while-valid loop while shrinking L." },

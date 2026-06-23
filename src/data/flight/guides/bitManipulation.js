@@ -2,7 +2,7 @@ export default {
   id: "bit-manipulation",
   title: "Bit Manipulation",
   subtitle: "Think in bits: XOR tricks, masks, and bit-level arithmetic for the interview.",
-  emoji: "🔢",
+  emoji: "",
   intro: `Bit manipulation is the art of operating on the individual binary digits of an integer instead of its decimal value. A handful of operators (& | ^ ~ << >>) and a small vocabulary of one-line idioms unlock O(1) tricks for problems that look much harder: finding the one element that appears an odd number of times, enumerating every subset of a set, packing a "visited" set into a single int, or adding two numbers with no + sign.\\n\\nThe core mental model: an integer is an array of bits indexed from the least-significant bit (LSB, position 0, value 2^0) upward. "Setting bit i" means turning on the bit worth 2^i. Almost every idiom is built from a mask (a number with exactly the bits you care about turned on) combined with one of the bitwise operators. Memorize maybe ten idioms and you can derive the rest.\\n\\nPython adds one crucial wrinkle that trips up nearly everyone: Python integers have arbitrary precision and behave as if they had infinitely many bits, using two's-complement semantics that extend infinitely to the left for negatives. There is no 32-bit int and no overflow. Most LeetCode bit problems are implicitly phrased in terms of fixed-width 32-bit two's-complement integers, so in Python you must simulate that width yourself with masking (& 0xFFFFFFFF) and reinterpret the sign by hand. This guide treats that caveat as a first-class topic because getting it wrong is the single most common source of wrong answers and infinite loops in Python bit problems.\\n\\nThis handbook covers the operators and the canonical idiom table, the XOR family of problems, counting bits and bitmask enumeration, bit-level arithmetic, the Python pitfalls, a study plan, and a one-page cheat sheet.`,
   sections: [
     {
@@ -128,7 +128,7 @@ for i in range(32):
               [0, 1, 1, 0]
             ],
             highlight: [[2, 1], [2, 2]],
-            colors: { "2,1": "#5FD79E", "2,2": "#5FD79E" }
+            colors: { "2,1": "#1a7f37", "2,2": "#1a7f37" }
           },
           caption: "XOR column-by-column: row 0 = A (0b1100 = 12), row 1 = B (0b1010 = 10), row 2 = A ^ B (0b0110 = 6). Each result bit is 1 exactly where the two operand bits differ; the set result bits are highlighted."
         },

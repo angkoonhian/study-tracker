@@ -1,23 +1,23 @@
 // ---------------------------------------------------------------------------
-//  theme.js  ·  shared dark-theme tokens + small UI primitives, so the new
-//  views (Today / Problem Bank / Flashcards / Dashboard) share one look without
-//  each re-declaring inline styles. Matches the existing tracker palette.
+//  theme.js  ·  shared light-theme tokens (GeeksforGeeks-style) + small UI
+//  primitives, so the new views (Today / Problem Bank / Flashcards / Dashboard)
+//  share one look without each re-declaring inline styles.
 // ---------------------------------------------------------------------------
 
 export const C = {
-  pageBg: "radial-gradient(ellipse at top, #16243B 0%, #0B1422 60%, #070D16 100%)",
-  text: "#E8EDF4",
-  muted: "#8AA1C2",
-  faint: "#5E7DA8",
-  blue: "#6FA8FF",
-  green: "#5FD79E",
-  amber: "#E0A23B",
-  red: "#E2566F",
-  panel: "linear-gradient(180deg,#101D33,#0C1626)",
-  panelSolid: "#0E1B30",
-  border: "#1F2F47",
-  borderHi: "#2F66C4",
-  chipBg: "#1C2C44",
+  pageBg: "#f6f8fa",
+  text: "#1f2328",
+  muted: "#57606a",
+  faint: "#8c959f",
+  blue: "#2f8d46",
+  green: "#1a7f37",
+  amber: "#9a6700",
+  red: "#c0392b",
+  panel: "#ffffff",
+  panelSolid: "#ffffff",
+  border: "#d0d7de",
+  borderHi: "#2f8d46",
+  chipBg: "#eef6f0",
   font: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif",
   sys: "system-ui",
 };
@@ -32,16 +32,18 @@ export const page = {
 
 export function GlobalNav({ view, setView }) {
   const items = [
-    ["today", "🔥 Today"],
-    ["tracker", "🗓 Tracker"],
-    ["bank", "📚 Problem Bank"],
-    ["cards", "🃏 Flashcards"],
-    ["dashboard", "📊 Dashboard"],
-    ["flight", "✈️ Flight Mode"],
+    ["today", "Today"],
+    ["tracker", "Tracker"],
+    ["bank", "Problem Bank"],
+    ["dsa", "DSA"],
+    ["trading", "Trading Prep"],
+    ["cards", "Flashcards"],
+    ["flight", "Flight Mode"],
+    ["dashboard", "Dashboard"],
   ];
   return (
     <div style={{
-      borderBottom: "1px solid #243650", background: "rgba(8,14,24,.7)",
+      borderBottom: `1px solid ${C.border}`, background: "rgba(255,255,255,.85)",
       backdropFilter: "blur(6px)", position: "sticky", top: 0, zIndex: 30,
     }}>
       <div style={{
@@ -54,17 +56,17 @@ export function GlobalNav({ view, setView }) {
           const active = view === k;
           return (
             <button key={k} onClick={() => setView(k)} style={{
-              background: active ? C.blue : "rgba(255,255,255,.04)",
-              color: active ? "#08101F" : "#AFC3E0",
-              border: `1px solid ${active ? C.blue : "#2A3C56"}`,
+              background: active ? C.blue : "#f3f4f6",
+              color: active ? "#ffffff" : C.muted,
+              border: `1px solid ${active ? C.blue : C.border}`,
               borderRadius: 18, padding: "6px 13px", fontSize: 12.5,
               fontWeight: 600, cursor: "pointer",
             }}>{label}</button>
           );
         })}
         <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <button onClick={() => setView("roles")} style={ghostBtn}>🎯 Roles</button>
-          <button onClick={() => setView("framework")} style={ghostBtn}>📐 Framework</button>
+          <button onClick={() => setView("roles")} style={ghostBtn}>Roles</button>
+          <button onClick={() => setView("framework")} style={ghostBtn}>Framework</button>
         </div>
       </div>
     </div>
@@ -72,17 +74,17 @@ export function GlobalNav({ view, setView }) {
 }
 
 const ghostBtn = {
-  background: "rgba(111,168,255,.07)", border: "1px solid #2A3C56",
-  color: "#9CC0F5", borderRadius: 18, padding: "6px 12px", fontSize: 12.5,
+  background: C.chipBg, border: `1px solid ${C.border}`,
+  color: C.blue, borderRadius: 18, padding: "6px 12px", fontSize: 12.5,
   cursor: "pointer", fontFamily: C.sys, fontWeight: 600,
 };
 
 export function Btn({ children, onClick, kind = "default", disabled, style, type = "button" }) {
   const kinds = {
-    default: { bg: "rgba(255,255,255,.05)", bd: "#2A3C56", fg: C.text },
-    primary: { bg: C.blue, bd: C.blue, fg: "#08101F" },
-    green: { bg: "rgba(95,215,158,.1)", bd: "#27613F", fg: C.green },
-    danger: { bg: "transparent", bd: "#5A2A38", fg: C.red },
+    default: { bg: "#f3f4f6", bd: C.border, fg: C.text },
+    primary: { bg: C.blue, bd: C.blue, fg: "#ffffff" },
+    green: { bg: C.chipBg, bd: C.green, fg: C.green },
+    danger: { bg: "transparent", bd: C.red, fg: C.red },
   }[kind];
   return (
     <button type={type} onClick={onClick} disabled={disabled} style={{
@@ -109,7 +111,7 @@ export function SectionTitle({ kicker, title, right }) {
         {kicker && <div style={{ fontSize: 12, letterSpacing: 3,
           textTransform: "uppercase", color: C.faint, marginBottom: 6,
           fontFamily: C.sys }}>{kicker}</div>}
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#F4F8FE" }}>{title}</h1>
+        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, color: C.text }}>{title}</h1>
       </div>
       {right}
     </div>

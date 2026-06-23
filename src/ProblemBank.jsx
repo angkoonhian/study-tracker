@@ -7,7 +7,7 @@ import { newSchedule, isDue } from "./srs/sm2.js";
 import { now } from "./lib/now.js";
 
 const STATUSES = ["todo", "attempted", "solved", "review"];
-const STATUS_COLOR = { todo: "#5E7DA8", attempted: C.amber, solved: C.green, review: "#C58BE8" };
+const STATUS_COLOR = { todo: "#8c959f", attempted: C.amber, solved: C.green, review: "#C58BE8" };
 const PAGE_SIZE = 50;
 const lc = (slug) => `https://leetcode.com/problems/${slug}/`;
 
@@ -128,19 +128,19 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
               return (
                 <div key={p.id} style={{
                   display: "flex", alignItems: "center", gap: 12, padding: "10px 14px",
-                  background: C.panel, border: `1px solid ${st === "solved" ? "#27613F" : C.border}`,
+                  background: C.panel, border: `1px solid ${st === "solved" ? "#1a7f37" : C.border}`,
                   borderRadius: 11,
                 }}>
                   <button onClick={() => cycleStatus(p.id)} title="Click to cycle status" style={{
                     minWidth: 86, textAlign: "center", cursor: "pointer",
-                    background: "rgba(255,255,255,.04)", color: STATUS_COLOR[st],
+                    background: "#f3f4f6", color: STATUS_COLOR[st],
                     border: `1px solid ${STATUS_COLOR[st]}55`, borderRadius: 8,
                     padding: "5px 8px", fontSize: 12, fontWeight: 700, fontFamily: C.sys,
                   }}>{st}</button>
                   <span style={{ fontFamily: C.sys, fontSize: 12, color: C.faint, minWidth: 44 }}>#{p.id}</span>
                   <a href={lc(p.slug)} target="_blank" rel="noreferrer" style={{
                     flex: 1, color: C.text, textDecoration: "none", fontSize: 14.5, fontWeight: 500,
-                  }}>{p.title}{p.paid ? <span style={{ color: C.amber, fontSize: 11 }}> 🔒</span> : null}</a>
+                  }}>{p.title}{p.paid ? <span style={{ color: C.amber, fontSize: 11 }}> [paid]</span> : null}</a>
                   <div style={{ display: "flex", gap: 5 }}>
                     {p.topics.slice(0, 2).map((t) => (
                       <span key={t} style={tagStyle}>{topicLabel(t)}</span>
@@ -151,11 +151,11 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
                   <span style={{ fontSize: 11.5, color: C.faint, fontFamily: C.sys, minWidth: 42 }}>{p.ac}%</span>
                   <button onClick={() => toggleResolve(p.id)} title="Schedule spaced re-solve"
                     style={{ ...iconBtn, color: srs ? (resolveDue ? C.red : C.green) : C.faint,
-                      borderColor: srs ? (resolveDue ? "#5A2A38" : "#27613F") : "#2A3C56" }}>↻</button>
+                      borderColor: srs ? (resolveDue ? "#e5b3b3" : "#1a7f37") : "#d0d7de" }}>↻</button>
                   <button onClick={() => addCard(p)} disabled={hasCard} title="Add flashcard"
                     style={{ ...iconBtn, color: hasCard ? C.green : C.blue,
-                      borderColor: hasCard ? "#27613F" : "#2A3C56",
-                      cursor: hasCard ? "default" : "pointer" }}>{hasCard ? "✓🃏" : "+🃏"}</button>
+                      borderColor: hasCard ? "#1a7f37" : "#d0d7de",
+                      cursor: hasCard ? "default" : "pointer" }}>{hasCard ? "✓" : "+"}</button>
                 </div>
               );
             })}
@@ -253,14 +253,14 @@ function Select({ value, onChange, opts }) {
 }
 
 const inputStyle = {
-  background: "#0B1422", border: "1px solid #2A3C56", color: C.text,
+  background: "#ffffff", border: "1px solid #d0d7de", color: C.text,
   borderRadius: 9, padding: "8px 11px", fontSize: 13, fontFamily: C.sys, outline: "none", flex: 1, minWidth: 120,
 };
 const iconBtn = {
-  width: 34, height: 30, borderRadius: 8, background: "rgba(255,255,255,.04)",
-  border: "1px solid #2A3C56", cursor: "pointer", fontSize: 13, fontFamily: C.sys, flexShrink: 0,
+  width: 34, height: 30, borderRadius: 8, background: "#f3f4f6",
+  border: "1px solid #d0d7de", cursor: "pointer", fontSize: 13, fontFamily: C.sys, flexShrink: 0,
 };
 const tagStyle = {
-  fontSize: 10.5, color: "#9FB6D6", background: "rgba(255,255,255,.05)",
-  border: "1px solid #2A3C5655", borderRadius: 8, padding: "2px 7px", fontFamily: C.sys, whiteSpace: "nowrap",
+  fontSize: 10.5, color: "#57606a", background: "#f3f4f6",
+  border: "1px solid #d0d7de55", borderRadius: 8, padding: "2px 7px", fontFamily: C.sys, whiteSpace: "nowrap",
 };

@@ -2,7 +2,7 @@ export default {
   id: "dynamic-programming",
   title: "Dynamic Programming",
   subtitle: "A complete reference: from recursion to tabulation, every pattern that matters",
-  emoji: "🧮",
+  emoji: "",
   intro: `Dynamic programming is the single biggest topic in algorithmic interviews — and the one people fear most. The good news: DP is not about memorising tricks. It is a small set of patterns applied with a consistent method. Once you internalise the method, the patterns become recognisable and the solutions almost write themselves.\n\nThis guide covers what DP is, the recursion-to-tabulation pyramid, the five-step method that solves every DP problem, and the seven sub-patterns that account for nearly every DP question you will see: 1D linear DP, grid DP, sequence DP, knapsack, interval DP, state-machine DP, and tree DP. Each pattern is taught with worked examples, the build-up from recursion to tabulation, and notes on space optimisation. The final sections cover recognition signals, common bugs, a 30-problem study plan, and a cheat sheet.\n\nTable of contents: (1) What is dynamic programming, (2) The recursion-to-tabulation pyramid, (3) The five-step method, (4) Pattern A: 1D linear DP, (5) Pattern B: 2D grid DP, (6) Pattern C: sequence and string DP, (7) Pattern D: knapsack family, (8) Pattern E: interval DP, (9) Pattern F: state-machine DP, (10) Pattern G: DP on trees, (11) Memoisation vs tabulation, (12) Space optimisation, (13) Common bugs, (14) Recognising DP in the wild, (15) Study plan, (16) One-page cheat sheet.`,
   sections: [
     {
@@ -53,7 +53,7 @@ export default {
           pointers: [
             { name: "i-2", index: 3, color: "#E0A23B" },
             { name: "i-1", index: 4, color: "#E0A23B" },
-            { name: "i", index: 5, color: "#5FD79E" }
+            { name: "i", index: 5, color: "#1a7f37" }
           ],
           highlight: [5],
           labels: { "0": "dp[1]", "5": "dp[6]" }
@@ -104,7 +104,7 @@ export default {
           pointers: [
             { name: "i-2", index: 2, color: "#E0A23B" },
             { name: "i-1", index: 3, color: "#E0A23B" },
-            { name: "i", index: 4, color: "#6FA8FF" }
+            { name: "i", index: 4, color: "#2f8d46" }
           ],
           highlight: [4],
           labels: { "0": "nums" }
@@ -131,7 +131,7 @@ export default {
           pointers: [
             { name: "two-digit", index: 1, color: "#E0A23B" },
             { name: "one-digit", index: 2, color: "#E0A23B" },
-            { name: "i", index: 3, color: "#5FD79E" }
+            { name: "i", index: 3, color: "#1a7f37" }
           ],
           highlight: [3],
           labels: { "0": "''", "1": "'1'", "2": "'12'", "3": "'126'" }
@@ -168,7 +168,7 @@ export default {
           ],
           highlight: [[2, 2]],
           colors: {
-            "2,2": "#5FD79E",
+            "2,2": "#1a7f37",
             "1,2": "#E0A23B",
             "2,1": "#E0A23B"
           }
@@ -194,7 +194,7 @@ export default {
           ],
           highlight: [[2, 3]],
           colors: {
-            "2,3": "#5FD79E",
+            "2,3": "#1a7f37",
             "1,3": "#E0A23B",
             "2,2": "#E0A23B",
             "1,2": "#E0A23B"
@@ -222,7 +222,7 @@ export default {
           ],
           highlight: [[5, 4]],
           colors: {
-            "5,4": "#5FD79E",
+            "5,4": "#1a7f37",
             "4,3": "#E0A23B"
           }
         }, caption: "LCS of A = 'ABCE' (rows) and B = 'ACE' (cols). Header row/col show the characters; the inner (m+1)x(n+1) grid holds dp values. At dp[5][4] the chars 'E'=='E' match, so it inherits the diagonal dp[4][3]=2 (amber) plus 1 = 3 (green). LCS = 'ACE', length 3." },
@@ -241,7 +241,7 @@ export default {
           ],
           highlight: [[4, 4]],
           colors: {
-            "4,4": "#5FD79E",
+            "4,4": "#1a7f37",
             "3,3": "#E0A23B",
             "3,4": "#E0A23B",
             "4,3": "#E0A23B"
@@ -275,7 +275,7 @@ export default {
           ],
           highlight: [[2, 5]],
           colors: {
-            "2,5": "#5FD79E",
+            "2,5": "#1a7f37",
             "1,5": "#E0A23B",
             "1,2": "#E0A23B"
           }
@@ -297,7 +297,7 @@ export default {
           pointers: [
             { name: "a-5", index: 1, color: "#E0A23B" },
             { name: "a-2", index: 4, color: "#E0A23B" },
-            { name: "a", index: 6, color: "#5FD79E" }
+            { name: "a", index: 6, color: "#1a7f37" }
           ],
           highlight: [6],
           labels: { "0": "amount 0", "6": "amount 6" }

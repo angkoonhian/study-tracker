@@ -3,8 +3,8 @@ import { useState } from "react";
 const ROLE_GROUPS = [
   {
     group: "Quant Developer / Quant SWE",
-    color: "#6FA8FF",
-    border: "#2F66C4",
+    color: "#2f8d46",
+    border: "#2f8d46",
     blurb: "The most natural pivot from a software engineering seat. You build the systems researchers and traders run on.",
     roles: [
       {
@@ -43,8 +43,8 @@ const ROLE_GROUPS = [
   },
   {
     group: "Quant Researcher / Quant Analyst",
-    color: "#5FD79E",
-    border: "#27613F",
+    color: "#1a7f37",
+    border: "#1a7f37",
     blurb: "The signal side. Heavier on statistics and probability, lighter on production systems — though Python is still the daily tool.",
     roles: [
       {
@@ -145,8 +145,8 @@ const ROLE_GROUPS = [
 ];
 
 const TRACK_TAGS = {
-  primary: { label: "Best fit from SWE", color: "#6FA8FF", bg: "rgba(111,168,255,.12)", border: "rgba(111,168,255,.35)" },
-  research: { label: "Probability-heavy", color: "#5FD79E", bg: "rgba(95,215,158,.12)", border: "rgba(95,215,158,.35)" },
+  primary: { label: "Best fit from SWE", color: "#2f8d46", bg: "rgba(111,168,255,.12)", border: "rgba(111,168,255,.35)" },
+  research: { label: "Probability-heavy", color: "#1a7f37", bg: "rgba(95,215,158,.12)", border: "rgba(95,215,158,.35)" },
   trading: { label: "Mental-math / EV", color: "#C084FC", bg: "rgba(192,132,252,.12)", border: "rgba(192,132,252,.35)" },
   context: { label: "Context", color: "#FFB86C", bg: "rgba(255,184,108,.12)", border: "rgba(255,184,108,.35)" },
 };
@@ -180,32 +180,32 @@ export default function JobRoles({ onBack }) {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "radial-gradient(ellipse at top, #16243B 0%, #0B1422 60%, #070D16 100%)",
+      background: "#f6f8fa",
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif",
-      color: "#E8EDF4", padding: "0 0 80px 0",
+      color: "#1f2328", padding: "0 0 80px 0",
     }}>
       <style>{`
         * { box-sizing: border-box; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(8px);} to {opacity:1; transform:none;} }
         .role-card { animation: fadeUp .35s ease both; }
-        .role-card:hover { background: rgba(255,255,255,.04); }
+        .role-card:hover { background: #f3f4f6; }
         .group-btn:hover { transform: translateX(3px); }
         ::-webkit-scrollbar { width: 9px; }
-        ::-webkit-scrollbar-track { background: #0B1422; }
-        ::-webkit-scrollbar-thumb { background: #2A3C56; border-radius: 5px; }
+        ::-webkit-scrollbar-track { background: #ffffff; }
+        ::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 5px; }
       `}</style>
 
       {/* Header */}
       <div style={{
-        borderBottom: "1px solid #243650",
-        background: "linear-gradient(180deg, rgba(20,33,54,.85), rgba(11,20,34,.6))",
+        borderBottom: "1px solid #d0d7de",
+        background: "#ffffff",
         backdropFilter: "blur(6px)", padding: "34px 28px 26px",
         position: "sticky", top: 0, zIndex: 20,
       }}>
         <div style={{ maxWidth: 920, margin: "0 auto" }}>
           <button onClick={onBack} style={{
-            background: "rgba(111,168,255,.08)", border: "1px solid #2F66C4",
-            color: "#9CC0F5", borderRadius: 20, padding: "5px 14px",
+            background: "#eef6f0", border: "1px solid #2f8d46",
+            color: "#2f8d46", borderRadius: 20, padding: "5px 14px",
             fontSize: 12, cursor: "pointer", fontFamily: "system-ui",
             fontWeight: 600, marginBottom: 16,
           }}>← Back to Tracker</button>
@@ -214,18 +214,18 @@ export default function JobRoles({ onBack }) {
             alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
             <div>
               <div style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                color: "#7E9BC4", marginBottom: 8, fontFamily: "system-ui" }}>
+                color: "#57606a", marginBottom: 8, fontFamily: "system-ui" }}>
                 SWE → Quant · Roles Reference
               </div>
               <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700,
-                color: "#F4F8FE", lineHeight: 1.15 }}>
+                color: "#111418", lineHeight: 1.15 }}>
                 Quant Roles & Interview Loops
               </h1>
             </div>
             <div style={{ textAlign: "right", fontFamily: "system-ui" }}>
-              <div style={{ fontSize: 42, fontWeight: 800, color: "#6FA8FF",
+              <div style={{ fontSize: 42, fontWeight: 800, color: "#2f8d46",
                 lineHeight: 1 }}>{TOTAL_ROLES}</div>
-              <div style={{ fontSize: 12, color: "#7E9BC4", marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: "#57606a", marginTop: 4 }}>
                 roles across {ROLE_GROUPS.length} tracks
               </div>
             </div>
@@ -238,11 +238,11 @@ export default function JobRoles({ onBack }) {
         {/* Profile / orientation */}
         <div style={{
           padding: "16px 20px", marginBottom: 20,
-          background: "linear-gradient(135deg,#13243F,#0E1B30)",
-          border: "1px solid #243650", borderRadius: 14,
-          fontSize: 13.5, lineHeight: 1.65, color: "#A9BCD8",
+          background: "#ffffff",
+          border: "1px solid #d0d7de", borderRadius: 14,
+          fontSize: 13.5, lineHeight: 1.65, color: "#57606a",
         }}>
-          <strong style={{ color: "#9CC0F5" }}>Where you stand:</strong>{" "}
+          <strong style={{ color: "#2f8d46" }}>Where you stand:</strong>{" "}
           Software Engineer at <strong>Millennium</strong> (multi-strategy pod hedge fund) aiming to move into quant.
           Your strongest, most credible pivot is <strong>Quant Developer / Quant SWE</strong> — it leans directly on
           your engineering experience. <strong>Python</strong> is the language to emphasize across the dev and research
@@ -258,10 +258,10 @@ export default function JobRoles({ onBack }) {
                 style={{
                   width: "100%", textAlign: "left", cursor: "pointer",
                   background: isOpen
-                    ? "linear-gradient(135deg,#1B3360,#15294A)"
-                    : "linear-gradient(135deg,#152444,#111E36)",
-                  border: `1px solid ${isOpen ? grp.border : "#23344E"}`,
-                  borderRadius: 14, padding: "18px 22px", color: "#E8EDF4",
+                    ? "#eef6f0"
+                    : "#ffffff",
+                  border: `1px solid ${isOpen ? grp.border : "#d0d7de"}`,
+                  borderRadius: 14, padding: "18px 22px", color: "#1f2328",
                   transition: "all .2s ease", display: "flex",
                   alignItems: "center", gap: 18,
                 }}>
@@ -271,7 +271,7 @@ export default function JobRoles({ onBack }) {
                 }}>{grp.roles.length}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 18, fontWeight: 700 }}>{grp.group}</div>
-                  <div style={{ fontSize: 12.5, color: "#8AA1C2",
+                  <div style={{ fontSize: 12.5, color: "#57606a",
                     marginTop: 3, fontFamily: "system-ui" }}>
                     {grp.blurb}
                   </div>
@@ -288,8 +288,8 @@ export default function JobRoles({ onBack }) {
                     const tt = TRACK_TAGS[role.track];
                     return (
                       <div key={ri} className="role-card" style={{
-                        background: "linear-gradient(180deg,#101D33,#0C1626)",
-                        border: "1px solid #1F2F47",
+                        background: "#ffffff",
+                        border: "1px solid #d0d7de",
                         borderRadius: 13, padding: "16px 18px",
                         animationDelay: `${ri * 0.04}s`,
                       }}>
@@ -299,7 +299,7 @@ export default function JobRoles({ onBack }) {
                             fontFamily: "system-ui", color: grp.color,
                             letterSpacing: 1 }}>{role.company.toUpperCase()}</span>
                           <span style={{ fontSize: 16, fontWeight: 700,
-                            color: "#EAF0F8" }}>{role.title}</span>
+                            color: "#111418" }}>{role.title}</span>
                           <span style={{ marginLeft: "auto", display: "flex", gap: 6,
                             alignItems: "center", flexShrink: 0 }}>
                             {tt && (
@@ -312,8 +312,8 @@ export default function JobRoles({ onBack }) {
                               </span>
                             )}
                             <span style={{ fontSize: 11.5,
-                              color: "#7E9BC4", fontFamily: "system-ui",
-                              border: "1px solid #23344E", borderRadius: 10,
+                              color: "#57606a", fontFamily: "system-ui",
+                              border: "1px solid #d0d7de", borderRadius: 10,
                               padding: "2px 10px", whiteSpace: "nowrap" }}>
                               {role.location}
                             </span>
@@ -337,12 +337,12 @@ export default function JobRoles({ onBack }) {
         {/* Game plan */}
         <div style={{
           marginTop: 28, padding: "20px 24px",
-          background: "linear-gradient(135deg,#13243F,#0E1B30)",
-          border: "1px solid #243650", borderRadius: 14,
-          fontSize: 14, lineHeight: 1.65, color: "#A9BCD8",
+          background: "#ffffff",
+          border: "1px solid #d0d7de", borderRadius: 14,
+          fontSize: 14, lineHeight: 1.65, color: "#57606a",
         }}>
-          <strong style={{ color: "#5FD79E" }}>Suggested path from your SWE seat:</strong>
-          <ol style={{ margin: "10px 0 0", paddingLeft: 22, color: "#C5D4E9" }}>
+          <strong style={{ color: "#1a7f37" }}>Suggested path from your SWE seat:</strong>
+          <ol style={{ margin: "10px 0 0", paddingLeft: 22, color: "#1f2328" }}>
             <li><strong>Quant Developer / Quant SWE</strong> — primary target; your engineering background carries most of the loop.</li>
             <li><strong>Lean on the internal bridge</strong> — being a Millennium SWE is real credibility for a pod quant-dev seat; explore lateral moves alongside external ones.</li>
             <li><strong>Sharpen Python</strong> — idiomatic, fast, clean; numpy/pandas plus the DSA you already know.</li>
@@ -353,11 +353,11 @@ export default function JobRoles({ onBack }) {
 
         <div style={{
           marginTop: 16, padding: "16px 24px",
-          background: "linear-gradient(135deg,#13243F,#0E1B30)",
-          border: "1px solid #243650", borderRadius: 14,
-          fontSize: 13, lineHeight: 1.6, color: "#8DA4C4",
+          background: "#ffffff",
+          border: "1px solid #d0d7de", borderRadius: 14,
+          fontSize: 13, lineHeight: 1.6, color: "#57606a",
         }}>
-          <strong style={{ color: "#FFB86C" }}>Note:</strong>{" "}
+          <strong style={{ color: "#9a6700" }}>Note:</strong>{" "}
           Comp figures are framing, not quotes — quant pay is heavily performance-linked and varies by firm,
           desk, and year. Loops differ between shops; treat each track here as the shape to prepare for, then
           tailor once you know which firm and seat you're interviewing for.
