@@ -7,11 +7,13 @@ import Dashboard from "./Dashboard.jsx";
 import Today from "./Today.jsx";
 import FlightMode from "./FlightMode.jsx";
 import DSA from "./DSA.jsx";
+import TradingPrep from "./TradingPrep.jsx";
 import { QUANT_PLAN, QUANT_WEEKS } from "./data/quantPlan.js";
 import { GlobalNav, page as pageStyle } from "./ui/theme.jsx";
 import {
   loadTracker, saveTracker, loadBank, saveBank, loadCards, saveCards,
   loadSettings, saveSettings, loadFlight, saveFlight,
+  loadTrading, saveTrading,
   exportAll, importAll, resetToPublished, KEYS,
 } from "./store/storage.js";
 
@@ -497,6 +499,7 @@ export default function StudyTracker() {
   const [cards, setCards] = usePersistedState(loadCards, saveCards);
   const [settings, setSettings] = usePersistedState(loadSettings, saveSettings);
   const [flight, setFlight] = usePersistedState(loadFlight, saveFlight);
+  const [trading, setTrading] = usePersistedState(loadTrading, saveTrading);
   const [openWeek, setOpenWeek] = useState(QUANT_WEEKS[0]);
   const [filter, setFilter] = useState("all");
   // "today" | "tracker" | "bank" | "cards" | "dashboard" | "flight" | "framework" | "roles"
@@ -609,6 +612,7 @@ export default function StudyTracker() {
         {view === "flight" && (
           <FlightMode flight={flight} setFlight={setFlight} />
         )}
+        {view === "trading" && <TradingPrep trading={trading} setTrading={setTrading} />}
       </div>
     );
   }
