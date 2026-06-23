@@ -6,6 +6,7 @@ import Flashcards from "./Flashcards.jsx";
 import Dashboard from "./Dashboard.jsx";
 import Today from "./Today.jsx";
 import FlightMode from "./FlightMode.jsx";
+import DSA from "./DSA.jsx";
 import { QUANT_PLAN, QUANT_WEEKS } from "./data/quantPlan.js";
 import { GlobalNav, page as pageStyle } from "./ui/theme.jsx";
 import {
@@ -604,6 +605,7 @@ export default function StudyTracker() {
         {view === "dashboard" && (
           <Dashboard done={done} bank={bank} cards={cards} plan={PLAN} />
         )}
+        {view === "dsa" && <DSA flight={flight} setFlight={setFlight} />}
         {view === "flight" && (
           <FlightMode flight={flight} setFlight={setFlight} />
         )}
