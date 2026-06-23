@@ -195,7 +195,7 @@ function CodingProblem({ problem, progress, setProgress }) {
         </div>
       </Panel>
 
-      {showHint && <Panel style={{ borderColor: "#3a3320" }}>
+      {showHint && <Panel style={{ borderColor: `${C.amber}66`, background: "#fffaf0" }}>
         <span style={{ color: C.amber, fontFamily: C.sys, fontSize: 13 }}>{problem.hint}</span>
       </Panel>}
 
