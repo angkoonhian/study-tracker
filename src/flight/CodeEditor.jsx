@@ -12,7 +12,6 @@ import CodeMirror from "@uiw/react-codemirror";
 import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { python } from "@codemirror/lang-python";
-import { oneDark } from "@codemirror/theme-one-dark";
 
 const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 // Tab/Shift-Tab indent isn't bound by default in CodeMirror 6 — add it so the
@@ -36,7 +35,7 @@ function CM({ value, onChange }) {
       value={value}
       onChange={(v) => onChange(v)}
       extensions={EXTENSIONS}
-      theme={oneDark}
+      theme="light"
       minHeight="300px"
       maxHeight="600px"
       basicSetup={BASIC}
