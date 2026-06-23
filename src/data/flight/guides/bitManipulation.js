@@ -128,7 +128,7 @@ for i in range(32):
               [0, 1, 1, 0]
             ],
             highlight: [[2, 1], [2, 2]],
-            colors: { "2,1": "#5FD79E", "2,2": "#5FD79E" }
+            colors: { "2,1": "#1a7f37", "2,2": "#1a7f37" }
           },
           caption: "XOR column-by-column: row 0 = A (0b1100 = 12), row 1 = B (0b1010 = 10), row 2 = A ^ B (0b0110 = 6). Each result bit is 1 exactly where the two operand bits differ; the set result bits are highlighted."
         },

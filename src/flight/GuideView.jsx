@@ -50,7 +50,7 @@ export default function GuidesMode() {
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {GUIDES.map((g) => (
             <button key={g.id} onClick={() => { setId(g.id); window.scrollTo({ top: 0 }); }} style={{
-              textAlign: "left", background: g.id === id ? "#16263f" : "transparent",
+              textAlign: "left", background: g.id === id ? "#eef6f0" : "transparent",
               border: `1px solid ${g.id === id ? C.borderHi : "transparent"}`,
               borderRadius: 8, padding: "8px 10px", cursor: "pointer", color: C.text,
               fontFamily: C.sys, fontSize: 13, display: "flex", gap: 8, alignItems: "center" }}>
@@ -63,7 +63,7 @@ export default function GuidesMode() {
       {/* reader */}
       <div style={{ minWidth: 0 }}>
         <div style={{ marginBottom: 16 }}>
-          <h1 style={{ margin: "0 0 4px", fontSize: 30, color: "#F4F8FE" }}>{guide.title}</h1>
+          <h1 style={{ margin: "0 0 4px", fontSize: 30, color: "#111418" }}>{guide.title}</h1>
           <div style={{ fontFamily: C.sys, fontSize: 15, color: C.muted, fontStyle: "italic" }}>{guide.subtitle}</div>
         </div>
 
@@ -75,14 +75,14 @@ export default function GuidesMode() {
 
         {guide.sections.map((s, i) => (
           <section key={i} ref={(el) => (sectionRefs.current[i] = el)} style={{ scrollMarginTop: 64, marginBottom: 22 }}>
-            <h2 style={{ fontSize: 22, color: "#F4F8FE", margin: "0 0 12px",
+            <h2 style={{ fontSize: 22, color: "#111418", margin: "0 0 12px",
               borderBottom: `1px solid ${C.border}`, paddingBottom: 8 }}>{s.heading}</h2>
             {(s.blocks || []).map((b, j) => <Block key={j} b={b} />)}
           </section>
         ))}
 
         {guide.cheatsheet && guide.cheatsheet.length > 0 && (
-          <Panel style={{ background: "linear-gradient(180deg,#10241c,#0c1626)", borderColor: "#27613F", marginBottom: 30 }}>
+          <Panel style={{ background: "#eef6f0", borderColor: "#1a7f37", marginBottom: 30 }}>
             <div style={{ fontFamily: C.sys, fontSize: 12, color: C.green, letterSpacing: 1,
               textTransform: "uppercase", marginBottom: 10, fontWeight: 700 }}>Cheat sheet</div>
             <ul style={{ margin: 0, paddingLeft: 20, color: C.text, fontFamily: C.sys, fontSize: 13.5, lineHeight: 1.8 }}>
@@ -102,7 +102,7 @@ export default function GuidesMode() {
               textAlign: "left", background: "transparent", border: "none",
               borderLeft: `2px solid ${active === i ? C.blue : "transparent"}`,
               marginLeft: -1, padding: "5px 12px", cursor: "pointer",
-              color: active === i ? "#CFE0F5" : C.muted,
+              color: active === i ? "#1f2328" : C.muted,
               fontFamily: C.sys, fontSize: 12.5, lineHeight: 1.45,
               fontWeight: active === i ? 600 : 400 }}>
               {s.heading}
@@ -119,22 +119,22 @@ function Block({ b }) {
     case "p":
       return <p style={paraStyle}>{b.text}</p>;
     case "h3":
-      return <h3 style={{ fontSize: 16.5, color: "#DCE7F6", margin: "18px 0 8px" }}>{b.text}</h3>;
+      return <h3 style={{ fontSize: 16.5, color: "#1f2328", margin: "18px 0 8px" }}>{b.text}</h3>;
     case "ul":
       return <ul style={listStyle}>{b.items.map((it, i) => <li key={i} style={{ marginBottom: 4 }}>{it}</li>)}</ul>;
     case "ol":
       return <ol style={listStyle}>{b.items.map((it, i) => <li key={i} style={{ marginBottom: 4 }}>{it}</li>)}</ol>;
     case "code":
       return (
-        <pre style={{ background: "#0A1322", border: `1px solid ${C.border}`, borderRadius: 10,
+        <pre style={{ background: "#f3f4f6", border: `1px solid ${C.border}`, borderRadius: 10,
           padding: "13px 15px", overflowX: "auto", margin: "10px 0", fontFamily: mono,
-          fontSize: 12.8, lineHeight: 1.55, color: "#D6E2F2", whiteSpace: "pre" }}>{b.code}</pre>
+          fontSize: 12.8, lineHeight: 1.55, color: "#1f2328", whiteSpace: "pre" }}>{b.code}</pre>
       );
     case "callout":
       return (
-        <div style={{ borderLeft: `3px solid ${C.blue}`, background: "rgba(111,168,255,.07)",
+        <div style={{ borderLeft: `3px solid ${C.blue}`, background: "#eef6f0",
           borderRadius: "0 8px 8px 0", padding: "10px 14px", margin: "12px 0",
-          fontFamily: C.sys, fontSize: 13.5, color: "#CFE0F5", lineHeight: 1.6 }}>{b.text}</div>
+          fontFamily: C.sys, fontSize: 13.5, color: "#1f2328", lineHeight: 1.6 }}>{b.text}</div>
       );
     case "table":
       return <GuideTable headers={b.headers} rows={b.rows} />;
@@ -157,7 +157,7 @@ function GuideTable({ headers, rows }) {
         </thead>
         <tbody>
           {rows.map((r, i) => (
-            <tr key={i} style={{ background: i % 2 ? "transparent" : "rgba(255,255,255,.02)" }}>
+            <tr key={i} style={{ background: i % 2 ? "transparent" : "#f6f8fa" }}>
               {r.map((cell, j) => (
                 <td key={j} style={{ padding: "8px 11px", color: C.text, verticalAlign: "top",
                   borderBottom: `1px solid ${C.border}`, lineHeight: 1.5 }}>{cell}</td>

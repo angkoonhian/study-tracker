@@ -50,7 +50,7 @@ export function useCatalog() {
 }
 
 export const DIFF_LABEL = { E: "Easy", M: "Medium", H: "Hard" };
-export const DIFF_COLOR = { E: "#3DBB7A", M: "#E0A23B", H: "#E2566F" };
+export const DIFF_COLOR = { E: "#1a7f37", M: "#E0A23B", H: "#E2566F" };
 
 const SPECIAL = {
   "depth-first-search": "DFS",

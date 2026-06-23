@@ -4,7 +4,7 @@ import { schedule, isDue, previewInterval, GRADES } from "./srs/sm2.js";
 import { now } from "./lib/now.js";
 
 const TYPE_LABEL = { pattern: "Pattern", concept: "Concept", auto: "Problem", manual: "Manual" };
-const TYPE_COLOR = { pattern: "#6FA8FF", concept: "#C58BE8", auto: "#5FD79E", manual: "#E0A23B" };
+const TYPE_COLOR = { pattern: "#2f8d46", concept: "#C58BE8", auto: "#1a7f37", manual: "#E0A23B" };
 
 export default function Flashcards({ cards, setCards }) {
   const [mode, setMode] = useState("overview"); // overview | review | manage
@@ -209,7 +209,7 @@ function Manage({ cards, setCards }) {
               </div>
             </div>
             <button onClick={() => del(c.id)} title="Delete" style={{
-              background: "transparent", border: "1px solid #5A2A38", color: C.red, borderRadius: 8,
+              background: "transparent", border: "1px solid #e5b3b3", color: C.red, borderRadius: 8,
               padding: "4px 9px", cursor: "pointer", fontSize: 12, fontFamily: C.sys, flexShrink: 0 }}>✕</button>
           </div>
         ))}
@@ -229,6 +229,6 @@ function Stat({ label, value, color }) {
 }
 
 const inp = {
-  background: "#0B1422", border: "1px solid #2A3C56", color: C.text,
+  background: "#ffffff", border: "1px solid #d0d7de", color: C.text,
   borderRadius: 9, padding: "9px 11px", fontSize: 13.5, fontFamily: C.font, outline: "none", flex: 1, width: "100%",
 };

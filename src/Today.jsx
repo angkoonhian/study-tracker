@@ -65,7 +65,7 @@ export default function Today({ done, toggleTask, bank, setBank, cards, plan, se
       {/* Problem re-solves due */}
       {dueResolves.length > 0 && (
         <Panel style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: "#CFE0F5" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: "#1f2328" }}>
             ↻ Re-solve from scratch ({dueResolves.length})
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -74,7 +74,7 @@ export default function Today({ done, toggleTask, bank, setBank, cards, plan, se
               const srs = bank[id]?.srs;
               return (
                 <div key={id} style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
-                  padding: "10px 12px", background: "rgba(226,86,111,.05)", border: "1px solid #5A2A38", borderRadius: 10 }}>
+                  padding: "10px 12px", background: "rgba(226,86,111,.05)", border: "1px solid #e5b3b3", borderRadius: 10 }}>
                   <span style={{ fontSize: 12, color: C.faint, fontFamily: C.sys, minWidth: 44 }}>#{id}</span>
                   <a href={p ? lc(p.slug) : `https://leetcode.com/problemset/`} target="_blank" rel="noreferrer"
                     style={{ flex: 1, minWidth: 160, color: C.text, fontSize: 14.5, textDecoration: "none", fontWeight: 500 }}>
@@ -115,11 +115,11 @@ export default function Today({ done, toggleTask, bank, setBank, cards, plan, se
                 <div key={t.id} onClick={() => toggleTask(t.id)} style={{ display: "flex", gap: 11, alignItems: "flex-start",
                   cursor: "pointer", padding: "8px 6px", borderRadius: 8 }}>
                   <div style={{ width: 18, height: 18, borderRadius: 5, marginTop: 1, flexShrink: 0,
-                    border: `2px solid ${isD ? C.green : "#3C5174"}`, background: isD ? C.green : "transparent",
-                    display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#08101F", fontWeight: 700 }}>
+                    border: `2px solid ${isD ? C.green : "#aeb6bf"}`, background: isD ? C.green : "transparent",
+                    display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#ffffff", fontWeight: 700 }}>
                     {isD ? "✓" : ""}
                   </div>
-                  <span style={{ fontSize: 14, lineHeight: 1.5, color: isD ? C.faint : "#D7E0EE",
+                  <span style={{ fontSize: 14, lineHeight: 1.5, color: isD ? C.faint : "#1f2328",
                     textDecoration: isD ? "line-through" : "none" }}>{t.text}</span>
                 </div>
               );

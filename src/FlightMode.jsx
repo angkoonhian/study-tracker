@@ -62,9 +62,9 @@ function OfflineBadge() {
 }
 
 const tab = (active) => ({
-  background: active ? C.blue : "rgba(255,255,255,.04)",
-  color: active ? "#08101F" : "#AFC3E0",
-  border: `1px solid ${active ? C.blue : "#2A3C56"}`,
+  background: active ? C.blue : "#f3f4f6",
+  color: active ? "#ffffff" : "#57606a",
+  border: `1px solid ${active ? C.blue : "#d0d7de"}`,
   borderRadius: 20, padding: "8px 16px", fontSize: 13.5, fontWeight: 700,
   cursor: "pointer", fontFamily: C.sys,
 });
@@ -135,7 +135,7 @@ function CodingMode({ flight, setFlight }) {
                     const active = p.id === problem.id;
                     return (
                       <button key={p.id} onClick={() => setSelId(p.id)} style={{
-                        textAlign: "left", background: active ? "#16263f" : "transparent",
+                        textAlign: "left", background: active ? "#eef6f0" : "transparent",
                         border: `1px solid ${active ? C.borderHi : "transparent"}`,
                         borderRadius: 8, padding: "7px 9px", cursor: "pointer", color: C.text,
                         fontFamily: C.sys, fontSize: 12.5, display: "flex", gap: 7, alignItems: "center",
@@ -195,7 +195,7 @@ function CodingProblem({ problem, flight, setFlight }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <Panel>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <h2 style={{ margin: 0, fontSize: 20, color: "#F4F8FE" }}>{problem.title}</h2>
+          <h2 style={{ margin: 0, fontSize: 20, color: "#111418" }}>{problem.title}</h2>
           <span style={pill(DIFF_COLOR[problem.difficulty])}>{problem.difficulty}</span>
           <span style={pill(C.blue)}>{problem.topic}</span>
           {saved?.solved && <span style={pill(C.green)}>✓ solved</span>}
@@ -229,7 +229,7 @@ function CodingProblem({ problem, flight, setFlight }) {
 
       {showSol && <Panel>
         <div style={{ fontFamily: C.sys, fontSize: 12, color: C.faint, marginBottom: 6 }}>REFERENCE SOLUTION</div>
-        <pre style={{ ...statementStyle, fontFamily: mono, color: "#C9E2C9" }}>{problem.solution}</pre>
+        <pre style={{ ...statementStyle, fontFamily: mono, color: "#0a5d1f" }}>{problem.solution}</pre>
       </Panel>}
     </div>
   );
@@ -237,15 +237,15 @@ function CodingProblem({ problem, flight, setFlight }) {
 
 function RunOutput({ out }) {
   if (out.fatal) {
-    return <Panel style={{ borderColor: "#5A2A38" }}>
+    return <Panel style={{ borderColor: "#e5b3b3" }}>
       <div style={{ color: C.red, fontFamily: C.sys, fontWeight: 700, marginBottom: 6 }}>Runtime failed to load</div>
-      <pre style={{ ...statementStyle, fontFamily: mono, color: "#E2A9B4" }}>{out.fatal}</pre>
+      <pre style={{ ...statementStyle, fontFamily: mono, color: "#9b2b2b" }}>{out.fatal}</pre>
     </Panel>;
   }
   if (!out.compiled) {
-    return <Panel style={{ borderColor: "#5A2A38" }}>
+    return <Panel style={{ borderColor: "#e5b3b3" }}>
       <div style={{ color: C.red, fontFamily: C.sys, fontWeight: 700, marginBottom: 6 }}>Your code raised an error</div>
-      <pre style={{ ...statementStyle, fontFamily: mono, color: "#E2A9B4" }}>{out.compileError}</pre>
+      <pre style={{ ...statementStyle, fontFamily: mono, color: "#9b2b2b" }}>{out.compileError}</pre>
     </Panel>;
   }
   const allPass = out.allPass;
@@ -255,7 +255,7 @@ function RunOutput({ out }) {
   const totalPassed = out.passed + out.hiddenPassed;
   const totalAll = out.total + out.hiddenTotal;
   return (
-    <Panel style={{ borderColor: allPass ? "#27613F" : "#5A2A38" }}>
+    <Panel style={{ borderColor: allPass ? "#1a7f37" : "#e5b3b3" }}>
       <div style={{ fontFamily: C.sys, fontWeight: 800, fontSize: 15,
         color: allPass ? C.green : C.red, marginBottom: 10 }}>
         {allPass ? "✓ Accepted — all tests passed" : "✗ Some tests failed"} — {totalPassed}/{totalAll}
@@ -293,14 +293,14 @@ function RunOutput({ out }) {
 function TestRow({ r }) {
   return (
     <div style={{ fontFamily: mono, fontSize: 12.5,
-      background: r.ok ? "#0e2018" : "#23121a", border: `1px solid ${r.ok ? "#27613F" : "#5A2A38"}`,
+      background: r.ok ? "#eaf6ec" : "#fbeaea", border: `1px solid ${r.ok ? "#1a7f37" : "#e5b3b3"}`,
       borderRadius: 7, padding: "7px 10px" }}>
       <span style={{ color: r.ok ? C.green : C.red, fontWeight: 700 }}>{r.ok ? "✓" : "✗"}</span>{" "}
       <span style={{ color: C.text }}>{r.call}</span>
       {!r.ok && !r.error && (
         <span style={{ color: C.muted }}>{"  →  got "}<span style={{ color: C.red }}>{r.got}</span>{", want "}<span style={{ color: C.green }}>{r.want}</span></span>
       )}
-      {r.error && <pre style={{ margin: "6px 0 0", color: "#E2A9B4", whiteSpace: "pre-wrap" }}>{r.error}</pre>}
+      {r.error && <pre style={{ margin: "6px 0 0", color: "#9b2b2b", whiteSpace: "pre-wrap" }}>{r.error}</pre>}
     </div>
   );
 }
@@ -350,7 +350,7 @@ function TeasersMode({ flight, setFlight }) {
           <Btn kind="primary" style={{ marginTop: 16 }} onClick={() => setRevealed(true)}>Show answer & solution</Btn>
         ) : (
           <div style={{ marginTop: 16 }}>
-            <div style={{ background: "#0e2018", border: "1px solid #27613F", borderRadius: 8, padding: "10px 14px", marginBottom: 12 }}>
+            <div style={{ background: "#eaf6ec", border: "1px solid #1a7f37", borderRadius: 8, padding: "10px 14px", marginBottom: 12 }}>
               <span style={{ fontFamily: C.sys, fontSize: 12, color: C.faint }}>ANSWER  </span>
               <span style={{ fontWeight: 800, color: C.green, fontSize: 15 }}>{t.answer}</span>
             </div>
@@ -427,13 +427,13 @@ function MathMode({ flight, setFlight }) {
           <span>Question {log.length + 1} / {ROUND_LEN}</span>
           <span>{log.filter((r) => r.ok).length} correct</span>
         </div>
-        <div style={{ fontSize: 38, fontWeight: 800, textAlign: "center", color: "#F4F8FE", margin: "10px 0 22px", fontFamily: mono }}>
+        <div style={{ fontSize: 38, fontWeight: 800, textAlign: "center", color: "#111418", margin: "10px 0 22px", fontFamily: mono }}>
           {q.prompt}
         </div>
         <form onSubmit={(e) => { e.preventDefault(); submit(); }} style={{ display: "flex", gap: 8 }}>
           <input autoFocus value={val} onChange={(e) => setVal(e.target.value)} inputMode="decimal"
             placeholder="answer" style={{ flex: 1, fontSize: 22, textAlign: "center", fontFamily: mono,
-              background: "#0A1322", color: C.text, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px" }} />
+              background: "#f3f4f6", color: C.text, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px" }} />
           <Btn kind="primary" onClick={submit}>Enter</Btn>
         </form>
         <div style={{ textAlign: "center", marginTop: 14, height: 22, fontFamily: mono, fontSize: 15,
@@ -499,7 +499,7 @@ function DesignMode({ flight, setFlight }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {SYS_DESIGN.map((x) => (
             <button key={x.id} onClick={() => { setSelId(x.id); setReveal(false); }} style={{
-              textAlign: "left", background: x.id === selId ? "#16263f" : "transparent",
+              textAlign: "left", background: x.id === selId ? "#eef6f0" : "transparent",
               border: `1px solid ${x.id === selId ? C.borderHi : "transparent"}`,
               borderRadius: 8, padding: "8px 9px", cursor: "pointer", color: C.text,
               fontFamily: C.sys, fontSize: 12.5, display: "flex", gap: 7 }}>
@@ -512,7 +512,7 @@ function DesignMode({ flight, setFlight }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Panel>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-            <h2 style={{ margin: 0, fontSize: 19, color: "#F4F8FE" }}>{d.title}</h2>
+            <h2 style={{ margin: 0, fontSize: 19, color: "#111418" }}>{d.title}</h2>
             <span style={pill(DIFF_COLOR[d.difficulty])}>{d.difficulty}</span>
           </div>
           <pre style={{ ...statementStyle, fontSize: 14.5 }}>{d.prompt}</pre>
@@ -520,7 +520,7 @@ function DesignMode({ flight, setFlight }) {
           <ul style={{ margin: 0, paddingLeft: 20, color: C.text, fontFamily: C.sys, fontSize: 13.5, lineHeight: 1.7 }}>
             {d.requirements.map((r, i) => <li key={i}>{r}</li>)}
           </ul>
-          <div style={{ marginTop: 14, padding: "10px 14px", background: "#101d33", border: `1px solid ${C.border}`, borderRadius: 8 }}>
+          <div style={{ marginTop: 14, padding: "10px 14px", background: C.chipBg, border: `1px solid ${C.border}`, borderRadius: 8 }}>
             <span style={{ fontFamily: C.sys, fontSize: 12, color: C.blue }}>WHY A FUND ASKS THIS  </span>
             <span style={{ fontFamily: C.sys, fontSize: 13, color: C.muted }}>{d.quantAngle}</span>
           </div>
@@ -530,7 +530,7 @@ function DesignMode({ flight, setFlight }) {
           value={saved.notes || ""} onChange={(e) => patch({ notes: e.target.value })}
           placeholder="Sketch your approach here before revealing the model answer…"
           rows={5} spellCheck={false}
-          style={{ width: "100%", boxSizing: "border-box", background: "#0A1322", color: C.text,
+          style={{ width: "100%", boxSizing: "border-box", background: "#f3f4f6", color: C.text,
             border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px",
             fontFamily: C.sys, fontSize: 13.5, resize: "vertical" }} />
 
@@ -556,6 +556,6 @@ const statementStyle = {
   fontFamily: C.font, fontSize: 14, lineHeight: 1.6, color: C.text,
 };
 const selectStyle = {
-  background: "#0A1322", color: C.text, border: `1px solid ${C.border}`,
+  background: "#f3f4f6", color: C.text, border: `1px solid ${C.border}`,
   borderRadius: 8, padding: "7px 10px", fontFamily: C.sys, fontSize: 13, width: "100%",
 };

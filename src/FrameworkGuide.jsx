@@ -8,7 +8,7 @@ import { useState } from "react";
 //  What this sounds like out loud → Pitfalls.
 // ---------------------------------------------------------------------------
 
-const ACCENT = "#6FA8FF";
+const ACCENT = "#2f8d46";
 
 const AT_A_GLANCE = [
   { n: 1, step: "Requirements",      one: "Decide what you're building and at what scale, before designing anything", time: "~5 min" },
@@ -277,10 +277,10 @@ export default function FrameworkGuide({ onBack }) {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(ellipse at top, #16243B 0%, #0B1422 60%, #070D16 100%)",
+          "#f6f8fa",
         fontFamily:
           "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif",
-        color: "#E8EDF4",
+        color: "#1f2328",
         padding: "0 0 80px 0",
       }}
     >
@@ -290,16 +290,16 @@ export default function FrameworkGuide({ onBack }) {
         .step-card { animation: fadeUp .35s ease both; }
         .step-chip:hover { transform: translateY(-1px); }
         ::-webkit-scrollbar { width: 9px; }
-        ::-webkit-scrollbar-track { background: #0B1422; }
-        ::-webkit-scrollbar-thumb { background: #2A3C56; border-radius: 5px; }
+        ::-webkit-scrollbar-track { background: #ffffff; }
+        ::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 5px; }
       `}</style>
 
       {/* Sticky header */}
       <div
         style={{
-          borderBottom: "1px solid #243650",
+          borderBottom: "1px solid #d0d7de",
           background:
-            "linear-gradient(180deg, rgba(20,33,54,.92), rgba(11,20,34,.7))",
+            "rgba(255,255,255,.92)",
           backdropFilter: "blur(6px)",
           padding: "24px 28px 18px",
           position: "sticky",
@@ -312,8 +312,8 @@ export default function FrameworkGuide({ onBack }) {
             onClick={onBack}
             style={{
               background: "transparent",
-              border: "1px solid #3A4D6B",
-              color: "#9FB6D6",
+              border: "1px solid #d0d7de",
+              color: "#57606a",
               borderRadius: 20,
               padding: "5px 14px",
               fontSize: 12.5,
@@ -329,7 +329,7 @@ export default function FrameworkGuide({ onBack }) {
               fontSize: 12,
               letterSpacing: 3,
               textTransform: "uppercase",
-              color: "#7E9BC4",
+              color: "#57606a",
               marginBottom: 4,
               fontFamily: "system-ui",
             }}
@@ -341,7 +341,7 @@ export default function FrameworkGuide({ onBack }) {
               margin: 0,
               fontSize: 28,
               fontWeight: 700,
-              color: "#F4F8FE",
+              color: "#111418",
               lineHeight: 1.15,
             }}
           >
@@ -350,7 +350,7 @@ export default function FrameworkGuide({ onBack }) {
           <div
             style={{
               fontSize: 13,
-              color: "#9CC0F5",
+              color: "#2f8d46",
               marginTop: 6,
               fontStyle: "italic",
               fontFamily: "system-ui",
@@ -379,8 +379,8 @@ export default function FrameworkGuide({ onBack }) {
                 onClick={() => scrollToStep(s.n)}
                 style={{
                   background:
-                    activeStep === s.n ? ACCENT : "rgba(255,255,255,.04)",
-                  color: activeStep === s.n ? "#0B1422" : ACCENT,
+                    activeStep === s.n ? ACCENT : "#f3f4f6",
+                  color: activeStep === s.n ? "#ffffff" : ACCENT,
                   border: `1px solid ${
                     activeStep === s.n ? ACCENT : ACCENT + "55"
                   }`,
@@ -462,12 +462,12 @@ export default function FrameworkGuide({ onBack }) {
           style={{
             margin: "10px 0 14px 0",
             padding: "14px 18px",
-            background: "linear-gradient(135deg,#13243F,#0E1B30)",
-            border: "1px solid #2F66C4",
+            background: "#ffffff",
+            border: "1px solid #2f8d46",
             borderRadius: 12,
             fontSize: 14.5,
             lineHeight: 1.7,
-            color: "#D7E0EE",
+            color: "#1f2328",
           }}
         >
           <b>Scope it</b> (Req) → <b>size it</b> (Est) →{" "}
@@ -506,7 +506,7 @@ export default function FrameworkGuide({ onBack }) {
 const pStyle = {
   fontSize: 14.5,
   lineHeight: 1.7,
-  color: "#D7E0EE",
+  color: "#1f2328",
   margin: 0,
 };
 
@@ -518,8 +518,8 @@ function StepCard({ step }) {
       style={{
         marginTop: 24,
         marginBottom: 8,
-        background: "linear-gradient(180deg,#101D33,#0C1626)",
-        border: "1px solid #1F2F47",
+        background: "#ffffff",
+        border: "1px solid #d0d7de",
         borderRadius: 14,
         padding: "22px 24px",
         scrollMarginTop: 210,
@@ -534,7 +534,7 @@ function StepCard({ step }) {
           marginBottom: 14,
           flexWrap: "wrap",
           paddingBottom: 10,
-          borderBottom: "1px solid #1F2F47",
+          borderBottom: "1px solid #d0d7de",
         }}
       >
         <span
@@ -556,13 +556,13 @@ function StepCard({ step }) {
             margin: 0,
             fontSize: 22,
             fontWeight: 700,
-            color: "#F4F8FE",
+            color: "#111418",
           }}
         >
           {step.name}
           {step.nameSuffix && (
             <span
-              style={{ color: "#8AA1C2", fontWeight: 500, fontSize: 18 }}
+              style={{ color: "#57606a", fontWeight: 500, fontSize: 18 }}
             >
               {step.nameSuffix}
             </span>
@@ -572,9 +572,9 @@ function StepCard({ step }) {
           style={{
             marginLeft: "auto",
             fontSize: 12,
-            color: "#7E9BC4",
+            color: "#57606a",
             fontFamily: "system-ui",
-            border: "1px solid #2A3C56",
+            border: "1px solid #d0d7de",
             borderRadius: 10,
             padding: "3px 10px",
           }}
@@ -619,8 +619,8 @@ function SectionHeading({ text }) {
         marginBottom: 10,
         fontSize: 22,
         fontWeight: 700,
-        color: "#9CC0F5",
-        borderBottom: "1px solid #243650",
+        color: "#2f8d46",
+        borderBottom: "1px solid #d0d7de",
         paddingBottom: 8,
       }}
     >
@@ -630,7 +630,7 @@ function SectionHeading({ text }) {
 }
 
 function SubHeading({ text, tone }) {
-  const color = tone === "warn" ? "#F4B26A" : "#9CC0F5";
+  const color = tone === "warn" ? "#9a6700" : "#2f8d46";
   return (
     <div
       style={{
@@ -650,7 +650,7 @@ function SubHeading({ text, tone }) {
 }
 
 function LeadList({ items, tone }) {
-  const dotColor = tone === "warn" ? "#F4B26A" : ACCENT;
+  const dotColor = tone === "warn" ? "#9a6700" : ACCENT;
   return (
     <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
       {items.map((it, i) => (
@@ -659,7 +659,7 @@ function LeadList({ items, tone }) {
           style={{
             fontSize: 14.5,
             lineHeight: 1.7,
-            color: "#D7E0EE",
+            color: "#1f2328",
             paddingLeft: 18,
             position: "relative",
             marginBottom: 6,
@@ -676,7 +676,7 @@ function LeadList({ items, tone }) {
               background: dotColor,
             }}
           />
-          <b style={{ color: tone === "warn" ? "#F4D2A8" : "#EAF0F8" }}>
+          <b style={{ color: tone === "warn" ? "#9a6700" : "#1f2328" }}>
             {it.lead}
           </b>{" "}
           {it.body}
@@ -697,10 +697,10 @@ function ExampleBody({ body }) {
               style={{
                 fontSize: 14.5,
                 lineHeight: 1.7,
-                color: "#D7E0EE",
+                color: "#1f2328",
               }}
             >
-              <b style={{ color: "#EAF0F8" }}>{seg.label}:</b> {seg.text}
+              <b style={{ color: "#111418" }}>{seg.label}:</b> {seg.text}
             </div>
           );
         }
@@ -711,12 +711,12 @@ function ExampleBody({ body }) {
               style={{
                 margin: "4px 0",
                 padding: "12px 14px",
-                background: "#0A1322",
-                border: "1px solid #1B2A44",
+                background: "#f3f4f6",
+                border: "1px solid #d0d7de",
                 borderRadius: 8,
                 fontSize: 13,
                 lineHeight: 1.6,
-                color: "#B7CDEC",
+                color: "#1f2328",
                 fontFamily:
                   "'JetBrains Mono', 'Consolas', 'Menlo', monospace",
                 whiteSpace: "pre-wrap",
@@ -739,8 +739,8 @@ function ScriptBox({ lines }) {
       style={{
         marginTop: 16,
         padding: "14px 18px",
-        background: "rgba(47,102,196,.08)",
-        border: "1px solid #2F66C4",
+        background: "#eef6f0",
+        border: "1px solid #2f8d46",
         borderLeftWidth: 4,
         borderRadius: 10,
       }}
@@ -750,7 +750,7 @@ function ScriptBox({ lines }) {
           fontSize: 11,
           letterSpacing: 2,
           textTransform: "uppercase",
-          color: "#9CC0F5",
+          color: "#2f8d46",
           fontFamily: "system-ui",
           fontWeight: 700,
           marginBottom: 8,
@@ -764,7 +764,7 @@ function ScriptBox({ lines }) {
           style={{
             fontSize: 14,
             lineHeight: 1.7,
-            color: "#C5D3EA",
+            color: "#57606a",
             fontStyle: "italic",
             margin: i === 0 ? 0 : "8px 0 0 0",
           }}
@@ -778,9 +778,9 @@ function ScriptBox({ lines }) {
 
 function Callout({ tone, title, children }) {
   const palettes = {
-    info: { bg: "rgba(47,102,196,.10)", border: "#2F66C4", title: "#9CC0F5" },
-    warm: { bg: "rgba(244,178,106,.08)", border: "#A77136", title: "#F4B26A" },
-    success: { bg: "rgba(95,215,158,.08)", border: "#2C6444", title: "#5FD79E" },
+    info: { bg: "#eef6f0", border: "#2f8d46", title: "#2f8d46" },
+    warm: { bg: "#fef9ec", border: "#9a6700", title: "#9a6700" },
+    success: { bg: "#eef6f0", border: "#1a7f37", title: "#1a7f37" },
   };
   const p = palettes[tone] || palettes.info;
   return (
@@ -814,7 +814,7 @@ function Glance({ rows }) {
   return (
     <div
       style={{
-        border: "1px solid #1F2F47",
+        border: "1px solid #d0d7de",
         borderRadius: 12,
         overflow: "hidden",
         marginBottom: 14,
@@ -825,8 +825,8 @@ function Glance({ rows }) {
         style={{
           display: "grid",
           gridTemplateColumns: "44px 1fr 2.2fr 80px",
-          background: "#13243F",
-          color: "#9CC0F5",
+          background: "#ffffff",
+          color: "#2f8d46",
           fontSize: 12,
           fontWeight: 700,
           padding: "10px 14px",
@@ -846,18 +846,18 @@ function Glance({ rows }) {
             display: "grid",
             gridTemplateColumns: "44px 1fr 2.2fr 80px",
             padding: "10px 14px",
-            background: i % 2 === 0 ? "#0E1B30" : "#101D33",
-            color: "#D7E0EE",
+            background: i % 2 === 0 ? "#ffffff" : "#ffffff",
+            color: "#1f2328",
             fontSize: 13.5,
             lineHeight: 1.55,
-            borderTop: "1px solid #1B2A44",
+            borderTop: "1px solid #d0d7de",
             alignItems: "center",
           }}
         >
           <div style={{ color: ACCENT, fontWeight: 700 }}>{r.n}</div>
-          <div style={{ fontWeight: 600, color: "#EAF0F8" }}>{r.step}</div>
+          <div style={{ fontWeight: 600, color: "#111418" }}>{r.step}</div>
           <div>{r.one}</div>
-          <div style={{ textAlign: "right", color: "#9CC0F5" }}>{r.time}</div>
+          <div style={{ textAlign: "right", color: "#2f8d46" }}>{r.time}</div>
         </div>
       ))}
     </div>

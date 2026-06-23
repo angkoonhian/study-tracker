@@ -145,11 +145,11 @@ function pushNameSegment(segments, label, slug) {
 }
 
 const CATS = {
-  apply: { label: "Applications", color: "#B7791F", bg: "#FBF1E0" },
-  design: { label: "System Design", color: "#1A56DB", bg: "#E6EEFB" },
-  code: { label: "Coding", color: "#0F7A4A", bg: "#E2F2EA" },
-  behave: { label: "Behavioral", color: "#9333A8", bg: "#F2E6F7" },
-  mock: { label: "Mock / Sim", color: "#B91C3B", bg: "#FAE6EB" },
+  apply: { label: "Applications", color: "#9a6700", bg: "#FBF1E0" },
+  design: { label: "System Design", color: "#2f8d46", bg: "#E6EEFB" },
+  code: { label: "Coding", color: "#1a7f37", bg: "#E2F2EA" },
+  behave: { label: "Behavioral", color: "#8250df", bg: "#F2E6F7" },
+  mock: { label: "Mock / Sim", color: "#c0392b", bg: "#FAE6EB" },
   prob: { label: "Probability & Stats", color: "#0E7490", bg: "#E0F2F4" },
   mental: { label: "Brainteasers & Mental Math", color: "#6D28D9", bg: "#EDE7FB" },
   markets: { label: "Markets & Microstructure", color: "#BE185D", bg: "#FBE6F0" },
@@ -614,28 +614,28 @@ export default function StudyTracker() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "radial-gradient(ellipse at top, #16243B 0%, #0B1422 60%, #070D16 100%)",
+      background: "#f6f8fa",
       fontFamily:
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif",
-      color: "#E8EDF4", padding: "0 0 80px 0",
+      color: "#1f2328", padding: "0 0 80px 0",
     }}>
       <GlobalNav view={view} setView={setView} />
       <style>{`
         * { box-sizing: border-box; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(8px);} to {opacity:1; transform:none;} }
         .day-card { animation: fadeUp .35s ease both; }
-        .task:hover { background: rgba(255,255,255,.04); }
+        .task:hover { background: #f3f4f6; }
         .wk-btn:hover { transform: translateX(3px); }
         .cb { transition: all .15s ease; }
         ::-webkit-scrollbar { width: 9px; }
-        ::-webkit-scrollbar-track { background: #0B1422; }
-        ::-webkit-scrollbar-thumb { background: #2A3C56; border-radius: 5px; }
+        ::-webkit-scrollbar-track { background: #f6f8fa; }
+        ::-webkit-scrollbar-thumb { background: #c0c7ce; border-radius: 5px; }
       `}</style>
 
       {/* Header */}
       <div style={{
-        borderBottom: "1px solid #243650",
-        background: "linear-gradient(180deg, rgba(20,33,54,.85), rgba(11,20,34,.6))",
+        borderBottom: "1px solid #d0d7de",
+        background: "#ffffff",
         backdropFilter: "blur(6px)", padding: "34px 28px 26px",
         position: "sticky", top: 0, zIndex: 20,
       }}>
@@ -644,18 +644,18 @@ export default function StudyTracker() {
             alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
             <div>
               <div style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                color: "#7E9BC4", marginBottom: 8, fontFamily: "system-ui" }}>
+                color: "#57606a", marginBottom: 8, fontFamily: "system-ui" }}>
                 Quant-Developer Track · Python · Probability · Low-Latency
               </div>
               <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700,
-                color: "#F4F8FE", lineHeight: 1.15 }}>
+                color: "#111418", lineHeight: 1.15 }}>
                 Quant Interview Tracker
               </h1>
             </div>
             <div style={{ textAlign: "right", fontFamily: "system-ui" }}>
-              <div style={{ fontSize: 42, fontWeight: 800, color: "#6FA8FF",
+              <div style={{ fontSize: 42, fontWeight: 800, color: "#2f8d46",
                 lineHeight: 1 }}>{pct}%</div>
-              <div style={{ fontSize: 12, color: "#7E9BC4", marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: "#57606a", marginTop: 4 }}>
                 {completedCount} / {TOTAL_TASKS} tasks
                 <span style={{ color: "#5C7" }}> · saved</span>
               </div>
@@ -663,10 +663,10 @@ export default function StudyTracker() {
           </div>
 
           {/* progress bar */}
-          <div style={{ marginTop: 18, height: 8, background: "#1A2840",
+          <div style={{ marginTop: 18, height: 8, background: "#e9eef3",
             borderRadius: 6, overflow: "hidden" }}>
             <div style={{ width: `${pct}%`, height: "100%",
-              background: "linear-gradient(90deg,#1A56DB,#6FA8FF)",
+              background: "#2f8d46",
               borderRadius: 6, transition: "width .4s ease" }} />
           </div>
 
@@ -674,51 +674,51 @@ export default function StudyTracker() {
           <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap",
             fontFamily: "system-ui" }}>
             <Chip active={filter==="all"} onClick={()=>setFilter("all")}
-              color="#9FB6D6" bg="#1C2C44" label={`All`} />
+              color="#57606a" bg="#eef6f0" label={`All`} />
             {Object.entries(CATS).map(([k, v]) => (
               <Chip key={k} active={filter===k} onClick={()=>setFilter(filter===k?"all":k)}
                 color={v.color} bg={v.bg}
                 label={`${v.label} ${catCounts[k].dn}/${catCounts[k].tot}`} />
             ))}
             <button onClick={() => setView("roles")} style={{
-              marginLeft: "auto", background: "rgba(95,215,158,.08)",
-              border: "1px solid #27613F", color: "#5FD79E",
+              marginLeft: "auto", background: "#eef6f0",
+              border: "1px solid #1a7f37", color: "#1a7f37",
               borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui",
               fontWeight: 600 }}>
               Target Roles →
             </button>
             <button onClick={() => setView("framework")} style={{
-              background: "rgba(111,168,255,.08)",
-              border: "1px solid #2F66C4", color: "#9CC0F5",
+              background: "#eef6f0",
+              border: "1px solid #2f8d46", color: "#2f8d46",
               borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui",
               fontWeight: 600 }}>
               7-Step Framework →
             </button>
             <button onClick={publishSnapshot} title="Download progress.json to commit to your repo" style={{
-              background: "rgba(95,215,158,.08)", border: "1px solid #27613F",
-              color: "#5FD79E", borderRadius: 20, padding: "5px 14px", fontSize: 12,
+              background: "#eef6f0", border: "1px solid #1a7f37",
+              color: "#1a7f37", borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui", fontWeight: 600 }}>
               Publish snapshot
             </button>
             <label title="Restore from a progress.json" style={{
-              background: "rgba(111,168,255,.08)", border: "1px solid #2F66C4",
-              color: "#9CC0F5", borderRadius: 20, padding: "5px 14px", fontSize: 12,
+              background: "#eef6f0", border: "1px solid #2f8d46",
+              color: "#2f8d46", borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui", fontWeight: 600 }}>
               Import
               <input type="file" accept="application/json" onChange={importSnapshot}
                 style={{ display: "none" }} />
             </label>
             <button onClick={resetPublished} title="Discard local changes, reload the committed snapshot" style={{
-              background: "transparent", border: "1px solid #3A4D6B", color: "#8FA6C6",
+              background: "transparent", border: "1px solid #d0d7de", color: "#57606a",
               borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui" }}>
               ↺ From master
             </button>
             <button onClick={resetAll} style={{
               background: "transparent",
-              border: "1px solid #3A4D6B", color: "#8FA6C6",
+              border: "1px solid #d0d7de", color: "#57606a",
               borderRadius: 20, padding: "5px 14px", fontSize: 12,
               cursor: "pointer", fontFamily: "system-ui" }}>
               Reset plan
@@ -740,36 +740,35 @@ export default function StudyTracker() {
                 style={{
                   width: "100%", textAlign: "left", cursor: "pointer",
                   background: isOpen
-                    ? "linear-gradient(135deg,#1B3360,#15294A)"
-                    : "linear-gradient(135deg,#152444,#111E36)",
-                  border: "1px solid " + (isOpen ? "#2F66C4" : "#23344E"),
-                  borderRadius: 14, padding: "18px 22px", color: "#E8EDF4",
+                    ? "#eef6f0"
+                    : "#ffffff",
+                  border: "1px solid " + (isOpen ? "#2f8d46" : "#d0d7de"),
+                  borderRadius: 14, padding: "18px 22px", color: "#1f2328",
                   transition: "all .2s ease", display: "flex",
                   alignItems: "center", gap: 18,
                 }}>
                 <div style={{
-                  fontSize: 13, fontWeight: 700, color: "#6FA8FF",
+                  fontSize: 13, fontWeight: 700, color: "#2f8d46",
                   fontFamily: "system-ui", minWidth: 58,
                   letterSpacing: 1 }}>WK {wk}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 18, fontWeight: 700 }}>
                     {weekTitles[wk]}</div>
-                  <div style={{ fontSize: 12.5, color: "#8AA1C2",
+                  <div style={{ fontSize: 12.5, color: "#57606a",
                     marginTop: 3, fontFamily: "system-ui" }}>
                     Days {wd[0].d}–{wd[wd.length-1].d} · {st.dn}/{st.tot} tasks
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <div style={{ width: 80, height: 6, background: "#1A2840",
+                  <div style={{ width: 80, height: 6, background: "#e9eef3",
                     borderRadius: 4, overflow: "hidden" }}>
                     <div style={{ width: `${st.pct}%`, height: "100%",
-                      background: st.pct===100 ? "#3DBB7A"
-                        : "linear-gradient(90deg,#1A56DB,#6FA8FF)" }} />
+                      background: st.pct===100 ? "#1a7f37" : "#2f8d46" }} />
                   </div>
                   <div style={{ fontSize: 13, fontFamily: "system-ui",
-                    color: st.pct===100 ? "#5FD79E" : "#9FB6D6",
+                    color: st.pct===100 ? "#1a7f37" : "#57606a",
                     minWidth: 34, textAlign: "right" }}>{st.pct}%</div>
-                  <div style={{ fontSize: 18, color: "#6FA8FF",
+                  <div style={{ fontSize: 18, color: "#2f8d46",
                     transform: isOpen ? "rotate(90deg)" : "none",
                     transition: "transform .2s" }}>›</div>
                 </div>
@@ -786,26 +785,26 @@ export default function StudyTracker() {
                     const allDone = dDn === day.tasks.length;
                     return (
                       <div key={day.d} className="day-card" style={{
-                        background: "linear-gradient(180deg,#101D33,#0C1626)",
-                        border: "1px solid " + (allDone ? "#27613F" : "#1F2F47"),
+                        background: "#ffffff",
+                        border: "1px solid " + (allDone ? "#1a7f37" : "#d0d7de"),
                         borderRadius: 13, padding: "16px 18px",
                       }}>
                         <div style={{ display: "flex", alignItems: "baseline",
                           gap: 12, marginBottom: 4, flexWrap: "wrap" }}>
                           <span style={{ fontSize: 12, fontWeight: 800,
-                            fontFamily: "system-ui", color: "#5E7DA8",
+                            fontFamily: "system-ui", color: "#8c959f",
                             letterSpacing: 1 }}>DAY {day.d}</span>
                           <span style={{ fontSize: 17, fontWeight: 700,
-                            color: "#EAF0F8" }}>{day.title}</span>
+                            color: "#111418" }}>{day.title}</span>
                           {allDone && <span style={{ fontSize: 11,
-                            color: "#5FD79E", fontFamily: "system-ui",
-                            border: "1px solid #2C6444", borderRadius: 10,
+                            color: "#1a7f37", fontFamily: "system-ui",
+                            border: "1px solid #1a7f37", borderRadius: 10,
                             padding: "2px 9px" }}>complete</span>}
                           <span style={{ marginLeft: "auto", fontSize: 12,
-                            color: "#7E9BC4", fontFamily: "system-ui" }}>
+                            color: "#57606a", fontFamily: "system-ui" }}>
                             {dDn}/{day.tasks.length}</span>
                         </div>
-                        <div style={{ fontSize: 13.5, color: "#8DA4C4",
+                        <div style={{ fontSize: 13.5, color: "#57606a",
                           fontStyle: "italic", marginBottom: 12,
                           lineHeight: 1.5 }}>{day.focus}</div>
 
@@ -823,7 +822,7 @@ export default function StudyTracker() {
                                 <div className="cb" style={{
                                   width: 19, height: 19, borderRadius: 5,
                                   marginTop: 1, flexShrink: 0,
-                                  border: "2px solid " + (isD ? cat.color : "#3C5174"),
+                                  border: "2px solid " + (isD ? cat.color : "#aeb6bf"),
                                   background: isD ? cat.color : "transparent",
                                   display: "flex", alignItems: "center",
                                   justifyContent: "center",
@@ -833,7 +832,7 @@ export default function StudyTracker() {
                                 <div style={{ flex: 1 }}>
                                   <span style={{ fontSize: 14.5,
                                     lineHeight: 1.55,
-                                    color: isD ? "#5E7396" : "#D7E0EE",
+                                    color: isD ? "#8c959f" : "#1f2328",
                                     textDecoration: isD ? "line-through" : "none" }}>
                                     {renderTaskSegments(tk.text).map((seg, si) =>
                                       seg.url ? (
@@ -841,9 +840,9 @@ export default function StudyTracker() {
                                           target="_blank" rel="noreferrer"
                                           onClick={(e) => e.stopPropagation()}
                                           style={{
-                                            color: isD ? "#5E7396" : "#6FA8FF",
+                                            color: isD ? "#8c959f" : "#2f8d46",
                                             textDecoration: "underline",
-                                            textDecorationColor: isD ? "#5E7396" : "#3F6FBF",
+                                            textDecorationColor: isD ? "#8c959f" : "#2f8d46",
                                             textDecorationThickness: 1,
                                             textUnderlineOffset: 2,
                                           }}>
@@ -858,7 +857,7 @@ export default function StudyTracker() {
                                     marginLeft: 9, fontSize: 10.5,
                                     fontFamily: "system-ui", verticalAlign: "middle",
                                     color: cat.color,
-                                    background: "rgba(255,255,255,.05)",
+                                    background: "#f3f4f6",
                                     border: `1px solid ${cat.color}55`,
                                     borderRadius: 9, padding: "1px 8px" }}>
                                     {cat.label}
@@ -878,10 +877,10 @@ export default function StudyTracker() {
         })}
 
         <div style={{ marginTop: 28, padding: "20px 24px",
-            background: "linear-gradient(135deg,#13243F,#0E1B30)",
-            border: "1px solid #243650", borderRadius: 14,
-            fontSize: 14, lineHeight: 1.65, color: "#A9BCD8" }}>
-            <strong style={{ color: "#9CC0F5" }}>How to use this:</strong>{" "}
+            background: "#ffffff",
+            border: "1px solid #d0d7de", borderRadius: 14,
+            fontSize: 14, lineHeight: 1.65, color: "#57606a" }}>
+            <strong style={{ color: "#2f8d46" }}>How to use this:</strong>{" "}
             One day at a time, in order — the sequence is deliberate
             (later system designs assume concepts earlier ones teach).
             Tap any task to check it off; progress saves automatically and
@@ -899,8 +898,8 @@ export default function StudyTracker() {
 function Chip({ active, onClick, color, label }) {
   return (
     <button onClick={onClick} style={{
-      background: active ? color : "rgba(255,255,255,.04)",
-      color: active ? "#0B1422" : color,
+      background: active ? color : "#f3f4f6",
+      color: active ? "#ffffff" : color,
       border: `1px solid ${active ? color : color + "55"}`,
       borderRadius: 20, padding: "6px 14px", fontSize: 12.5,
       fontWeight: 600, cursor: "pointer", fontFamily: "system-ui",

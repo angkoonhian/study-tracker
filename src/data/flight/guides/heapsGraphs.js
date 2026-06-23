@@ -51,7 +51,7 @@ export default {
           ]
         },
         { type: "h3", text: "2.1 Sift-up in pseudocode" },
-        { type: "diagram", kind: "array", data: { values: [1, 3, 6, 5, 9, 2], pointers: [{ name: "i", index: 5, color: "#5FD79E" }, { name: "parent", index: 2, color: "#6FA8FF" }], highlight: [5] }, caption: "Sift-up after pushing 2 at the end (index 5). Compare with parent (i-1)//2 = 2, which holds 6. Since 2 < 6, swap upward; repeat until the parent is smaller or we reach the root." },
+        { type: "diagram", kind: "array", data: { values: [1, 3, 6, 5, 9, 2], pointers: [{ name: "i", index: 5, color: "#1a7f37" }, { name: "parent", index: 2, color: "#2f8d46" }], highlight: [5] }, caption: "Sift-up after pushing 2 at the end (index 5). Compare with parent (i-1)//2 = 2, which holds 6. Since 2 < 6, swap upward; repeat until the parent is smaller or we reach the root." },
         { type: "code", code: `def sift_up(heap, i):
     while i > 0:
         parent = (i - 1) // 2

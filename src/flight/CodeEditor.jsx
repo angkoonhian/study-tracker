@@ -64,7 +64,7 @@ export default class CodeEditor extends Component {
             }
           }}
           style={{ width: "100%", boxSizing: "border-box", border: "none", outline: "none",
-            resize: "vertical", background: "#0A1322", color: "#E8EDF4", fontFamily: mono,
+            resize: "vertical", background: "#f3f4f6", color: "#1f2328", fontFamily: mono,
             fontSize: 13.5, lineHeight: 1.5, padding: "14px 16px" }}
         />
       );

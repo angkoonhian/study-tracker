@@ -137,7 +137,7 @@ export default function Dashboard({ done, bank, cards, plan }) {
             {activity.bars.map((b) => (
               <div key={b.k} title={`${b.k}: ${b.n}`} style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
                 <div style={{ height: `${(b.n / activity.max) * 100}%`, minHeight: b.n ? 4 : 2,
-                  background: b.n ? "linear-gradient(180deg,#6FA8FF,#1A56DB)" : "#1A2840", borderRadius: 4 }} />
+                  background: b.n ? "#2f8d46" : "#e9eef3", borderRadius: 4 }} />
               </div>
             ))}
           </div>
@@ -155,7 +155,7 @@ export default function Dashboard({ done, bank, cards, plan }) {
 }
 
 const H = ({ children }) => (
-  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#CFE0F5", marginBottom: 12, fontFamily: C.sys }}>{children}</div>
+  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#1f2328", marginBottom: 12, fontFamily: C.sys }}>{children}</div>
 );
 const Dim = ({ children }) => (
   <div style={{ fontSize: 12, color: C.faint, marginTop: 8, fontFamily: C.sys }}>{children}</div>
@@ -179,7 +179,7 @@ function Bar({ label, value, total, color, compact }) {
         <span style={{ color: C.muted }}>{label}</span>
         <span style={{ color }}>{value}/{total} · {pct}%</span>
       </div>
-      <div style={{ height: compact ? 6 : 8, background: "#1A2840", borderRadius: 5, overflow: "hidden" }}>
+      <div style={{ height: compact ? 6 : 8, background: "#e9eef3", borderRadius: 5, overflow: "hidden" }}>
         <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 5 }} />
       </div>
     </div>
