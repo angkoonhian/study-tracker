@@ -135,7 +135,7 @@ function Review({ cards, setCards, onDone }) {
 function GradeBtn({ label, sub, color, onClick }) {
   return (
     <button onClick={onClick} style={{
-      background: "rgba(255,255,255,.04)", border: `1px solid ${color}66`, color,
+      background: "#f3f4f6", border: `1px solid ${color}66`, color,
       borderRadius: 11, padding: "12px 8px", cursor: "pointer", fontFamily: C.sys,
     }}>
       <div style={{ fontSize: 14, fontWeight: 700 }}>{label}</div>

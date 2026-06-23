@@ -133,7 +133,7 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
                 }}>
                   <button onClick={() => cycleStatus(p.id)} title="Click to cycle status" style={{
                     minWidth: 86, textAlign: "center", cursor: "pointer",
-                    background: "rgba(255,255,255,.04)", color: STATUS_COLOR[st],
+                    background: "#f3f4f6", color: STATUS_COLOR[st],
                     border: `1px solid ${STATUS_COLOR[st]}55`, borderRadius: 8,
                     padding: "5px 8px", fontSize: 12, fontWeight: 700, fontFamily: C.sys,
                   }}>{st}</button>
@@ -257,10 +257,10 @@ const inputStyle = {
   borderRadius: 9, padding: "8px 11px", fontSize: 13, fontFamily: C.sys, outline: "none", flex: 1, minWidth: 120,
 };
 const iconBtn = {
-  width: 34, height: 30, borderRadius: 8, background: "rgba(255,255,255,.04)",
+  width: 34, height: 30, borderRadius: 8, background: "#f3f4f6",
   border: "1px solid #d0d7de", cursor: "pointer", fontSize: 13, fontFamily: C.sys, flexShrink: 0,
 };
 const tagStyle = {
-  fontSize: 10.5, color: "#57606a", background: "rgba(255,255,255,.05)",
+  fontSize: 10.5, color: "#57606a", background: "#f3f4f6",
   border: "1px solid #d0d7de55", borderRadius: 8, padding: "2px 7px", fontFamily: C.sys, whiteSpace: "nowrap",
 };

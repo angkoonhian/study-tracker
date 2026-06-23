@@ -86,7 +86,7 @@ export default function Today({ done, toggleTask, bank, setBank, cards, plan, se
                   <div style={{ display: "flex", gap: 6 }}>
                     {[["Again", GRADES.again, C.red], ["Hard", GRADES.hard, C.amber], ["Good", GRADES.good, C.blue], ["Easy", GRADES.easy, C.green]].map(([label, g, col]) => (
                       <button key={label} onClick={() => gradeResolve(id, g)} title={`next: ${previewInterval(srs ?? null, g)}`} style={{
-                        background: "rgba(255,255,255,.04)", border: `1px solid ${col}66`, color: col,
+                        background: "#f3f4f6", border: `1px solid ${col}66`, color: col,
                         borderRadius: 8, padding: "5px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: C.sys }}>
                         {label}
                       </button>

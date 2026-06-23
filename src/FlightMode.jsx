@@ -229,7 +229,7 @@ function CodingProblem({ problem, flight, setFlight }) {
 
       {showSol && <Panel>
         <div style={{ fontFamily: C.sys, fontSize: 12, color: C.faint, marginBottom: 6 }}>REFERENCE SOLUTION</div>
-        <pre style={{ ...statementStyle, fontFamily: mono, color: "#0a5d1f" }}>{problem.solution}</pre>
+        <pre style={{ ...statementStyle, fontFamily: mono, color: C.green }}>{problem.solution}</pre>
       </Panel>}
     </div>
   );
@@ -344,7 +344,7 @@ function TeasersMode({ flight, setFlight }) {
           <span style={pill(DIFF_COLOR[t.difficulty])}>{t.difficulty}</span>
           {flight.teasers?.[t.id] && <span style={pill(C.faint)}>last: {flight.teasers[t.id].rating}</span>}
         </div>
-        <pre style={{ ...statementStyle, fontSize: 15.5, color: "#F1F5FB" }}>{t.question}</pre>
+        <pre style={{ ...statementStyle, fontSize: 15.5, color: C.text }}>{t.question}</pre>
 
         {!revealed ? (
           <Btn kind="primary" style={{ marginTop: 16 }} onClick={() => setRevealed(true)}>Show answer & solution</Btn>
