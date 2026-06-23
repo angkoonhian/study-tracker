@@ -174,12 +174,15 @@ function CodingProblem({ problem, progress, setProgress }) {
           <span style={pill(C.blue)}>{problem.topic}</span>
           {saved?.solved && <span style={pill(C.green)}>✓ solved</span>}
           {problem.leetcode && (
-            <a href={problem.leetcode} target="_blank" rel="noreferrer"
-              title="The classic LeetCode problem this is based on"
-              style={{ marginLeft: "auto", fontFamily: C.sys, fontSize: 12, fontWeight: 700,
+            <a href={problem.leetcode.url} target="_blank" rel="noreferrer"
+              title={problem.leetcode.relation === "equivalent"
+                ? "The same problem on LeetCode (this version is reworded in trading terms)"
+                : "A different LeetCode problem that uses the same algorithm/pattern"}
+              style={{ marginLeft: "auto", fontFamily: C.sys, fontSize: 12, fontWeight: 600,
                 color: C.blue, textDecoration: "none", border: `1px solid ${C.blue}55`,
-                borderRadius: 12, padding: "3px 10px", whiteSpace: "nowrap" }}>
-              LeetCode ↗
+                borderRadius: 12, padding: "3px 10px", maxWidth: 360,
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {problem.leetcode.relation === "equivalent" ? "Equivalent on LeetCode" : "Same pattern"}: {problem.leetcode.title} ↗
             </a>
           )}
         </div>

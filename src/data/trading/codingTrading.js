@@ -27,7 +27,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "lob-match-engine",
-    leetcode: "https://leetcode.com/problems/design-a-food-rating-system/",
+    leetcode: { url: "https://leetcode.com/problems/design-a-food-rating-system/", title: "Design a Food Rating System", relation: "pattern" },
     title: "Limit Order Book — Matching Engine",
     difficulty: "Hard",
     topic: "Heaps / Hash Map",
@@ -57,7 +57,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "settlement-topo-order",
-    leetcode: "https://leetcode.com/problems/course-schedule-ii/",
+    leetcode: { url: "https://leetcode.com/problems/course-schedule-ii/", title: "Course Schedule II", relation: "equivalent" },
     title: "Settlement Dependency Ordering",
     difficulty: "Hard",
     topic: "Graphs / Topological Sort",
@@ -87,7 +87,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "max-vwap-window",
-    leetcode: "https://leetcode.com/problems/maximum-average-subarray-i/",
+    leetcode: { url: "https://leetcode.com/problems/maximum-average-subarray-i/", title: "Maximum Average Subarray I", relation: "pattern" },
     title: "Max VWAP Over a Sliding Window",
     difficulty: "Medium",
     topic: "Sliding Window",
@@ -117,7 +117,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "trade-with-cooldown",
-    leetcode: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
+    leetcode: { url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/", title: "Best Time to Buy and Sell Stock with Cooldown", relation: "equivalent" },
     title: "Max Profit Trading With a Cooldown",
     difficulty: "Medium",
     topic: "Dynamic Programming",
@@ -147,7 +147,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "trade-with-fee",
-    leetcode: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/",
+    leetcode: { url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/", title: "Best Time to Buy and Sell Stock with Transaction Fee", relation: "equivalent" },
     title: "Max Profit With a Transaction Fee",
     difficulty: "Medium",
     topic: "Dynamic Programming",
@@ -177,7 +177,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "order-rate-limiter",
-    leetcode: "https://leetcode.com/problems/number-of-recent-calls/",
+    leetcode: { url: "https://leetcode.com/problems/number-of-recent-calls/", title: "Number of Recent Calls", relation: "pattern" },
     title: "Order Rate Limiter",
     difficulty: "Medium",
     topic: "Deque / Queue",
@@ -207,7 +207,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "running-median-stream",
-    leetcode: "https://leetcode.com/problems/find-median-from-data-stream/",
+    leetcode: { url: "https://leetcode.com/problems/find-median-from-data-stream/", title: "Find Median from Data Stream", relation: "equivalent" },
     title: "Running Median of a Price Stream",
     difficulty: "Hard",
     topic: "Two Heaps",
@@ -237,7 +237,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "merge-trading-sessions",
-    leetcode: "https://leetcode.com/problems/merge-intervals/",
+    leetcode: { url: "https://leetcode.com/problems/merge-intervals/", title: "Merge Intervals", relation: "equivalent" },
     title: "Merge Overlapping Trading Sessions",
     difficulty: "Medium",
     topic: "Intervals",
@@ -296,7 +296,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "currency-arbitrage",
-    leetcode: "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+    leetcode: { url: "https://leetcode.com/problems/cheapest-flights-within-k-stops/", title: "Cheapest Flights Within K Stops", relation: "pattern" },
     title: "Detect a Currency Arbitrage Cycle",
     difficulty: "Hard",
     topic: "Graphs / Bellman-Ford",
@@ -326,7 +326,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "max-drawdown",
-    leetcode: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+    leetcode: { url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/", title: "Best Time to Buy and Sell Stock", relation: "pattern" },
     title: "Maximum Drawdown of Cumulative P&L",
     difficulty: "Medium",
     topic: "Prefix Sums",
@@ -356,7 +356,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "next-higher-price",
-    leetcode: "https://leetcode.com/problems/next-greater-element-i/",
+    leetcode: { url: "https://leetcode.com/problems/next-greater-element-i/", title: "Next Greater Element I", relation: "pattern" },
     title: "Next Higher Price",
     difficulty: "Medium",
     topic: "Monotonic Stack",
@@ -386,7 +386,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "fill-marketable-qty",
-    leetcode: "https://leetcode.com/problems/search-insert-position/",
+    leetcode: { url: "https://leetcode.com/problems/search-insert-position/", title: "Search Insert Position", relation: "pattern" },
     title: "Quantity Fillable At Or Below a Limit",
     difficulty: "Medium",
     topic: "Binary Search",
@@ -416,7 +416,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "best-single-trade",
-    leetcode: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+    leetcode: { url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/", title: "Best Time to Buy and Sell Stock", relation: "equivalent" },
     title: "Best Single Buy/Sell",
     difficulty: "Easy",
     topic: "Arrays / Greedy",
@@ -446,7 +446,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "top-k-active-symbols",
-    leetcode: "https://leetcode.com/problems/top-k-frequent-elements/",
+    leetcode: { url: "https://leetcode.com/problems/top-k-frequent-elements/", title: "Top K Frequent Elements", relation: "equivalent" },
     title: "Top-K Most Traded Symbols",
     difficulty: "Medium",
     topic: "Heap / Hash Map",
@@ -476,7 +476,7 @@ export const TRADING_CODING = [
   // --------------------------------------------------------------------------
   {
     id: "fewest-conversion-hops",
-    leetcode: "https://leetcode.com/problems/word-ladder/",
+    leetcode: { url: "https://leetcode.com/problems/word-ladder/", title: "Word Ladder", relation: "pattern" },
     title: "Fewest Conversion Hops",
     difficulty: "Medium",
     topic: "Graphs / BFS",
