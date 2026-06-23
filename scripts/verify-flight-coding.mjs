@@ -4,6 +4,9 @@
 import { CODING } from "../src/data/flight/coding.js";
 import { CHECK_PY } from "../src/flight/pyRunner.js";
 import { spawnSync } from "node:child_process";
+import { writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 let pyProblems = "";
 for (const p of CODING) {
@@ -38,7 +41,22 @@ if FAILS:
 print("ALL PASS")
 `;
 
-const res = spawnSync("python3", ["-c", py], { encoding: "utf8" });
+// Resolve the first working interpreter; on some machines `python3` is a broken
+// Windows app-execution stub, so fall back to `python`/`py`.
+function resolvePython() {
+  for (const bin of ["python3", "python", "py"]) {
+    const r = spawnSync(bin, ["--version"], { encoding: "utf8" });
+    if (r.status === 0) return bin;
+  }
+  throw new Error("No working python interpreter found (tried python3, python, py)");
+}
+
+// Write to a temp file rather than passing via `-c`: the inlined program can
+// exceed the OS command-line length limit (notably ~32K on Windows).
+const tmp = join(tmpdir(), `verify-flight-${process.pid}.py`);
+writeFileSync(tmp, py);
+const res = spawnSync(resolvePython(), [tmp], { encoding: "utf8" });
+try { rmSync(tmp); } catch { /* ignore */ }
 process.stdout.write(res.stdout || "");
 process.stderr.write(res.stderr || "");
 process.exit(res.status ?? 1);
