@@ -173,6 +173,15 @@ function CodingProblem({ problem, progress, setProgress }) {
           <span style={pill(DIFF_COLOR[problem.difficulty])}>{problem.difficulty}</span>
           <span style={pill(C.blue)}>{problem.topic}</span>
           {saved?.solved && <span style={pill(C.green)}>✓ solved</span>}
+          {problem.leetcode && (
+            <a href={problem.leetcode} target="_blank" rel="noreferrer"
+              title="The classic LeetCode problem this is based on"
+              style={{ marginLeft: "auto", fontFamily: C.sys, fontSize: 12, fontWeight: 700,
+                color: C.blue, textDecoration: "none", border: `1px solid ${C.blue}55`,
+                borderRadius: 12, padding: "3px 10px", whiteSpace: "nowrap" }}>
+              LeetCode ↗
+            </a>
+          )}
         </div>
         <pre style={statementStyle}>{problem.statement}</pre>
         {diagram && <Diagram {...diagram} />}
