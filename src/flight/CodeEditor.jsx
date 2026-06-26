@@ -8,6 +8,7 @@
 // ---------------------------------------------------------------------------
 
 import { Component } from "react";
+import { C } from "../ui/theme.jsx";
 import CodeMirror from "@uiw/react-codemirror";
 import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
@@ -63,7 +64,7 @@ export default class CodeEditor extends Component {
             }
           }}
           style={{ width: "100%", boxSizing: "border-box", border: "none", outline: "none",
-            resize: "vertical", background: "#f3f4f6", color: "#1f2328", fontFamily: mono,
+            resize: "vertical", background: C.soft, color: C.text, fontFamily: mono,
             fontSize: 13.5, lineHeight: 1.5, padding: "14px 16px" }}
         />
       );

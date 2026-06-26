@@ -7,7 +7,7 @@ import { newSchedule, isDue } from "./srs/sm2.js";
 import { now } from "./lib/now.js";
 
 const STATUSES = ["todo", "attempted", "solved", "review"];
-const STATUS_COLOR = { todo: "#8c959f", attempted: C.amber, solved: C.green, review: "#C58BE8" };
+const STATUS_COLOR = { todo: C.faint, attempted: C.amber, solved: C.green, review: "#C58BE8" };
 const PAGE_SIZE = 50;
 const lc = (slug) => `https://leetcode.com/problems/${slug}/`;
 
@@ -128,12 +128,12 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
               return (
                 <div key={p.id} style={{
                   display: "flex", alignItems: "center", gap: 12, padding: "10px 14px",
-                  background: C.panel, border: `1px solid ${st === "solved" ? "#1a7f37" : C.border}`,
+                  background: C.panel, border: `1px solid ${st === "solved" ? C.green : C.border}`,
                   borderRadius: 11,
                 }}>
                   <button onClick={() => cycleStatus(p.id)} title="Click to cycle status" style={{
                     minWidth: 86, textAlign: "center", cursor: "pointer",
-                    background: "#f3f4f6", color: STATUS_COLOR[st],
+                    background: C.soft, color: STATUS_COLOR[st],
                     border: `1px solid ${STATUS_COLOR[st]}55`, borderRadius: 8,
                     padding: "5px 8px", fontSize: 12, fontWeight: 700, fontFamily: C.sys,
                   }}>{st}</button>
@@ -151,10 +151,10 @@ export default function ProblemBank({ bank, setBank, settings, setSettings, card
                   <span style={{ fontSize: 11.5, color: C.faint, fontFamily: C.sys, minWidth: 42 }}>{p.ac}%</span>
                   <button onClick={() => toggleResolve(p.id)} title="Schedule spaced re-solve"
                     style={{ ...iconBtn, color: srs ? (resolveDue ? C.red : C.green) : C.faint,
-                      borderColor: srs ? (resolveDue ? "#e5b3b3" : "#1a7f37") : "#d0d7de" }}>↻</button>
+                      borderColor: srs ? (resolveDue ? C.failBorder : C.green) : C.border }}>↻</button>
                   <button onClick={() => addCard(p)} disabled={hasCard} title="Add flashcard"
                     style={{ ...iconBtn, color: hasCard ? C.green : C.blue,
-                      borderColor: hasCard ? "#1a7f37" : "#d0d7de",
+                      borderColor: hasCard ? C.green : C.border,
                       cursor: hasCard ? "default" : "pointer" }}>{hasCard ? "✓" : "+"}</button>
                 </div>
               );
@@ -253,14 +253,14 @@ function Select({ value, onChange, opts }) {
 }
 
 const inputStyle = {
-  background: "#ffffff", border: "1px solid #d0d7de", color: C.text,
+  background: C.panel, border: `1px solid ${C.border}`, color: C.text,
   borderRadius: 9, padding: "8px 11px", fontSize: 13, fontFamily: C.sys, outline: "none", flex: 1, minWidth: 120,
 };
 const iconBtn = {
-  width: 34, height: 30, borderRadius: 8, background: "#f3f4f6",
-  border: "1px solid #d0d7de", cursor: "pointer", fontSize: 13, fontFamily: C.sys, flexShrink: 0,
+  width: 34, height: 30, borderRadius: 8, background: C.soft,
+  border: `1px solid ${C.border}`, cursor: "pointer", fontSize: 13, fontFamily: C.sys, flexShrink: 0,
 };
 const tagStyle = {
-  fontSize: 10.5, color: "#57606a", background: "#f3f4f6",
-  border: "1px solid #d0d7de55", borderRadius: 8, padding: "2px 7px", fontFamily: C.sys, whiteSpace: "nowrap",
+  fontSize: 10.5, color: C.muted, background: C.soft,
+  border: `1px solid ${C.border}55`, borderRadius: 8, padding: "2px 7px", fontFamily: C.sys, whiteSpace: "nowrap",
 };

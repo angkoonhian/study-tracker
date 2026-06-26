@@ -52,9 +52,9 @@ function OfflineBadge() {
 }
 
 const tab = (active) => ({
-  background: active ? C.blue : "#f3f4f6",
-  color: active ? "#ffffff" : "#57606a",
-  border: `1px solid ${active ? C.blue : "#d0d7de"}`,
+  background: active ? C.blue : C.soft,
+  color: active ? C.panel : C.muted,
+  border: `1px solid ${active ? C.blue : C.border}`,
   borderRadius: 20, padding: "8px 16px", fontSize: 13.5, fontWeight: 700,
   cursor: "pointer", fontFamily: C.sys,
 });
@@ -110,7 +110,7 @@ function TeasersMode({ flight, setFlight }) {
           <Btn kind="primary" style={{ marginTop: 16 }} onClick={() => setRevealed(true)}>Show answer & solution</Btn>
         ) : (
           <div style={{ marginTop: 16 }}>
-            <div style={{ background: "#eaf6ec", border: "1px solid #1a7f37", borderRadius: 8, padding: "10px 14px", marginBottom: 12 }}>
+            <div style={{ background: C.okBg, border: `1px solid ${C.green}`, borderRadius: 8, padding: "10px 14px", marginBottom: 12 }}>
               <span style={{ fontFamily: C.sys, fontSize: 12, color: C.faint }}>ANSWER  </span>
               <span style={{ fontWeight: 800, color: C.green, fontSize: 15 }}>{t.answer}</span>
             </div>
@@ -187,13 +187,13 @@ function MathMode({ flight, setFlight }) {
           <span>Question {log.length + 1} / {ROUND_LEN}</span>
           <span>{log.filter((r) => r.ok).length} correct</span>
         </div>
-        <div style={{ fontSize: 38, fontWeight: 800, textAlign: "center", color: "#111418", margin: "10px 0 22px", fontFamily: mono }}>
+        <div style={{ fontSize: 38, fontWeight: 800, textAlign: "center", color: C.strong, margin: "10px 0 22px", fontFamily: mono }}>
           {q.prompt}
         </div>
         <form onSubmit={(e) => { e.preventDefault(); submit(); }} style={{ display: "flex", gap: 8 }}>
           <input autoFocus value={val} onChange={(e) => setVal(e.target.value)} inputMode="decimal"
             placeholder="answer" style={{ flex: 1, fontSize: 22, textAlign: "center", fontFamily: mono,
-              background: "#f3f4f6", color: C.text, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px" }} />
+              background: C.soft, color: C.text, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px" }} />
           <Btn kind="primary" onClick={submit}>Enter</Btn>
         </form>
         <div style={{ textAlign: "center", marginTop: 14, height: 22, fontFamily: mono, fontSize: 15,
@@ -259,7 +259,7 @@ function DesignMode({ flight, setFlight }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {SYS_DESIGN.map((x) => (
             <button key={x.id} onClick={() => { setSelId(x.id); setReveal(false); }} style={{
-              textAlign: "left", background: x.id === selId ? "#eef6f0" : "transparent",
+              textAlign: "left", background: x.id === selId ? C.chipBg : "transparent",
               border: `1px solid ${x.id === selId ? C.borderHi : "transparent"}`,
               borderRadius: 8, padding: "8px 9px", cursor: "pointer", color: C.text,
               fontFamily: C.sys, fontSize: 12.5, display: "flex", gap: 7 }}>
@@ -272,7 +272,7 @@ function DesignMode({ flight, setFlight }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Panel>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-            <h2 style={{ margin: 0, fontSize: 19, color: "#111418" }}>{d.title}</h2>
+            <h2 style={{ margin: 0, fontSize: 19, color: C.strong }}>{d.title}</h2>
             <span style={pill(DIFF_COLOR[d.difficulty])}>{d.difficulty}</span>
           </div>
           <pre style={{ ...statementStyle, fontSize: 14.5 }}>{d.prompt}</pre>
@@ -290,7 +290,7 @@ function DesignMode({ flight, setFlight }) {
           value={saved.notes || ""} onChange={(e) => patch({ notes: e.target.value })}
           placeholder="Sketch your approach here before revealing the model answer…"
           rows={5} spellCheck={false}
-          style={{ width: "100%", boxSizing: "border-box", background: "#f3f4f6", color: C.text,
+          style={{ width: "100%", boxSizing: "border-box", background: C.soft, color: C.text,
             border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px",
             fontFamily: C.sys, fontSize: 13.5, resize: "vertical" }} />
 
@@ -316,6 +316,6 @@ const statementStyle = {
   fontFamily: C.font, fontSize: 14, lineHeight: 1.6, color: C.text,
 };
 const selectStyle = {
-  background: "#f3f4f6", color: C.text, border: `1px solid ${C.border}`,
+  background: C.soft, color: C.text, border: `1px solid ${C.border}`,
   borderRadius: 8, padding: "7px 10px", fontFamily: C.sys, fontSize: 13, width: "100%",
 };

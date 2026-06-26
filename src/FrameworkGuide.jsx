@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "./ui/theme.jsx";
 
 // ---------------------------------------------------------------------------
 //  THE 7-STEP QUANT / LOW-LATENCY SYSTEM DESIGN FRAMEWORK
@@ -8,7 +9,7 @@ import { useState } from "react";
 //  What this sounds like out loud → Pitfalls.
 // ---------------------------------------------------------------------------
 
-const ACCENT = "#2f8d46";
+const ACCENT = C.blue;
 
 const AT_A_GLANCE = [
   { n: 1, step: "Requirements",      one: "Decide what you're building and at what scale, before designing anything", time: "~5 min" },
@@ -277,10 +278,10 @@ export default function FrameworkGuide({ onBack }) {
       style={{
         minHeight: "100vh",
         background:
-          "#f6f8fa",
+          C.pageBg,
         fontFamily:
           "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif",
-        color: "#1f2328",
+        color: C.text,
         padding: "0 0 80px 0",
       }}
     >
@@ -290,16 +291,15 @@ export default function FrameworkGuide({ onBack }) {
         .step-card { animation: fadeUp .35s ease both; }
         .step-chip:hover { transform: translateY(-1px); }
         ::-webkit-scrollbar { width: 9px; }
-        ::-webkit-scrollbar-track { background: #ffffff; }
-        ::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 5px; }
+        ::-webkit-scrollbar-track { background: ${C.pageBg}; }
+        ::-webkit-scrollbar-thumb { background: ${C.scrollThumb}; border-radius: 5px; }
       `}</style>
 
       {/* Sticky header */}
       <div
         style={{
-          borderBottom: "1px solid #d0d7de",
-          background:
-            "rgba(255,255,255,.92)",
+          borderBottom: `1px solid ${C.border}`,
+          background: C.navBar,
           backdropFilter: "blur(6px)",
           padding: "24px 28px 18px",
           position: "sticky",
@@ -312,8 +312,8 @@ export default function FrameworkGuide({ onBack }) {
             onClick={onBack}
             style={{
               background: "transparent",
-              border: "1px solid #d0d7de",
-              color: "#57606a",
+              border: `1px solid ${C.border}`,
+              color: C.muted,
               borderRadius: 20,
               padding: "5px 14px",
               fontSize: 12.5,
@@ -329,7 +329,7 @@ export default function FrameworkGuide({ onBack }) {
               fontSize: 12,
               letterSpacing: 3,
               textTransform: "uppercase",
-              color: "#57606a",
+              color: C.muted,
               marginBottom: 4,
               fontFamily: "system-ui",
             }}
@@ -341,7 +341,7 @@ export default function FrameworkGuide({ onBack }) {
               margin: 0,
               fontSize: 28,
               fontWeight: 700,
-              color: "#111418",
+              color: C.strong,
               lineHeight: 1.15,
             }}
           >
@@ -350,7 +350,7 @@ export default function FrameworkGuide({ onBack }) {
           <div
             style={{
               fontSize: 13,
-              color: "#2f8d46",
+              color: C.blue,
               marginTop: 6,
               fontStyle: "italic",
               fontFamily: "system-ui",
@@ -379,8 +379,8 @@ export default function FrameworkGuide({ onBack }) {
                 onClick={() => scrollToStep(s.n)}
                 style={{
                   background:
-                    activeStep === s.n ? ACCENT : "#f3f4f6",
-                  color: activeStep === s.n ? "#ffffff" : ACCENT,
+                    activeStep === s.n ? ACCENT : C.soft,
+                  color: activeStep === s.n ? C.panel : ACCENT,
                   border: `1px solid ${
                     activeStep === s.n ? ACCENT : ACCENT + "55"
                   }`,
@@ -462,12 +462,12 @@ export default function FrameworkGuide({ onBack }) {
           style={{
             margin: "10px 0 14px 0",
             padding: "14px 18px",
-            background: "#ffffff",
-            border: "1px solid #2f8d46",
+            background: C.panel,
+            border: `1px solid ${C.blue}`,
             borderRadius: 12,
             fontSize: 14.5,
             lineHeight: 1.7,
-            color: "#1f2328",
+            color: C.text,
           }}
         >
           <b>Scope it</b> (Req) → <b>size it</b> (Est) →{" "}
@@ -506,7 +506,7 @@ export default function FrameworkGuide({ onBack }) {
 const pStyle = {
   fontSize: 14.5,
   lineHeight: 1.7,
-  color: "#1f2328",
+  color: C.text,
   margin: 0,
 };
 
@@ -518,8 +518,8 @@ function StepCard({ step }) {
       style={{
         marginTop: 24,
         marginBottom: 8,
-        background: "#ffffff",
-        border: "1px solid #d0d7de",
+        background: C.panel,
+        border: `1px solid ${C.border}`,
         borderRadius: 14,
         padding: "22px 24px",
         scrollMarginTop: 210,
@@ -534,7 +534,7 @@ function StepCard({ step }) {
           marginBottom: 14,
           flexWrap: "wrap",
           paddingBottom: 10,
-          borderBottom: "1px solid #d0d7de",
+          borderBottom: `1px solid ${C.border}`,
         }}
       >
         <span
@@ -556,13 +556,13 @@ function StepCard({ step }) {
             margin: 0,
             fontSize: 22,
             fontWeight: 700,
-            color: "#111418",
+            color: C.strong,
           }}
         >
           {step.name}
           {step.nameSuffix && (
             <span
-              style={{ color: "#57606a", fontWeight: 500, fontSize: 18 }}
+              style={{ color: C.muted, fontWeight: 500, fontSize: 18 }}
             >
               {step.nameSuffix}
             </span>
@@ -572,9 +572,9 @@ function StepCard({ step }) {
           style={{
             marginLeft: "auto",
             fontSize: 12,
-            color: "#57606a",
+            color: C.muted,
             fontFamily: "system-ui",
-            border: "1px solid #d0d7de",
+            border: `1px solid ${C.border}`,
             borderRadius: 10,
             padding: "3px 10px",
           }}
@@ -619,8 +619,8 @@ function SectionHeading({ text }) {
         marginBottom: 10,
         fontSize: 22,
         fontWeight: 700,
-        color: "#2f8d46",
-        borderBottom: "1px solid #d0d7de",
+        color: C.blue,
+        borderBottom: `1px solid ${C.border}`,
         paddingBottom: 8,
       }}
     >
@@ -630,7 +630,7 @@ function SectionHeading({ text }) {
 }
 
 function SubHeading({ text, tone }) {
-  const color = tone === "warn" ? "#9a6700" : "#2f8d46";
+  const color = tone === "warn" ? C.amber : C.blue;
   return (
     <div
       style={{
@@ -650,7 +650,7 @@ function SubHeading({ text, tone }) {
 }
 
 function LeadList({ items, tone }) {
-  const dotColor = tone === "warn" ? "#9a6700" : ACCENT;
+  const dotColor = tone === "warn" ? C.amber : ACCENT;
   return (
     <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
       {items.map((it, i) => (
@@ -659,7 +659,7 @@ function LeadList({ items, tone }) {
           style={{
             fontSize: 14.5,
             lineHeight: 1.7,
-            color: "#1f2328",
+            color: C.text,
             paddingLeft: 18,
             position: "relative",
             marginBottom: 6,
@@ -676,7 +676,7 @@ function LeadList({ items, tone }) {
               background: dotColor,
             }}
           />
-          <b style={{ color: tone === "warn" ? "#9a6700" : "#1f2328" }}>
+          <b style={{ color: tone === "warn" ? C.amber : C.text }}>
             {it.lead}
           </b>{" "}
           {it.body}
@@ -697,10 +697,10 @@ function ExampleBody({ body }) {
               style={{
                 fontSize: 14.5,
                 lineHeight: 1.7,
-                color: "#1f2328",
+                color: C.text,
               }}
             >
-              <b style={{ color: "#111418" }}>{seg.label}:</b> {seg.text}
+              <b style={{ color: C.strong }}>{seg.label}:</b> {seg.text}
             </div>
           );
         }
@@ -711,12 +711,12 @@ function ExampleBody({ body }) {
               style={{
                 margin: "4px 0",
                 padding: "12px 14px",
-                background: "#f3f4f6",
-                border: "1px solid #d0d7de",
+                background: C.soft,
+                border: `1px solid ${C.border}`,
                 borderRadius: 8,
                 fontSize: 13,
                 lineHeight: 1.6,
-                color: "#1f2328",
+                color: C.text,
                 fontFamily:
                   "'JetBrains Mono', 'Consolas', 'Menlo', monospace",
                 whiteSpace: "pre-wrap",
@@ -739,8 +739,8 @@ function ScriptBox({ lines }) {
       style={{
         marginTop: 16,
         padding: "14px 18px",
-        background: "#eef6f0",
-        border: "1px solid #2f8d46",
+        background: C.chipBg,
+        border: `1px solid ${C.blue}`,
         borderLeftWidth: 4,
         borderRadius: 10,
       }}
@@ -750,7 +750,7 @@ function ScriptBox({ lines }) {
           fontSize: 11,
           letterSpacing: 2,
           textTransform: "uppercase",
-          color: "#2f8d46",
+          color: C.blue,
           fontFamily: "system-ui",
           fontWeight: 700,
           marginBottom: 8,
@@ -764,7 +764,7 @@ function ScriptBox({ lines }) {
           style={{
             fontSize: 14,
             lineHeight: 1.7,
-            color: "#57606a",
+            color: C.muted,
             fontStyle: "italic",
             margin: i === 0 ? 0 : "8px 0 0 0",
           }}
@@ -778,9 +778,9 @@ function ScriptBox({ lines }) {
 
 function Callout({ tone, title, children }) {
   const palettes = {
-    info: { bg: "#eef6f0", border: "#2f8d46", title: "#2f8d46" },
-    warm: { bg: "#fef9ec", border: "#9a6700", title: "#9a6700" },
-    success: { bg: "#eef6f0", border: "#1a7f37", title: "#1a7f37" },
+    info: { bg: C.chipBg, border: C.blue, title: C.blue },
+    warm: { bg: "#fef9ec", border: C.amber, title: C.amber },
+    success: { bg: C.chipBg, border: C.green, title: C.green },
   };
   const p = palettes[tone] || palettes.info;
   return (
@@ -814,7 +814,7 @@ function Glance({ rows }) {
   return (
     <div
       style={{
-        border: "1px solid #d0d7de",
+        border: `1px solid ${C.border}`,
         borderRadius: 12,
         overflow: "hidden",
         marginBottom: 14,
@@ -825,8 +825,8 @@ function Glance({ rows }) {
         style={{
           display: "grid",
           gridTemplateColumns: "44px 1fr 2.2fr 80px",
-          background: "#ffffff",
-          color: "#2f8d46",
+          background: C.panel,
+          color: C.blue,
           fontSize: 12,
           fontWeight: 700,
           padding: "10px 14px",
@@ -846,18 +846,18 @@ function Glance({ rows }) {
             display: "grid",
             gridTemplateColumns: "44px 1fr 2.2fr 80px",
             padding: "10px 14px",
-            background: i % 2 === 0 ? "#ffffff" : "#ffffff",
-            color: "#1f2328",
+            background: i % 2 === 0 ? C.panel : C.panel,
+            color: C.text,
             fontSize: 13.5,
             lineHeight: 1.55,
-            borderTop: "1px solid #d0d7de",
+            borderTop: `1px solid ${C.border}`,
             alignItems: "center",
           }}
         >
           <div style={{ color: ACCENT, fontWeight: 700 }}>{r.n}</div>
-          <div style={{ fontWeight: 600, color: "#111418" }}>{r.step}</div>
+          <div style={{ fontWeight: 600, color: C.strong }}>{r.step}</div>
           <div>{r.one}</div>
-          <div style={{ textAlign: "right", color: "#2f8d46" }}>{r.time}</div>
+          <div style={{ textAlign: "right", color: C.blue }}>{r.time}</div>
         </div>
       ))}
     </div>

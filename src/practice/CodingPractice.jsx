@@ -30,7 +30,7 @@ const pill = (color) => ({
 });
 
 const selectStyle = {
-  background: "#f3f4f6", color: C.text, border: `1px solid ${C.border}`,
+  background: C.soft, color: C.text, border: `1px solid ${C.border}`,
   borderRadius: 8, padding: "7px 10px", fontFamily: C.sys, fontSize: 13, width: "100%",
 };
 
@@ -100,7 +100,7 @@ export default function CodingPractice({ problems, progress, setProgress }) {
                     const active = p.id === problem?.id;
                     return (
                       <button key={p.id} onClick={() => setSelId(p.id)} style={{
-                        textAlign: "left", background: active ? "#eef6f0" : "transparent",
+                        textAlign: "left", background: active ? C.chipBg : "transparent",
                         border: `1px solid ${active ? C.borderHi : "transparent"}`,
                         borderRadius: 8, padding: "7px 9px", cursor: "pointer", color: C.text,
                         fontFamily: C.sys, fontSize: 12.5, display: "flex", gap: 7, alignItems: "center",
@@ -169,7 +169,7 @@ function CodingProblem({ problem, progress, setProgress }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <Panel>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <h2 style={{ margin: 0, fontSize: 20, color: "#111418" }}>{problem.title}</h2>
+          <h2 style={{ margin: 0, fontSize: 20, color: C.strong }}>{problem.title}</h2>
           <span style={pill(DIFF_COLOR[problem.difficulty])}>{problem.difficulty}</span>
           <span style={pill(C.blue)}>{problem.topic}</span>
           {saved?.solved && <span style={pill(C.green)}>✓ solved</span>}
@@ -207,7 +207,7 @@ function CodingProblem({ problem, progress, setProgress }) {
         </div>
       </Panel>
 
-      {showHint && <Panel style={{ borderColor: `${C.amber}66`, background: "#fffaf0" }}>
+      {showHint && <Panel style={{ borderColor: `${C.amber}66`, background: C.hintBg }}>
         <span style={{ color: C.amber, fontFamily: C.sys, fontSize: 13 }}>{problem.hint}</span>
       </Panel>}
 
@@ -226,15 +226,15 @@ function CodingProblem({ problem, progress, setProgress }) {
 // ---------------------------------------------------------------------------
 function RunOutput({ out }) {
   if (out.fatal) {
-    return <Panel style={{ borderColor: "#e5b3b3" }}>
+    return <Panel style={{ borderColor: C.failBorder }}>
       <div style={{ color: C.red, fontFamily: C.sys, fontWeight: 700, marginBottom: 6 }}>Runtime failed to load</div>
-      <pre style={{ ...statementStyle, fontFamily: mono, color: "#9b2b2b" }}>{out.fatal}</pre>
+      <pre style={{ ...statementStyle, fontFamily: mono, color: C.failText }}>{out.fatal}</pre>
     </Panel>;
   }
   if (!out.compiled) {
-    return <Panel style={{ borderColor: "#e5b3b3" }}>
+    return <Panel style={{ borderColor: C.failBorder }}>
       <div style={{ color: C.red, fontFamily: C.sys, fontWeight: 700, marginBottom: 6 }}>Your code raised an error</div>
-      <pre style={{ ...statementStyle, fontFamily: mono, color: "#9b2b2b" }}>{out.compileError}</pre>
+      <pre style={{ ...statementStyle, fontFamily: mono, color: C.failText }}>{out.compileError}</pre>
     </Panel>;
   }
   const allPass = out.allPass;
@@ -244,7 +244,7 @@ function RunOutput({ out }) {
   const totalPassed = out.passed + out.hiddenPassed;
   const totalAll = out.total + out.hiddenTotal;
   return (
-    <Panel style={{ borderColor: allPass ? "#1a7f37" : "#e5b3b3" }}>
+    <Panel style={{ borderColor: allPass ? C.green : C.failBorder }}>
       <div style={{ fontFamily: C.sys, fontWeight: 800, fontSize: 15,
         color: allPass ? C.green : C.red, marginBottom: 10 }}>
         {allPass ? "✓ Accepted — all tests passed" : "✗ Some tests failed"} — {totalPassed}/{totalAll}
@@ -284,14 +284,14 @@ function RunOutput({ out }) {
 function TestRow({ r }) {
   return (
     <div style={{ fontFamily: mono, fontSize: 12.5,
-      background: r.ok ? "#eaf6ec" : "#fbeaea", border: `1px solid ${r.ok ? "#1a7f37" : "#e5b3b3"}`,
+      background: r.ok ? C.okBg : C.failBg, border: `1px solid ${r.ok ? C.green : C.failBorder}`,
       borderRadius: 7, padding: "7px 10px" }}>
       <span style={{ color: r.ok ? C.green : C.red, fontWeight: 700 }}>{r.ok ? "✓" : "✗"}</span>{" "}
       <span style={{ color: C.text }}>{r.call}</span>
       {!r.ok && !r.error && (
         <span style={{ color: C.muted }}>{"  →  got "}<span style={{ color: C.red }}>{r.got}</span>{", want "}<span style={{ color: C.green }}>{r.want}</span></span>
       )}
-      {r.error && <pre style={{ margin: "6px 0 0", color: "#9b2b2b", whiteSpace: "pre-wrap" }}>{r.error}</pre>}
+      {r.error && <pre style={{ margin: "6px 0 0", color: C.failText, whiteSpace: "pre-wrap" }}>{r.error}</pre>}
     </div>
   );
 }

@@ -1,26 +1,64 @@
 // ---------------------------------------------------------------------------
-//  theme.js  ·  shared light-theme tokens (GeeksforGeeks-style) + small UI
-//  primitives, so the new views (Today / Problem Bank / Flashcards / Dashboard)
-//  share one look without each re-declaring inline styles.
+//  theme.jsx  ·  shared theme tokens (light + dark) + small UI primitives.
+//
+//  Two concrete hex palettes; the active one is chosen at module load from a
+//  saved preference (default: dark). `C` stays a plain hex object so the
+//  `${C.token}55` alpha-append idiom used across the app keeps working. The
+//  toggle persists the choice and reloads to apply (instant in-place switching
+//  would require making every token reactive, which breaks alpha-append) — the
+//  app already reloads on import / reset, so this is consistent.
+//
+//  Each LIGHT value equals the literal the codebase previously hardcoded, so
+//  the existing light theme is unchanged by the token migration; only the dark
+//  palette introduces new appearance.
 // ---------------------------------------------------------------------------
 
-export const C = {
-  pageBg: "#f6f8fa",
-  text: "#1f2328",
-  muted: "#57606a",
-  faint: "#8c959f",
-  blue: "#2f8d46",
-  green: "#1a7f37",
-  amber: "#9a6700",
-  red: "#c0392b",
-  panel: "#ffffff",
-  panelSolid: "#ffffff",
-  border: "#d0d7de",
-  borderHi: "#2f8d46",
-  chipBg: "#eef6f0",
-  font: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif",
-  sys: "system-ui",
+const FONT =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif";
+
+const LIGHT = {
+  pageBg: "#f6f8fa", panel: "#ffffff", panelSolid: "#ffffff", soft: "#f3f4f6",
+  text: "#1f2328", strong: "#111418", muted: "#57606a", faint: "#8c959f",
+  blue: "#2f8d46", green: "#1a7f37", amber: "#9a6700", red: "#c0392b",
+  border: "#d0d7de", borderHi: "#2f8d46", chipBg: "#eef6f0", subtle: "#e9eef3",
+  onAccent: "#ffffff", navBar: "rgba(255,255,255,.85)", scrollThumb: "#c0c7ce",
+  hintBg: "#fffaf0", okBg: "#eaf6ec", failBg: "#fbeaea", failBorder: "#e5b3b3", failText: "#9b2b2b",
 };
+
+const DARK = {
+  pageBg: "#0d1117", panel: "#161b22", panelSolid: "#161b22", soft: "#21262d",
+  text: "#e6edf3", strong: "#f0f6fc", muted: "#9aa4b2", faint: "#6e7681",
+  blue: "#3fb950", green: "#56d364", amber: "#d29922", red: "#f85149",
+  border: "#30363d", borderHi: "#3fb950", chipBg: "#12261a", subtle: "#21262d",
+  onAccent: "#ffffff", navBar: "rgba(13,17,23,.85)", scrollThumb: "#30363d",
+  hintBg: "#2b2611", okBg: "#0f2a17", failBg: "#2a1518", failBorder: "#5a2a30", failText: "#f0a3a3",
+};
+
+const THEME_KEY = "biginterview_theme_v1";
+
+function readTheme() {
+  try {
+    const t = localStorage.getItem(THEME_KEY);
+    if (t === "light" || t === "dark") return t;
+  } catch { /* storage unavailable */ }
+  return "dark"; // default: dark
+}
+
+// Module-internal (not exported) so theme.jsx adds no new non-component exports.
+const THEME = readTheme();
+
+function doToggleTheme() {
+  try { localStorage.setItem(THEME_KEY, THEME === "dark" ? "light" : "dark"); }
+  catch { /* ignore */ }
+  if (typeof window !== "undefined") window.location.reload();
+}
+
+export const C = { ...(THEME === "dark" ? DARK : LIGHT), font: FONT, sys: "system-ui" };
+
+// Theme the area behind the app (and the pre-React first paint / overscroll).
+if (typeof document !== "undefined") {
+  document.documentElement.style.backgroundColor = C.pageBg;
+}
 
 export const page = {
   minHeight: "100vh",
@@ -43,7 +81,7 @@ export function GlobalNav({ view, setView }) {
   ];
   return (
     <div style={{
-      borderBottom: `1px solid ${C.border}`, background: "rgba(255,255,255,.85)",
+      borderBottom: `1px solid ${C.border}`, background: C.navBar,
       backdropFilter: "blur(6px)", position: "sticky", top: 0, zIndex: 30,
     }}>
       <div style={{
@@ -56,8 +94,8 @@ export function GlobalNav({ view, setView }) {
           const active = view === k;
           return (
             <button key={k} onClick={() => setView(k)} style={{
-              background: active ? C.blue : "#f3f4f6",
-              color: active ? "#ffffff" : C.muted,
+              background: active ? C.blue : C.soft,
+              color: active ? C.onAccent : C.muted,
               border: `1px solid ${active ? C.blue : C.border}`,
               borderRadius: 18, padding: "6px 13px", fontSize: 12.5,
               fontWeight: 600, cursor: "pointer",
@@ -67,6 +105,8 @@ export function GlobalNav({ view, setView }) {
         <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
           <button onClick={() => setView("roles")} style={ghostBtn}>Roles</button>
           <button onClick={() => setView("framework")} style={ghostBtn}>Framework</button>
+          <button onClick={doToggleTheme} title="Switch light / dark theme"
+            style={ghostBtn}>{THEME === "dark" ? "Light" : "Dark"}</button>
         </div>
       </div>
     </div>
@@ -81,8 +121,8 @@ const ghostBtn = {
 
 export function Btn({ children, onClick, kind = "default", disabled, style, type = "button" }) {
   const kinds = {
-    default: { bg: "#f3f4f6", bd: C.border, fg: C.text },
-    primary: { bg: C.blue, bd: C.blue, fg: "#ffffff" },
+    default: { bg: C.soft, bd: C.border, fg: C.text },
+    primary: { bg: C.blue, bd: C.blue, fg: C.onAccent },
     green: { bg: C.chipBg, bd: C.green, fg: C.green },
     danger: { bg: "transparent", bd: C.red, fg: C.red },
   }[kind];

@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------
 
 import { useState } from "react";
-import { SectionTitle, wrap } from "./ui/theme.jsx";
+import { C, SectionTitle, wrap } from "./ui/theme.jsx";
 import CodingPractice from "./practice/CodingPractice.jsx";
 import GuidesMode from "./flight/GuideView.jsx";
 import { CODING } from "./data/flight/coding.js";
@@ -22,8 +22,8 @@ export default function DSA({ flight, setFlight }) {
       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
         {TABS.map(([k, label]) => (
           <button key={k} onClick={() => setTab(k)} style={{
-            background: tab === k ? "#2f8d46" : "#ffffff", color: tab === k ? "#fff" : "#57606a",
-            border: "1px solid #d0d7de", borderRadius: 20, padding: "8px 16px",
+            background: tab === k ? C.blue : C.panel, color: tab === k ? "#fff" : C.muted,
+            border: `1px solid ${C.border}`, borderRadius: 20, padding: "8px 16px",
             fontSize: 13.5, fontWeight: 700, cursor: "pointer", fontFamily: "system-ui",
           }}>{label}</button>
         ))}

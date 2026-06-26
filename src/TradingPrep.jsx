@@ -8,7 +8,7 @@ import { QUANT_POINTERS } from "./data/trading/quantPointers.js";
 
 const TABS = [["dsa", "Trading DSA"], ["trivia", "Python Trivia"], ["firms", "Firm Guides"], ["quant", "Quant / Math"]];
 const tabStyle = (active) => ({
-  background: active ? C.blue : "#ffffff", color: active ? "#fff" : C.muted,
+  background: active ? C.blue : C.panel, color: active ? "#fff" : C.muted,
   border: `1px solid ${C.border}`, borderRadius: 20, padding: "8px 16px",
   fontSize: 13.5, fontWeight: 700, cursor: "pointer", fontFamily: C.sys,
 });
@@ -54,7 +54,7 @@ function TriviaTab({ progress, setProgress }) {
         {t.firms?.length ? ` · ${t.firms.join(", ")}` : ""}
       </div>
       <Panel>
-        <pre style={{ margin: 0, fontFamily: mono, fontSize: 13.5, background: "#f3f4f6",
+        <pre style={{ margin: 0, fontFamily: mono, fontSize: 13.5, background: C.soft,
           padding: "12px 14px", borderRadius: 8, whiteSpace: "pre-wrap", color: C.text }}>{t.code}</pre>
         <div style={{ marginTop: 12, fontWeight: 700, color: C.text }}>{t.question}</div>
         {revealed ? (

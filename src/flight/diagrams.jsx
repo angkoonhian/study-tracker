@@ -11,7 +11,7 @@ import { C } from "../ui/theme.jsx";
 
 const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 const NODE = C.panelSolid;
-const STROKE = "#57606a";
+const STROKE = C.muted;
 
 // Render errors from a malformed (agent-authored) diagram spec must never take
 // down the whole view — an error boundary degrades a bad diagram to nothing.
@@ -30,7 +30,7 @@ export function Diagram({ kind, data, caption }) {
   const Comp = KINDS[kind];
   if (!Comp || !data) return null;
   return (
-    <figure style={{ margin: "14px 0", padding: "14px 12px", background: "#f3f4f6",
+    <figure style={{ margin: "14px 0", padding: "14px 12px", background: C.soft,
       border: `1px solid ${C.border}`, borderRadius: 10, overflowX: "auto" }}>
       <Boundary>
         <div style={{ display: "flex", justifyContent: "center" }}><Comp data={data} /></div>

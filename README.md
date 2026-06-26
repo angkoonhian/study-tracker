@@ -1,6 +1,6 @@
 # BigInterview Study Tracker
 
-A single-page React + Vite app for big-tech and quant/prop-trading interview prep: a 49-day plan, a full LeetCode problem bank, a standalone DSA practice section (in-browser Python judge), a Trading Prep section (firm-specific DSA, Python trivia, firm guides, quant math), Anki-style spaced-repetition flashcards, an offline Flight Mode, and a progress dashboard — all **100% static, no database**, in a light GeeksforGeeks-style theme.
+A single-page React + Vite app for big-tech and quant/prop-trading interview prep: a 49-day plan, a full LeetCode problem bank, a standalone DSA practice section (in-browser Python judge), a Trading Prep section (firm-specific DSA, Python trivia, firm guides, quant math), Anki-style spaced-repetition flashcards, an offline Flight Mode, and a progress dashboard — all **100% static, no database**, with a **dark / light theme toggle** (GeeksforGeeks-style; defaults to dark).
 
 ## Why "no database"
 
@@ -51,7 +51,7 @@ There is no official LeetCode API, so sync is best-effort and routed through a V
 Specs in `docs/superpowers/specs/`. Key modules:
 
 - `src/studyTracker.jsx` — root component; holds all state via `usePersistedState` and switches views (no router).
-- `src/ui/theme.jsx` — light-theme `C` color tokens + shared UI primitives (`GlobalNav`, `Btn`, `Panel`, `SectionTitle`).
+- `src/ui/theme.jsx` — `C` color tokens with two palettes (light + dark); the active one is chosen at load from a saved preference (default dark), toggled from the nav (persists + reloads). Plus shared UI primitives (`GlobalNav`, `Btn`, `Panel`, `SectionTitle`).
 - `src/store/storage.js` — single owner of persistence + export/import + reset-to-published; publishable slices (`tracker`, `bank`, `cards`, `settings`, `trading`) plus local-only (`flight`, `secret`).
 - `src/practice/CodingPractice.jsx` — reusable Python-judged coding-practice UI; consumed by both `DSA.jsx` and `TradingPrep.jsx`.
 - `src/srs/sm2.js` — pure SM-2 scheduler (unit-tested), shared by flashcards and problem re-solves.
