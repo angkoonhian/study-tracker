@@ -102,6 +102,20 @@ function FirmsTab() {
                 <ul style={{ margin: "4px 0 12px", paddingLeft: 20, color: C.muted }}>
                   {f.samples.map((s, i) => <li key={i}>{s}</li>)}
                 </ul>
+                {f.tips?.length > 0 && <>
+                  <H>Candidate tips</H>
+                  <ul style={{ margin: "4px 0 12px", paddingLeft: 20, color: C.muted }}>
+                    {f.tips.map((t, i) => <li key={i}>{t}</li>)}
+                  </ul>
+                </>}
+                {f.experiences?.length > 0 && <>
+                  <H>Reported experiences</H>
+                  <ul style={{ margin: "4px 0 12px", paddingLeft: 20, color: C.muted }}>
+                    {f.experiences.map((e, i) => (
+                      <li key={i}>{e.text} <span style={{ color: C.faint }}>— {e.source}</span></li>
+                    ))}
+                  </ul>
+                </>}
                 <div style={{ fontSize: 11, color: C.faint }}>Sources: {f.sources.join("; ")}</div>
               </div>
             )}

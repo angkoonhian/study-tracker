@@ -25,6 +25,8 @@ export const KEYS = {
   secret: "biginterview_secret_v1", // LeetCode cookie — never exported
   flight: "biginterview_flight_v1", // offline Flight Mode progress (local only)
   trading: "biginterview_trading_v1",
+  trackerHrt: "hrt_tracker_v1", // HRT track checklist — separate key, never collides with `tracker`
+  track: "biginterview_track_v1", // which tracker track is selected ("main" | "hrt")
 };
 
 function read(key, fallback) {
@@ -45,9 +47,17 @@ function write(key, value) {
   }
 }
 
-// ---- tracker (49-day checklist done-flags) ----
+// ---- tracker (main 49-day + quant checklist done-flags) ----
 export const loadTracker = () => read(KEYS.tracker, seed.tracker || {});
 export const saveTracker = (v) => write(KEYS.tracker, v);
+
+// ---- trackerHrt (HRT 5-week track done-flags — separate key, publishable) ----
+export const loadTrackerHrt = () => read(KEYS.trackerHrt, seed.trackerHrt || {});
+export const saveTrackerHrt = (v) => write(KEYS.trackerHrt, v);
+
+// ---- track (which tracker track is active: "main" | "hrt") ----
+export const loadTrack = () => read(KEYS.track, seed.track || "main");
+export const saveTrack = (v) => write(KEYS.track, v);
 
 // ---- bank (per-problem user state: status, srs, notes) ----
 export const loadBank = () => read(KEYS.bank, seed.bank || {});
@@ -96,6 +106,8 @@ export function exportAll() {
     cardsFull: loadCards(), // full card objects so manual/auto cards survive a restore
     settings: loadSettings(),
     trading: loadTrading(),
+    trackerHrt: loadTrackerHrt(),
+    track: loadTrack(),
   };
 }
 
@@ -107,11 +119,14 @@ export function importAll(obj) {
   else if (obj.cards) saveCards(obj.cards);
   if (obj.settings) saveSettings(obj.settings);
   if (obj.trading) saveTrading(obj.trading);
+  if (obj.trackerHrt) saveTrackerHrt(obj.trackerHrt);
+  if (obj.track) saveTrack(obj.track);
 }
 
 // Clear the live working copy so the next load falls back to the committed seed.
 export function resetToPublished() {
-  for (const k of [KEYS.tracker, KEYS.bank, KEYS.cards, KEYS.settings, KEYS.trading]) {
+  for (const k of [KEYS.tracker, KEYS.bank, KEYS.cards, KEYS.settings, KEYS.trading,
+    KEYS.trackerHrt, KEYS.track]) {
     try { localStorage.removeItem(k); } catch { /* ignore */ }
   }
 }

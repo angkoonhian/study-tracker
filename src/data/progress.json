@@ -7,5 +7,7 @@
   "settings": {
     "lcUsername": ""
   },
-  "trading": { "coding": {}, "trivia": {} }
+  "trading": { "coding": {}, "trivia": {} },
+  "trackerHrt": {},
+  "track": "main"
 }

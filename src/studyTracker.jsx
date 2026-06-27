@@ -8,12 +8,13 @@ import Today from "./Today.jsx";
 import FlightMode from "./FlightMode.jsx";
 import DSA from "./DSA.jsx";
 import TradingPrep from "./TradingPrep.jsx";
-import { QUANT_PLAN, QUANT_WEEKS } from "./data/quantPlan.js";
+import { QUANT_PLAN } from "./data/quantPlan.js";
+import { HRT_PLAN, HRT_WEEK_TITLES, HRT_INFO } from "./data/hrtPlan.js";
 import { C, GlobalNav, page as pageStyle } from "./ui/theme.jsx";
 import {
   loadTracker, saveTracker, loadBank, saveBank, loadCards, saveCards,
   loadSettings, saveSettings, loadFlight, saveFlight,
-  loadTrading, saveTrading,
+  loadTrading, saveTrading, loadTrackerHrt, saveTrackerHrt, loadTrack, saveTrack,
   exportAll, importAll, resetToPublished, KEYS,
 } from "./store/storage.js";
 
@@ -95,6 +96,19 @@ const NC_SLUGS = {
   "single number": "single-number",
   "number of 1 bits": "number-of-1-bits",
   "counting bits": "counting-bits",
+  // HRT track (DP / greedy) problems
+  "minimum path sum": "minimum-path-sum",
+  "edit distance": "edit-distance",
+  "palindromic substrings": "palindromic-substrings",
+  "longest palindromic substring": "longest-palindromic-substring",
+  "partition equal subset sum": "partition-equal-subset-sum",
+  "target sum": "target-sum",
+  "coin change ii": "coin-change-ii",
+  "gas station": "gas-station",
+  "reorganize string": "reorganize-string",
+  "jump game i": "jump-game",
+  "jump game ii": "jump-game-ii",
+  "minimum cost to connect sticks": "minimum-cost-to-connect-sticks",
 };
 
 const lcUrl = (slug) => `https://leetcode.com/problems/${slug}/`;
@@ -156,10 +170,12 @@ const CATS = {
   prob: { label: "Probability & Stats", color: "#0E7490", bg: "#E0F2F4" },
   mental: { label: "Brainteasers & Mental Math", color: "#6D28D9", bg: "#EDE7FB" },
   markets: { label: "Markets & Microstructure", color: "#BE185D", bg: "#FBE6F0" },
+  dp: { label: "Greedy & DP", color: "#C2410C", bg: "#FBEAE0" },
+  format: { label: "Format Rehearsal", color: "#0F766E", bg: "#E0F2F0" },
 };
 
 // Each day: { w, d, title, focus, tasks:[{id,c,text}] }
-const PLAN = [
+const MAIN_PLAN = [
   // ===================== WEEK 1 =====================
   { w:1, d:1, title:"Launch applications + design framework", focus:"The single highest-ROI day. Apps go out, design starts.",
     tasks:[
@@ -474,10 +490,34 @@ const PLAN = [
   ...QUANT_PLAN,
 ];
 
-// build stable task ids
-PLAN.forEach(day => day.tasks.forEach((tk, idx) => { tk.id = `d${day.d}t${idx}`; }));
+// build stable task ids per plan. Task ids are `d{day.d}t{index}`; HRT day
+// numbers (1–21) are independent of the main plan's and live under a separate
+// storage key, so the id namespaces never actually collide in storage.
+MAIN_PLAN.forEach(day => day.tasks.forEach((tk, idx) => { tk.id = `d${day.d}t${idx}`; }));
+HRT_PLAN.forEach(day => day.tasks.forEach((tk, idx) => { tk.id = `d${day.d}t${idx}`; }));
 
-const TOTAL_TASKS = PLAN.reduce((s, d) => s + d.tasks.length, 0);
+// Week titles per track.
+const MAIN_WEEK_TITLES = {
+  1: "Foundations + Application Engine",
+  2: "System Design Core + Wave 2",
+  3: "Design Fluency + Coding Depth",
+  4: "All 10 Designs + Pattern Coverage",
+  5: "Mocks + Screens Converting",
+  6: "Peak Sharpness + Tuning",
+  7: "Full-Loop Sim + Offer Phase",
+  8: "Quant: Probability & Expected Value",
+  9: "Quant: Statistics & Stochastic Processes",
+  10: "Quant: Python Coding Patterns",
+  11: "Quant: Low-Latency & Performance (Python)",
+  12: "Quant: Markets & Microstructure",
+  13: "Quant: Mental Math, Mocks & Fit",
+};
+
+// Track registry: each track has its own plan, week titles, and storage.
+const TRACKS = {
+  main: { label: "Main", plan: MAIN_PLAN, weekTitles: MAIN_WEEK_TITLES },
+  hrt: { label: "HRT (5-week)", plan: HRT_PLAN, weekTitles: HRT_WEEK_TITLES, info: HRT_INFO },
+};
 
 // A setState wrapper that also persists synchronously (React 19's hooks lint
 // rejects the obvious save-in-useEffect, so persistence lives in the setters).
@@ -494,30 +534,57 @@ function usePersistedState(loader, saver) {
 }
 
 export default function StudyTracker() {
-  const [done, setDone] = usePersistedState(loadTracker, saveTracker);
+  // Two separate, independently-persisted tracker checklists (separate storage
+  // keys). The `track` selector chooses which one the Tracker view edits; Today
+  // and Dashboard always reflect the MAIN plan.
+  const [mainDone, setMainDone] = usePersistedState(loadTracker, saveTracker);
+  const [hrtDone, setHrtDone] = usePersistedState(loadTrackerHrt, saveTrackerHrt);
+  const [track, setTrack] = usePersistedState(loadTrack, saveTrack);
   const [bank, setBank] = usePersistedState(loadBank, saveBank);
   const [cards, setCards] = usePersistedState(loadCards, saveCards);
   const [settings, setSettings] = usePersistedState(loadSettings, saveSettings);
   const [flight, setFlight] = usePersistedState(loadFlight, saveFlight);
   const [trading, setTrading] = usePersistedState(loadTrading, saveTrading);
-  const [openWeek, setOpenWeek] = useState(QUANT_WEEKS[0]);
+  const [openWeek, setOpenWeek] = useState(1);
   const [filter, setFilter] = useState("all");
+  const [showInfo, setShowInfo] = useState(false);
   // "today" | "tracker" | "bank" | "cards" | "dashboard" | "flight" | "framework" | "roles"
   const [view, setView] = useState("today");
 
+  const isHrt = track === "hrt";
+  const activeTrack = TRACKS[isHrt ? "hrt" : "main"];
+  const activePlan = activeTrack.plan;
+  const activeWeekTitles = activeTrack.weekTitles;
+  const done = isHrt ? hrtDone : mainDone;
+  const setDone = isHrt ? setHrtDone : setMainDone;
+
+  // Tracker-view toggle uses the active track; Today edits the MAIN plan only.
   const toggle = useCallback((id) => {
     setDone((p) => ({ ...p, [id]: !p[id] }));
   }, [setDone]);
+  const toggleMain = useCallback((id) => {
+    setMainDone((p) => ({ ...p, [id]: !p[id] }));
+  }, [setMainDone]);
 
+  const switchTrack = useCallback((t) => {
+    setTrack(t);
+    setFilter("all");
+    setOpenWeek(1);
+    setShowInfo(false);
+  }, [setTrack]);
+
+  const TOTAL_TASKS = useMemo(
+    () => activePlan.reduce((s, d) => s + d.tasks.length, 0), [activePlan]);
   const completedCount = useMemo(
-    () => Object.values(done).filter(Boolean).length, [done]);
-  const pct = Math.round((completedCount / TOTAL_TASKS) * 100);
+    () => activePlan.reduce((s, d) => s + d.tasks.filter(tk => done[tk.id]).length, 0),
+    [activePlan, done]);
+  const pct = TOTAL_TASKS ? Math.round((completedCount / TOTAL_TASKS) * 100) : 0;
 
   const weeks = useMemo(() => {
     const m = {};
-    PLAN.forEach(d => { (m[d.w] = m[d.w] || []).push(d); });
+    activePlan.forEach(d => { (m[d.w] = m[d.w] || []).push(d); });
     return m;
-  }, []);
+  }, [activePlan]);
 
   const weekStats = useCallback((wd) => {
     let tot = 0, dn = 0;
@@ -527,11 +594,11 @@ export default function StudyTracker() {
 
   const resetAll = useCallback(() => {
     if (typeof window !== "undefined" && window.confirm(
-      "Reset the 49-day checklist? This clears only the plan checkboxes.")) {
+      `Reset the ${activeTrack.label} checklist? This clears only that track's checkboxes.`)) {
       setDone({});
-      try { localStorage.removeItem(KEYS.tracker); } catch { /* ignored */ }
+      try { localStorage.removeItem(isHrt ? KEYS.trackerHrt : KEYS.tracker); } catch { /* ignored */ }
     }
-  }, [setDone]);
+  }, [setDone, isHrt, activeTrack.label]);
 
   // Publish: download a progress.json to commit to the repo (the static snapshot
   // that anyone who pulls master will replicate). No secrets are included.
@@ -564,27 +631,20 @@ export default function StudyTracker() {
   const catCounts = useMemo(() => {
     const c = {};
     Object.keys(CATS).forEach(k => c[k] = { tot: 0, dn: 0 });
-    PLAN.forEach(day => day.tasks.forEach(tk => {
+    activePlan.forEach(day => day.tasks.forEach(tk => {
       c[tk.c].tot++; if (done[tk.id]) c[tk.c].dn++;
     }));
     return c;
-  }, [done]);
+  }, [activePlan, done]);
 
-  const weekTitles = {
-    1: "Foundations + Application Engine",
-    2: "System Design Core + Wave 2",
-    3: "Design Fluency + Coding Depth",
-    4: "All 10 Designs + Pattern Coverage",
-    5: "Mocks + Screens Converting",
-    6: "Peak Sharpness + Tuning",
-    7: "Full-Loop Sim + Offer Phase",
-    8: "Quant: Probability & Expected Value",
-    9: "Quant: Statistics & Stochastic Processes",
-    10: "Quant: Python Coding Patterns",
-    11: "Quant: Low-Latency & Performance (Python)",
-    12: "Quant: Markets & Microstructure",
-    13: "Quant: Mental Math, Mocks & Fit",
-  };
+  // Only show category chips for categories the active track actually uses.
+  const presentCats = useMemo(() => {
+    const s = new Set();
+    activePlan.forEach(day => day.tasks.forEach(tk => s.add(tk.c)));
+    return s;
+  }, [activePlan]);
+
+  const weekTitles = activeWeekTitles;
 
   if (view === "framework") {
     return <FrameworkGuide onBack={() => setView("tracker")} />;
@@ -597,8 +657,8 @@ export default function StudyTracker() {
       <div style={pageStyle}>
         <GlobalNav view={view} setView={setView} />
         {view === "today" && (
-          <Today done={done} toggleTask={toggle} bank={bank} setBank={setBank}
-            cards={cards} plan={PLAN} setView={setView} />
+          <Today done={mainDone} toggleTask={toggleMain} bank={bank} setBank={setBank}
+            cards={cards} plan={MAIN_PLAN} setView={setView} />
         )}
         {view === "bank" && (
           <ProblemBank bank={bank} setBank={setBank} settings={settings}
@@ -606,7 +666,7 @@ export default function StudyTracker() {
         )}
         {view === "cards" && <Flashcards cards={cards} setCards={setCards} />}
         {view === "dashboard" && (
-          <Dashboard done={done} bank={bank} cards={cards} plan={PLAN} />
+          <Dashboard done={mainDone} bank={bank} cards={cards} plan={MAIN_PLAN} />
         )}
         {view === "dsa" && <DSA flight={flight} setFlight={setFlight} />}
         {view === "flight" && (
@@ -651,11 +711,13 @@ export default function StudyTracker() {
             <div>
               <div style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
                 color: C.muted, marginBottom: 8, fontFamily: "system-ui" }}>
-                Quant-Developer Track · Python · Probability · Low-Latency
+                {isHrt
+                  ? "HRT Track · Python · DP & Greedy · Probability"
+                  : "Quant-Developer Track · Python · Probability · Low-Latency"}
               </div>
               <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700,
                 color: C.strong, lineHeight: 1.15 }}>
-                Quant Interview Tracker
+                {isHrt ? "HRT Interview Tracker" : "Quant Interview Tracker"}
               </h1>
             </div>
             <div style={{ textAlign: "right", fontFamily: "system-ui" }}>
@@ -667,6 +729,31 @@ export default function StudyTracker() {
               </div>
             </div>
           </div>
+
+          {/* track selector */}
+          <div style={{ display: "flex", gap: 8, marginTop: 16, alignItems: "center",
+            flexWrap: "wrap", fontFamily: "system-ui" }}>
+            <span style={{ fontSize: 12, color: C.muted, fontWeight: 600 }}>Track:</span>
+            {Object.entries(TRACKS).map(([k, t]) => (
+              <button key={k} onClick={() => switchTrack(k)} style={{
+                background: track === k ? C.blue : C.soft,
+                color: track === k ? C.onAccent : C.muted,
+                border: `1px solid ${track === k ? C.blue : C.border}`,
+                borderRadius: 20, padding: "5px 14px", fontSize: 12.5, fontWeight: 700,
+                cursor: "pointer", fontFamily: "system-ui" }}>{t.label}</button>
+            ))}
+            {isHrt && (
+              <button onClick={() => setShowInfo(v => !v)} style={{
+                marginLeft: "auto", background: C.chipBg, border: `1px solid ${C.amber}`,
+                color: C.amber, borderRadius: 20, padding: "5px 14px", fontSize: 12,
+                cursor: "pointer", fontFamily: "system-ui", fontWeight: 600 }}>
+                {showInfo ? "Hide HRT brief" : "HRT interview brief"}
+              </button>
+            )}
+          </div>
+
+          {/* HRT info panel */}
+          {isHrt && showInfo && activeTrack.info && <HrtInfoPanel info={activeTrack.info} />}
 
           {/* progress bar */}
           <div style={{ marginTop: 18, height: 8, background: C.subtle,
@@ -681,7 +768,7 @@ export default function StudyTracker() {
             fontFamily: "system-ui" }}>
             <Chip active={filter==="all"} onClick={()=>setFilter("all")}
               color={C.muted} bg={C.chipBg} label={`All`} />
-            {Object.entries(CATS).map(([k, v]) => (
+            {Object.entries(CATS).filter(([k]) => presentCats.has(k)).map(([k, v]) => (
               <Chip key={k} active={filter===k} onClick={()=>setFilter(filter===k?"all":k)}
                 color={v.color} bg={v.bg}
                 label={`${v.label} ${catCounts[k].dn}/${catCounts[k].tot}`} />
@@ -905,11 +992,57 @@ function Chip({ active, onClick, color, label }) {
   return (
     <button onClick={onClick} style={{
       background: active ? color : C.soft,
-      color: active ? C.panel : color,
+      color: active ? C.onAccent : color,
       border: `1px solid ${active ? color : color + "55"}`,
       borderRadius: 20, padding: "6px 14px", fontSize: 12.5,
       fontWeight: 600, cursor: "pointer", fontFamily: "system-ui",
       transition: "all .15s ease", whiteSpace: "nowrap",
     }}>{label}</button>
+  );
+}
+
+// Collapsible reference panel shown on the HRT track (process, what's graded,
+// frameworks, resource, top priorities — distilled from the prep brief + public
+// interview reports).
+function HrtInfoPanel({ info }) {
+  const sys = "system-ui";
+  const head = (t) => (
+    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 0.6,
+      textTransform: "uppercase", color: C.faint, fontFamily: sys, margin: "14px 0 6px" }}>{t}</div>
+  );
+  return (
+    <div style={{ marginTop: 14, background: C.panel, border: `1px solid ${C.amber}55`,
+      borderRadius: 12, padding: "16px 18px", fontFamily: sys }}>
+      <div style={{ fontSize: 14, fontWeight: 800, color: C.amber }}>HRT interview brief</div>
+
+      {head("Process")}
+      <div style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.6 }}>{info.process}</div>
+
+      {head("What's graded")}
+      <ul style={{ margin: "2px 0 0", paddingLeft: 18, color: C.muted, fontSize: 13.5, lineHeight: 1.55 }}>
+        {info.graded.map((g, i) => <li key={i}>{g}</li>)}
+      </ul>
+
+      {head("Frameworks")}
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        {info.frameworks.map((f, i) => (
+          <div key={i} style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.55 }}>
+            <b style={{ color: C.text }}>{f.k}:</b> {f.v}
+          </div>
+        ))}
+      </div>
+
+      {head("Top 3 priorities")}
+      <ol style={{ margin: "2px 0 0", paddingLeft: 18, color: C.muted, fontSize: 13.5, lineHeight: 1.55 }}>
+        {info.top3.map((t, i) => <li key={i}>{t}</li>)}
+      </ol>
+
+      {head("Resource")}
+      <div style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.6 }}>{info.resource}</div>
+
+      <div style={{ fontSize: 11, color: C.faint, marginTop: 12 }}>
+        Sources: {info.sources.join("; ")} · reconstructed from public reports, not verbatim.
+      </div>
+    </div>
   );
 }

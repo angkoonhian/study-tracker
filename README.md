@@ -16,7 +16,7 @@ To publish your progress: open the app → header → **Publish snapshot** (down
 | View | What it does |
 |------|--------------|
 | **Today** | One prioritized queue: due flashcards + due problem re-solves + the next incomplete plan day. |
-| **Tracker** | The 49-day checklist (`PLAN`). |
+| **Tracker** | Selectable **tracks** via a header switch: the main plan (49-day + quant) and a 5-week **HRT** (Hudson River Trading, Python) plan with DP/greedy + probability + format-rehearsal categories and a collapsible interview brief. Each track persists under its own storage key, so progress never collides. |
 | **Problem Bank** | All ~3,958 LeetCode problems (static snapshot). Search + filter by difficulty/topic/status, track status, schedule spaced re-solves, turn any problem into a flashcard, optionally sync your real solved status from LeetCode. |
 | **DSA** | Practice (in-browser Python judge over the core problem set) + a DSA guide. Promoted out of Flight Mode. |
 | **Trading Prep** | Reconstructed quant/prop-firm interview content: Trading DSA (Python-judged), Python trivia/gotchas, per-firm interview guides, and quant/math pointers. Every item is labeled "reconstructed from public reports". |

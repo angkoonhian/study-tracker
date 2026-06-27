@@ -35,3 +35,32 @@ test("resetToPublished clears trading", () => {
   s.resetToPublished();
   assert.deepEqual(s.loadTrading(), { coding: {}, trivia: {} });
 });
+
+// --- HRT track: separate storage key must never collide with the main tracker ---
+test("HRT tracker uses a separate key from the main tracker", () => {
+  s.saveTracker({ "d1t0": true });
+  s.saveTrackerHrt({ "d1t0": true }); // same task id string, different track
+  s.saveTracker({ "d1t0": false });   // mutate main only
+  assert.equal(s.loadTracker()["d1t0"], false, "main updated");
+  assert.equal(s.loadTrackerHrt()["d1t0"], true, "HRT untouched — no collision");
+});
+
+test("track selection round-trips and defaults to main", () => {
+  s.saveTrack("hrt");
+  assert.equal(s.loadTrack(), "hrt");
+});
+
+test("exportAll/importAll carry trackerHrt + track; resetToPublished clears them", () => {
+  s.saveTrackerHrt({ "d5t0": true });
+  s.saveTrack("hrt");
+  const dump = s.exportAll();
+  assert.ok(dump.trackerHrt && dump.track, "export has trackerHrt + track");
+  s.saveTrackerHrt({});
+  s.saveTrack("main");
+  s.importAll(dump);
+  assert.equal(s.loadTrackerHrt()["d5t0"], true);
+  assert.equal(s.loadTrack(), "hrt");
+  s.resetToPublished();
+  assert.deepEqual(s.loadTrackerHrt(), {});
+  assert.equal(s.loadTrack(), "main"); // falls back to seed default
+});
