@@ -1,11 +1,16 @@
 // ---------------------------------------------------------------------------
-//  pyRunner.js · in-browser Python execution for offline Flight Mode.
+//  pyRunner.js · in-browser Python execution for the coding runners.
 //
-//  Loads Pyodide from the LOCALLY VENDORED copy in /public/pyodide (see
-//  `npm run vendor:pyodide`), so it works with NO network — exactly what you
-//  need on a plane. The runtime is lazy-loaded the first time you run code,
-//  then cached as a singleton promise for the rest of the session.
+//  Prefers a LOCALLY VENDORED Pyodide in <base>/pyodide (see
+//  `npm run vendor:pyodide`) so it works with NO network — exactly what you
+//  need on a plane. When the vendored copy isn't present (e.g. the hosted
+//  GitHub Pages build, which doesn't commit Pyodide's ~hundreds of MB), it
+//  falls back to the public Pyodide CDN. The runtime is lazy-loaded the first
+//  time you run code, then cached as a singleton promise for the session.
 // ---------------------------------------------------------------------------
+
+// Pinned CDN fallback (must be a version published on jsDelivr).
+const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/";
 
 let _pyPromise = null;
 
@@ -14,14 +19,27 @@ let _pyPromise = null;
 export function getPyodide(onStatus = () => {}) {
   if (!_pyPromise) {
     _pyPromise = (async () => {
-      onStatus("Loading Python runtime (local)…");
-      // Build the URL at RUNTIME so Vite's import-analysis can't resolve it as a
-      // literal (it forbids static imports of files in /public). The browser then
-      // does a native dynamic import of the locally-served, vendored runtime.
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const url = `${origin}/pyodide/pyodide.mjs`;
-      const mod = await import(/* @vite-ignore */ url);
-      const py = await mod.loadPyodide({ indexURL: `${origin}/pyodide/` });
+      // import.meta.env.BASE_URL is "/" in dev and "/study-tracker/" in the
+      // production (GitHub Pages) build, so the vendored path is correct on both.
+      const base = (import.meta.env && import.meta.env.BASE_URL) || "/";
+      const localDir = `${origin}${base}pyodide/`;
+
+      // Build URLs at RUNTIME so Vite's import-analysis can't resolve them as
+      // literals (it forbids static imports of files in /public). The browser
+      // then does a native dynamic import of the served runtime.
+      async function load(dir, label) {
+        onStatus(`Loading Python runtime (${label})…`);
+        const mod = await import(/* @vite-ignore */ `${dir}pyodide.mjs`);
+        return mod.loadPyodide({ indexURL: dir });
+      }
+
+      let py;
+      try {
+        py = await load(localDir, "local");
+      } catch {
+        py = await load(PYODIDE_CDN, "CDN");
+      }
       onStatus("Python ready");
       return py;
     })().catch((err) => {

@@ -8,7 +8,11 @@ import react from '@vitejs/plugin-react'
 // rewritten so LeetCode accepts it and CORS never applies. The session cookie
 // (if provided) arrives as x-lc-session / x-lc-csrf headers and is translated
 // into a real Cookie header here — it never leaves your machine.
-export default defineConfig({
+// `base` must match the GitHub Pages project path in production
+// (https://angkoonhian.github.io/study-tracker/) so built asset URLs resolve.
+// In dev we keep it at "/" so HMR and the /lc-api proxy work normally.
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/study-tracker/' : '/',
   plugins: [react()],
   server: {
     proxy: {
@@ -37,4 +41,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))
