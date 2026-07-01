@@ -10,18 +10,20 @@ import { C, Btn, Panel, SectionTitle, wrap } from "./ui/theme.jsx";
 import { BRAINTEASERS } from "./data/flight/brainteasers.js";
 import { SYS_DESIGN } from "./data/flight/systemDesign.js";
 import { genQuestion, checkAnswer, median, LEVELS } from "./flight/mentalMath.js";
+import GuidesMode from "./flight/GuideView.jsx";
 
 const DIFF_COLOR = { Easy: C.green, Medium: C.amber, Hard: C.red };
 const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 const MODES = [
+  ["handbooks", "Handbooks"],
   ["teasers", "Brainteasers"],
   ["math", "Mental Math"],
   ["design", "System Design"],
 ];
 
 export default function FlightMode({ flight, setFlight }) {
-  const [mode, setMode] = useState("teasers");
+  const [mode, setMode] = useState("handbooks");
 
   return (
     <div style={wrap}>
@@ -35,6 +37,7 @@ export default function FlightMode({ flight, setFlight }) {
           <button key={k} onClick={() => setMode(k)} style={tab(mode === k)}>{label}</button>
         ))}
       </div>
+      {mode === "handbooks" && <GuidesMode />}
       {mode === "teasers" && <TeasersMode flight={flight} setFlight={setFlight} />}
       {mode === "math" && <MathMode flight={flight} setFlight={setFlight} />}
       {mode === "design" && <DesignMode flight={flight} setFlight={setFlight} />}
@@ -46,7 +49,7 @@ function OfflineBadge() {
   return (
     <span style={{ fontFamily: C.sys, fontSize: 12, color: C.faint,
       border: `1px solid ${C.border}`, borderRadius: 18, padding: "5px 11px" }}>
-      Runs 100% locally · Python via vendored Pyodide
+      Handbooks &amp; drills read fully offline · coding runner uses Pyodide (vendored, or CDN when hosted)
     </span>
   );
 }

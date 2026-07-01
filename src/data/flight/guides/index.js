@@ -1,5 +1,7 @@
-// All embedded DSA topic guides, in study order. Each module default-exports a
-// guide object: { id, title, subtitle, emoji, intro, sections[], cheatsheet[] }.
+// All embedded study handbooks, in study order (DSA topics, then the
+// probability refresher and the system-design reference). Each module
+// default-exports a guide object:
+// { id, title, subtitle, emoji, intro, sections[], cheatsheet[] }.
 import arraysHashing from "./arraysHashing.js";
 import twoPointersSlidingWindow from "./twoPointersSlidingWindow.js";
 import binarySearch from "./binarySearch.js";
@@ -12,6 +14,8 @@ import backtracking from "./backtracking.js";
 import dynamicProgramming from "./dynamicProgramming.js";
 import greedy from "./greedy.js";
 import bitManipulation from "./bitManipulation.js";
+import probability from "./probability.js";
+import systemDesign from "./systemDesign.js";
 
 export const GUIDES = [
   arraysHashing,
@@ -26,4 +30,6 @@ export const GUIDES = [
   dynamicProgramming,
   greedy,
   bitManipulation,
+  probability,
+  systemDesign,
 ];
