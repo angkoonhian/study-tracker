@@ -3,7 +3,7 @@ export default {
   title: "Dynamic Programming",
   subtitle: "A complete reference: from recursion to tabulation, every pattern that matters",
   emoji: "",
-  intro: `Dynamic programming is the single biggest topic in algorithmic interviews — and the one people fear most. The good news: DP is not about memorising tricks. It is a small set of patterns applied with a consistent method. Once you internalise the method, the patterns become recognisable and the solutions almost write themselves.\n\nThis guide covers what DP is, the recursion-to-tabulation pyramid, the five-step method that solves every DP problem, and the seven sub-patterns that account for nearly every DP question you will see: 1D linear DP, grid DP, sequence DP, knapsack, interval DP, state-machine DP, and tree DP. Each pattern is taught with worked examples, the build-up from recursion to tabulation, and notes on space optimisation. The final sections cover recognition signals, common bugs, a 30-problem study plan, and a cheat sheet.\n\nTable of contents: (1) What is dynamic programming, (2) The recursion-to-tabulation pyramid, (3) The five-step method, (4) Pattern A: 1D linear DP, (5) Pattern B: 2D grid DP, (6) Pattern C: sequence and string DP, (7) Pattern D: knapsack family, (8) Pattern E: interval DP, (9) Pattern F: state-machine DP, (10) Pattern G: DP on trees, (11) Memoisation vs tabulation, (12) Space optimisation, (13) Common bugs, (14) Recognising DP in the wild, (15) Study plan, (16) One-page cheat sheet.`,
+  intro: `Dynamic programming is the single biggest topic in algorithmic interviews — and the one people fear most. The good news: DP is not about memorising tricks. It is a small set of patterns applied with a consistent method. Once you internalise the method, the patterns become recognisable and the solutions almost write themselves.\n\nThis guide covers what DP is, the recursion-to-tabulation pyramid, the five-step method that solves every DP problem, and the twelve sub-patterns that account for nearly every DP question you will see: 1D linear DP, grid DP, sequence DP, knapsack, interval DP, state-machine DP, tree DP, LIS in O(n log n), bitmask DP, DP with a monotonic deque, digit DP, and DP on a DAG. Each pattern is taught with worked examples, the build-up from recursion to tabulation, and notes on space optimisation. The final sections cover recognition signals, common bugs, a 30-problem study plan, and a cheat sheet.\n\nTable of contents: (1) What is dynamic programming, (2) The recursion-to-tabulation pyramid, (3) The five-step method, (4) Pattern A: 1D linear DP, (5) Pattern B: 2D grid DP, (6) Pattern C: sequence and string DP, (7) Pattern D: knapsack family, (8) Pattern E: interval DP, (9) Pattern F: state-machine DP, (10) Pattern G: DP on trees, (11) Pattern H: LIS in O(n log n), (12) Pattern I: bitmask DP, (13) Pattern J: DP with a monotonic deque, (14) Pattern K: digit DP, (15) Pattern L: DP on a DAG and counting vs optimisation, (16) Memoisation vs tabulation, (17) Space optimisation, (18) Common bugs, (19) Recognising DP in the wild, (20) Study plan, (21) One-page cheat sheet.`,
   sections: [
     {
       heading: "1. What is dynamic programming",
@@ -373,7 +373,108 @@ export default {
       ]
     },
     {
-      heading: "11. Memoisation vs tabulation: when to use which",
+      heading: "11. Pattern H: LIS in O(n log n) with patience sorting",
+      blocks: [
+        { type: "p", text: `Section 6.3 gave the O(n log n) LIS as a short code snippet without justifying why it works. It deserves a full treatment: it is a genuinely surprising algorithm, it shows up as a subroutine in harder problems (Russian doll envelopes, longest chain of pairs, minimum patches), and interviewers love asking you to explain why it is correct.` },
+        { type: "p", text: `Start with the O(n²) DP from section 6.3 for contrast. State i, meaning dp[i] = length of the longest strictly increasing subsequence ending at index i, transition dp[i] = 1 + max(dp[j] for j < i with nums[j] < nums[i]). That inner max scan over all earlier indices is the O(n) factor we want to kill.` },
+        { type: "h3", text: "11.1 The patience-sorting idea" },
+        { type: "p", text: `Deal the numbers one at a time into piles, like the card game patience. Rule: a number goes on the leftmost pile whose top card is greater than or equal to it (for strictly increasing LIS); if no such pile exists, start a new pile to the right. The number of piles at the end equals the LIS length. This is a theorem, not a coincidence — each pile is an antichain, and the pile count is forced to equal the longest increasing chain by Dilworth's theorem.` },
+        { type: "p", text: `We do not need the piles themselves, only their top cards. Maintain an array tails where tails[k] is the smallest possible tail value of any increasing subsequence of length k+1 seen so far. tails is always sorted, so we can binary-search it.` },
+        { type: "code", code: `from bisect import bisect_left\n\ndef lengthOfLIS(nums):\n    tails = []                      # tails[k] = smallest tail of an LIS of length k+1\n    for x in nums:\n        i = bisect_left(tails, x)   # leftmost slot where x fits\n        if i == len(tails):\n            tails.append(x)         # x extends the longest chain\n        else:\n            tails[i] = x            # x becomes a smaller tail at that length\n    return len(tails)` },
+        { type: "p", text: `Worked example on nums = [10, 9, 2, 5, 3, 7, 101, 18]. Watch tails evolve; the "action" column names what bisect_left did.` },
+        { type: "table", headers: ["x", "tails before", "action", "tails after"], rows: [
+          ["10", "[]", "append (new pile)", "[10]"],
+          ["9", "[10]", "replace index 0", "[9]"],
+          ["2", "[9]", "replace index 0", "[2]"],
+          ["5", "[2]", "append", "[2, 5]"],
+          ["3", "[2, 5]", "replace index 1", "[2, 3]"],
+          ["7", "[2, 3]", "append", "[2, 3, 7]"],
+          ["101", "[2, 3, 7]", "append", "[2, 3, 7, 101]"],
+          ["18", "[2, 3, 7, 101]", "replace index 3", "[2, 3, 7, 18]"]
+        ]},
+        { type: "p", text: `Final tails has length 4, so the LIS length is 4 (one such LIS is [2, 3, 7, 18] or [2, 3, 7, 101]). Note that tails = [2, 3, 7, 18] is not itself a subsequence of the input in order — it is a bookkeeping array that happens to have the right length. Never return tails as the answer subsequence.` },
+        { type: "callout", text: `Strict vs non-strict. bisect_left gives strictly increasing LIS (equal values replace, they do not extend). Swap to bisect_right for the longest non-decreasing subsequence (equal values append). This one-function swap is a common interview follow-up — know which is which.` },
+        { type: "h3", text: "11.2 Reconstructing the actual subsequence" },
+        { type: "p", text: `tails loses the sequence, but we can recover it by recording, for each element, the length of the LIS ending there (that is exactly the insertion index + 1) plus a parent pointer to the previous element in that chain.` },
+        { type: "code", code: `from bisect import bisect_left\n\ndef longestIncreasingSubsequence(nums):\n    if not nums:\n        return []\n    tails = []          # tails[k] = index (into nums) of the current tail of length k+1\n    parent = [-1] * len(nums)\n    for idx, x in enumerate(nums):\n        # binary search on the VALUES at the indices stored in tails\n        lo, hi = 0, len(tails)\n        while lo < hi:\n            mid = (lo + hi) // 2\n            if nums[tails[mid]] < x:\n                lo = mid + 1\n            else:\n                hi = mid\n        i = lo\n        parent[idx] = tails[i - 1] if i > 0 else -1\n        if i == len(tails):\n            tails.append(idx)\n        else:\n            tails[i] = idx\n    # walk the parent chain back from the tail of the longest chain\n    seq = []\n    k = tails[-1]\n    while k != -1:\n        seq.append(nums[k])\n        k = parent[k]\n    return seq[::-1]` },
+        { type: "p", text: `Complexity: O(n log n) time (n insertions, each a binary search over a list of length at most n) and O(n) space for tails and parent. This dominates the O(n²) DP whenever n is large, and reconstruction adds only the parent array. When the interviewer asks "can you do better than O(n²)", this is the answer they want.` }
+      ]
+    },
+    {
+      heading: "12. Pattern I: bitmask DP",
+      blocks: [
+        { type: "p", text: `When the state is a subset of a small set (n up to roughly 20), encode the subset as the bits of an integer. Bit k set means element k is in the subset. A DP indexed by an integer mask then ranges over all 2ⁿ subsets. This is the standard tool for "assign n things to n slots" and small-instance NP-hard problems where an exponential-in-n state space is still tractable.` },
+        { type: "h3", text: "12.1 Bit tricks you need" },
+        { type: "table", headers: ["Operation", "Expression", "Meaning"], rows: [
+          ["Test bit k", "mask & (1 << k)", "is element k in the subset?"],
+          ["Set bit k", "mask | (1 << k)", "add element k"],
+          ["Clear bit k", "mask & ~(1 << k)", "remove element k"],
+          ["Popcount", "bin(mask).count('1')", "how many elements are chosen"],
+          ["Full set", "(1 << n) - 1", "all n elements chosen"],
+          ["Iterate submasks", "sub = (sub - 1) & mask", "enumerate every subset of mask"]
+        ]},
+        { type: "h3", text: "12.2 Assignment problem (minimum cost)" },
+        { type: "p", text: `Problem: n workers and n tasks; cost[i][j] is the cost of giving task j to worker i. Assign each worker exactly one task, minimising total cost. The state is "which tasks are already assigned"; the worker being assigned is implied by how many bits are set (assign workers in order 0, 1, 2, ...).` },
+        { type: "p", text: `State: mask = set of tasks already taken. Meaning: dp[mask] = min cost to assign the first popcount(mask) workers to exactly the tasks in mask. Transition: the next worker is i = popcount(mask); try giving them each still-free task j. Base: dp[0] = 0 (no workers assigned, no cost).` },
+        { type: "code", code: `def min_assignment_cost(cost):\n    n = len(cost)\n    FULL = (1 << n) - 1\n    dp = [float('inf')] * (1 << n)\n    dp[0] = 0\n    for mask in range(1 << n):\n        if dp[mask] == float('inf'):\n            continue\n        i = bin(mask).count('1')        # next worker to assign\n        if i == n:\n            continue\n        for j in range(n):              # give worker i some free task j\n            if not (mask & (1 << j)):\n                nxt = mask | (1 << j)\n                dp[nxt] = min(dp[nxt], dp[mask] + cost[i][j])\n    return dp[FULL]` },
+        { type: "p", text: `Complexity: 2ⁿ masks, O(n) work per mask, so O(n · 2ⁿ) time and O(2ⁿ) space. Because the worker index is derived from the popcount, we do not need a separate dimension for it — a common space-saving trick in assignment-style bitmask DP.` },
+        { type: "h3", text: "12.3 Travelling salesman (Held-Karp)" },
+        { type: "p", text: `Problem: n cities, dist[i][j] between each pair; find the shortest tour that starts at city 0, visits every city exactly once, and returns to 0. Brute force is O(n!); Held-Karp brings it down to O(n² · 2ⁿ) by remembering, for each (set of visited cities, current city), the cheapest way to have got there.` },
+        { type: "p", text: `State: (mask, i) where mask is the set of visited cities and i is the city we are currently at (and i must be in mask). Meaning: dp[mask][i] = min cost of a path starting at 0, visiting exactly the cities in mask, ending at i. Transition: to reach (mask, i), we came from some j in mask (j != i) and stepped j -> i: dp[mask][i] = min over j of dp[mask without i][j] + dist[j][i].` },
+        { type: "code", code: `def tsp(dist):\n    n = len(dist)\n    INF = float('inf')\n    dp = [[INF] * n for _ in range(1 << n)]\n    dp[1][0] = 0                        # start at city 0, only city 0 visited\n    for mask in range(1 << n):\n        for i in range(n):\n            if dp[mask][i] == INF:\n                continue\n            for k in range(n):          # extend the path to a new city k\n                if mask & (1 << k):\n                    continue\n                nxt = mask | (1 << k)\n                dp[nxt][k] = min(dp[nxt][k], dp[mask][i] + dist[i][k])\n    FULL = (1 << n) - 1\n    return min(dp[FULL][i] + dist[i][0] for i in range(1, n))` },
+        { type: "callout", text: `Held-Karp is exponential (O(n² · 2ⁿ) time, O(n · 2ⁿ) space), but that beats O(n!) dramatically — around n = 18 it is still feasible where brute force is hopeless. When you see "visit every node exactly once" with n small, reach for bitmask DP over subsets. The tell-tale constraint is a suspiciously small n (typically n <= 20).` }
+      ]
+    },
+    {
+      heading: "13. Pattern J: DP with a monotonic deque (sliding-window optimisation)",
+      blocks: [
+        { type: "p", text: `Some DP transitions take a min or max over a moving window of previous states: dp[i] = something(i) + min(dp[j] for j in [i - k, i - 1]). Computed naively that inner min is O(k), for O(n·k) overall. A monotonic deque removes the inner scan, giving O(n). This is the same data structure behind sliding-window maximum, and it connects directly to the app's trading problems — rolling max/min of prices over a window.` },
+        { type: "h3", text: "13.1 Sliding-window maximum (the primitive)" },
+        { type: "p", text: `Problem: given an array and a window size k, output the maximum of every length-k window. Keep a deque of indices whose values are in decreasing order. Before pushing i, pop smaller values from the back (they can never be the max while i is in the window); pop the front if it has slid out of the window. The front is always the current window's max.` },
+        { type: "code", code: `from collections import deque\n\ndef maxSlidingWindow(nums, k):\n    dq = deque()          # holds indices, values decreasing front -> back\n    out = []\n    for i, x in enumerate(nums):\n        while dq and nums[dq[-1]] <= x:   # pop dominated indices\n            dq.pop()\n        dq.append(i)\n        if dq[0] <= i - k:                # front slid out of window\n            dq.popleft()\n        if i >= k - 1:\n            out.append(nums[dq[0]])\n    return out` },
+        { type: "p", text: `Each index is pushed and popped at most once, so the whole sweep is O(n) despite the inner while loop. That amortised-O(1)-per-step min/max query is exactly what a windowed DP transition needs.` },
+        { type: "h3", text: "13.2 Applying it to a DP: jump game with bounded reach" },
+        { type: "p", text: `Problem: you stand at index 0 of an array of scores; from index i you may jump to any index in [i + 1, i + k]. Your total is the sum of the scores of the indices you land on (including the last). Maximise the score to reach the last index. The natural DP is dp[i] = nums[i] + max(dp[j] for j in [i - k, i - 1]) — an O(n·k) transition with a windowed max, the perfect candidate for the deque.` },
+        { type: "code", code: `from collections import deque\n\ndef maxResult(nums, k):\n    n = len(nums)\n    dp = [float('-inf')] * n\n    dp[0] = nums[0]\n    dq = deque([0])                       # indices, dp values decreasing\n    for i in range(1, n):\n        while dq and dq[0] < i - k:        # drop indices out of the window\n            dq.popleft()\n        dp[i] = nums[i] + dp[dq[0]]        # best predecessor in [i-k, i-1]\n        while dq and dp[dq[-1]] <= dp[i]:  # maintain decreasing dp order\n            dq.pop()\n        dq.append(i)\n    return dp[-1]` },
+        { type: "p", text: `The deque holds candidate predecessor indices ordered by decreasing dp value; dq[0] is always the best reachable predecessor. Complexity drops from O(n·k) to O(n) time and O(k) extra space. The same shape optimises "constrained subsequence sum", "shortest subarray with sum at least K", and rolling max-of-prices windows in trading-style questions.` },
+        { type: "callout", text: `Recognise the pattern: a DP whose transition is a min or max over a contiguous window of previous dp values that slides forward by one each step. Whenever the window bound k appears inside a min/max, a monotonic deque turns the O(n·k) DP into O(n). If the transition is a min/max over a window plus a value that depends on i - j, you may need a monotonic deque on a shifted key instead.` }
+      ]
+    },
+    {
+      heading: "14. Pattern K: digit DP",
+      blocks: [
+        { type: "p", text: `Digit DP counts how many integers in a range satisfy a property by building the number one digit at a time from the most significant end. It answers questions like "how many integers in [0, N] contain no digit 3" or "how many have digit sum divisible by k" — where N can be astronomically large (10^18), far too big to loop over directly.` },
+        { type: "p", text: `The core state is (position, tight, ...extra). position is the index of the digit we are choosing. tight is a boolean: are we still hugging the prefix of N? If tight is True, the current digit cannot exceed N's digit at this position (going higher would make the number exceed N); if we have already gone strictly below N somewhere to the left, tight is False and every remaining digit is free (0..9). Extra state carries whatever the property needs (a running digit sum, the previous digit, and so on).` },
+        { type: "h3", text: "14.1 Count integers in [0, N] with no digit equal to 4" },
+        { type: "code", code: `from functools import lru_cache\n\ndef count_no_four(N):\n    digits = list(map(int, str(N)))\n    n = len(digits)\n\n    @lru_cache(maxsize=None)\n    def solve(pos, tight):\n        if pos == n:\n            return 1                      # one valid number fully built\n        limit = digits[pos] if tight else 9\n        total = 0\n        for d in range(0, limit + 1):\n            if d == 4:\n                continue                  # forbidden digit\n            total += solve(pos + 1, tight and d == limit)\n        return total\n\n    return solve(0, True)` },
+        { type: "p", text: `Walking the logic: at each position we try every allowed digit d up to limit. limit is N's digit when we are still tight, else 9. We stay tight for the next position only if we were tight and chose d exactly equal to limit — otherwise we have dipped below N and are free thereafter. Skipping d == 4 enforces the property. Reaching pos == n means we built one complete valid number, so we count 1.` },
+        { type: "callout", text: `Why memoisation helps: once tight is False, solve(pos, False) depends only on pos, so the same subproblem recurs across many prefixes and the cache collapses the work. Complexity is O(n · 2 · 10) states times transitions with n = number of digits (about 19 for a 64-bit N) — effectively O(n) for a fixed alphabet. A leading-zero flag is a frequent extra piece of state when the property treats leading zeros specially; add it as a third argument when needed.` }
+      ]
+    },
+    {
+      heading: "15. Pattern L: DP on a DAG, and counting vs optimisation",
+      blocks: [
+        { type: "p", text: `Many DPs are secretly a longest-path or path-count computation on a directed acyclic graph (DAG). If subproblems depend only on strictly smaller subproblems, the dependency graph has no cycles — that acyclicity is precisely what lets us fill the table in a valid order (a topological order). Making the DAG explicit is useful when the "sequence" or "grid" framing does not fit but the acyclic dependency structure does.` },
+        { type: "h3", text: "15.1 Longest path in a DAG" },
+        { type: "p", text: `Problem: given a DAG with edge weights, find the longest path (by total weight). In a general graph the longest path is NP-hard, but on a DAG it is a clean DP: process nodes in topological order and relax edges. Here we memoise instead, which processes nodes in reverse topological order implicitly via the recursion.` },
+        { type: "code", code: `from functools import lru_cache\n\ndef longest_path(n, edges):\n    # edges: list of (u, v, w) directed u -> v with weight w; graph is a DAG\n    adj = [[] for _ in range(n)]\n    for u, v, w in edges:\n        adj[u].append((v, w))\n\n    @lru_cache(maxsize=None)\n    def best_from(u):\n        # longest path starting at u\n        best = 0\n        for v, w in adj[u]:\n            best = max(best, w + best_from(v))\n        return best\n\n    return max(best_from(u) for u in range(n))` },
+        { type: "p", text: `best_from(u) is the longest path leaving u; each node is computed once and cached, so the whole thing is O(V + E). Acyclicity guarantees the recursion terminates — with a cycle, best_from would recurse forever. This is the same skeleton behind "longest increasing path in a matrix" (each cell is a node, edges point to larger neighbours) and course-scheduling-style critical-path problems.` },
+        { type: "h3", text: "15.2 Counting DP vs optimisation DP" },
+        { type: "p", text: `Every DP is either an optimisation (best value) or a counting (how many ways) problem, and the transition operator differs accordingly. The state and structure are usually identical; only the combine step changes.` },
+        { type: "table", headers: ["Aspect", "Optimisation DP", "Counting DP"], rows: [
+          ["Question form", "maximum / minimum / best", "number of ways / how many"],
+          ["Combine operator", "max or min over choices", "sum over choices"],
+          ["Base case", "0 (empty has zero value) or -inf/inf", "1 (one way to do nothing)"],
+          ["Answer read-off", "the optimal cell", "the count cell (often mod a prime)"],
+          ["Classic example", "coin change (min coins)", "coin change II (number of ways)"]
+        ]},
+        { type: "p", text: `Number of paths in a DAG is the counting twin of longest path: replace max with sum and the base case with 1. This mirrors coin change (min) versus coin change II (count) from section 7 — same items, same state, sum instead of min.` },
+        { type: "code", code: `from functools import lru_cache\n\ndef count_paths(n, edges, src, dst):\n    # number of distinct directed paths src -> dst in a DAG\n    adj = [[] for _ in range(n)]\n    for u, v in edges:\n        adj[u].append(v)\n\n    @lru_cache(maxsize=None)\n    def ways(u):\n        if u == dst:\n            return 1                  # one way: the empty remaining path\n        return sum(ways(v) for v in adj[u])\n\n    return ways(src)` },
+        { type: "callout", text: `The mental switch. Optimisation combines children with max/min and starts from 0 (or +/- infinity); counting combines with sum and starts from 1. If a counting answer can be huge, take it modulo the required prime inside the recurrence, not just at the end, to avoid overflow in languages without big integers. When a problem changes from "the best" to "how many", keep your state and just swap the operator and base case.` }
+      ]
+    },
+    {
+      heading: "16. Memoisation vs tabulation: when to use which",
       blocks: [
         { type: "p", text: `Both reach the same final algorithm. The difference is when one is easier to write and reason about than the other.` },
         { type: "table", headers: ["Use memoisation (top-down) when...", "Use tabulation (bottom-up) when..."], rows: [
@@ -387,16 +488,16 @@ export default {
       ]
     },
     {
-      heading: "12. Space optimisation",
+      heading: "17. Space optimisation",
       blocks: [
         { type: "p", text: `Many DP solutions allocate an O(n) or O(n · m) table even though the transition only reads from the last row, or the last constant number of cells. In those cases you can compress the storage.` },
-        { type: "h3", text: "12.1 Constant-window dependency" },
+        { type: "h3", text: "17.1 Constant-window dependency" },
         { type: "p", text: `When dp[i] only reads dp[i-1] and dp[i-2], you don't need an array at all. Two variables.` },
         { type: "code", code: `# Was:\ndp = [0] * n\nfor i in range(2, n):\n    dp[i] = f(dp[i-1], dp[i-2])\n# Becomes:\nprev2, prev1 = ..., ...\nfor _ in range(2, n):\n    prev2, prev1 = prev1, f(prev1, prev2)` },
-        { type: "h3", text: "12.2 Row-rolling for grids" },
+        { type: "h3", text: "17.2 Row-rolling for grids" },
         { type: "p", text: `When dp[i][j] only reads from row i-1 (and possibly from already-updated cells in row i), you can use a single 1D array, updating it in place. The order of iteration matters — when updating a cell, the array entries you're reading must still contain their previous-row values, not yet updated.` },
         { type: "p", text: `For knapsack-style: iterate the inner index right to left to read previous-row values, or left to right to read current-row values (intended for unbounded knapsack).` },
-        { type: "h3", text: "12.3 When you can't compress" },
+        { type: "h3", text: "17.3 When you can't compress" },
         { type: "p", text: `Don't space-optimise just because you can. Some cases require the full table:` },
         { type: "ul", items: [
           `You need to reconstruct the optimal path or choice, not just its value — the full table preserves the structure you need to walk back through.`,
@@ -407,7 +508,7 @@ export default {
       ]
     },
     {
-      heading: "13. Common bugs",
+      heading: "18. Common bugs",
       blocks: [
         { type: "table", headers: ["Bug", "What goes wrong"], rows: [
           ["Imprecise state definition", `"dp[i] = something about the first i elements" — if you can't write the transition as a one-liner referencing this definition exactly, the definition is too vague. Tighten it before writing code.`],
@@ -425,10 +526,10 @@ export default {
       ]
     },
     {
-      heading: "14. Recognising DP in the wild",
+      heading: "19. Recognising DP in the wild",
       blocks: [
         { type: "p", text: `DP problems don't announce themselves. Here are the linguistic and structural signals that should make you reach for the DP template.` },
-        { type: "h3", text: "14.1 Question phrasings that mean DP" },
+        { type: "h3", text: "19.1 Question phrasings that mean DP" },
         { type: "ul", items: [
           `"Maximum / minimum ..." over a sequence of decisions.`,
           `"Number of ways to ..." — counting problems are nearly always DP.`,
@@ -437,13 +538,13 @@ export default {
           `"Optimal strategy for a game" — game DP is a flavour of state-machine DP.`,
           `Anything with "... in at most k moves" or "... within k transactions".`
         ]},
-        { type: "h3", text: "14.2 Structural signals" },
+        { type: "h3", text: "19.2 Structural signals" },
         { type: "ul", items: [
           `You can describe an optimal solution as making a last decision and delegating the rest to a smaller subproblem.`,
           `The naive recursive solution would have an exponential blow-up of duplicate subproblems.`,
           `The problem has a clear notion of "prefix", "interval", or "index" that defines what a subproblem is.`
         ]},
-        { type: "h3", text: "14.3 Anti-signals: when it isn't DP" },
+        { type: "h3", text: "19.3 Anti-signals: when it isn't DP" },
         { type: "ul", items: [
           `There's a greedy choice that's provably correct (interval scheduling, fractional knapsack).`,
           `The problem can be reduced to a shortest path or graph traversal.`,
@@ -453,7 +554,7 @@ export default {
       ]
     },
     {
-      heading: "15. Study plan",
+      heading: "20. Study plan",
       blocks: [
         { type: "p", text: `Drill in this order. Each problem cements one pattern. Once you can solve all 30 without looking, you have full DP coverage for interviews.` },
         { type: "table", headers: ["#", "Problem", "Pattern reinforced"], rows: [
@@ -498,9 +599,9 @@ export default {
       ]
     },
     {
-      heading: "16. One-page cheat sheet",
+      heading: "21. One-page cheat sheet",
       blocks: [
-        { type: "h3", text: "16.1 The five-step method" },
+        { type: "h3", text: "21.1 The five-step method" },
         { type: "ul", items: [
           `State. What variables uniquely identify a subproblem?`,
           `Meaning. One precise sentence: what does dp[state] stand for?`,
@@ -508,7 +609,7 @@ export default {
           `Base. Which subproblems are trivially known?`,
           `Order. In what order can the table be filled so dependencies are ready?`
         ]},
-        { type: "h3", text: "16.2 Pattern recognition" },
+        { type: "h3", text: "21.2 Pattern recognition" },
         { type: "table", headers: ["Signal", "Pattern"], rows: [
           ["Decisions along a 1D sequence", "1D linear DP (climbing stairs, house robber, decode ways, word break)."],
           ["Movement on a grid", "2D grid DP (unique paths, min path sum, maximal square). Iterate top-to-bottom, left-to-right."],
@@ -519,9 +620,14 @@ export default {
           ["Counting combinations", "Iterate items outer, target inner. Initialise dp[0] = 1."],
           ["Problem on a range; combine via split point", "Interval DP. Iterate by length, not by index."],
           ["Multiple modes per step", "State-machine DP (stock family). Add a state dimension; write the transition table."],
-          ["Recursive structure on a tree", "Tree DP. Often return a tuple per subtree."]
+          ["Recursive structure on a tree", "Tree DP. Often return a tuple per subtree."],
+          ["Longest increasing subsequence, large n", "Patience sorting with tails + bisect_left, O(n log n). bisect_right for non-decreasing."],
+          ["State is a subset, n <= ~20", "Bitmask DP (assignment, TSP / Held-Karp). Encode the subset as an integer."],
+          ["Transition takes min/max over a sliding window", "Monotonic deque optimisation, O(n·k) -> O(n)."],
+          ["Count numbers <= N with a digit property", "Digit DP. State (position, tight, extra)."],
+          ["Acyclic dependency / longest or count of paths", "DP on a DAG. Longest = max; count = sum, base 1."]
         ]},
-        { type: "h3", text: "16.3 Key tactical reminders" },
+        { type: "h3", text: "21.3 Key tactical reminders" },
         { type: "ul", items: [
           `Start with recursion. Add @cache. Translate to tabulation only if needed.`,
           `For knapsack, the iteration direction encodes the variant. Right-to-left for 0/1; left-to-right for unbounded.`,
@@ -555,6 +661,11 @@ export default {
     `Tree DP (house robber III, max path sum): return a tuple per subtree (e.g. (rob, skip)) or "return one thing, track another" via a closure; use max(0, gain) to prune negative branches.`,
     `Memoisation vs tabulation: top-down for intuitive recursion / sparse or complex-key state spaces; bottom-up for obvious order, full state space, space optimisation, or recursion-limit avoidance.`,
     `Common bugs: off-by-one in base cases (check n=0,1,2), wrong iteration order, "exactly K" vs "at most K", reading answer from wrong cell, mutating state under @cache, recursion depth, forgetting the modulus in counting problems.`,
-    `DP signals: "maximum/minimum", "number of ways", "is it possible", "longest/shortest", "optimal game strategy", "in at most k moves". Anti-signals: provable greedy, shortest-path reduction, no overlapping subproblems.`
+    `DP signals: "maximum/minimum", "number of ways", "is it possible", "longest/shortest", "optimal game strategy", "in at most k moves". Anti-signals: provable greedy, shortest-path reduction, no overlapping subproblems.`,
+    `LIS in O(n log n) (patience sorting): keep tails where tails[k] = smallest tail of an increasing subsequence of length k+1; for each x, bisect_left and append (extend) or overwrite (smaller tail); answer is len(tails). bisect_left = strictly increasing, bisect_right = non-decreasing. tails is not the actual subsequence — track parent pointers to reconstruct.`,
+    `Bitmask DP (n <= ~20): encode a subset as an integer's bits. Assignment: dp[mask] = min cost, next worker = popcount(mask). TSP / Held-Karp: dp[mask][i] = min cost visiting set mask ending at i, O(n²·2ⁿ) — beats O(n!). Submask enumeration: sub = (sub - 1) & mask.`,
+    `Monotonic-deque DP: when a transition takes a min/max over a sliding window of previous dp values, a deque of candidate indices (kept monotonic) drops O(n·k) to O(n). Same primitive as sliding-window maximum and rolling max/min of prices.`,
+    `Digit DP: count integers <= N with a property by building digits left-to-right. State (position, tight, extra); tight means still hugging N's prefix so the digit is capped at N's digit, else free 0..9. Memoise on (pos, tight, extra); add a leading-zero flag when zeros matter.`,
+    `DP on a DAG: longest path is a clean DP (max over out-edges, base 0); counting paths is its twin (sum over out-edges, base 1). Optimisation DP uses max/min and base 0/±inf; counting DP uses sum and base 1 — take the count mod a prime inside the recurrence when it can be huge.`
   ]
 }
