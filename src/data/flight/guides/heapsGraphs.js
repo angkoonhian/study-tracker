@@ -673,7 +673,399 @@ def dijkstra(graph, start):
       ]
     },
     {
-      heading: "15. Minimum spanning tree (MST)",
+      heading: "15. Dijkstra in depth",
+      blocks: [
+        { type: "p", text: `Dijkstra's algorithm deserves a closer look because it is the single most-tested shortest-path algorithm and because the details (why non-negative weights, how the heap is used, how to rebuild the path) come up constantly in follow-up questions. Everything here builds on the basic template from the shortest-paths section.` },
+        { type: "h3", text: "15.1 The invariant, and why negative edges break it" },
+        { type: "p", text: `Dijkstra maintains one invariant: when a node is popped from the heap for the first time, its recorded distance is final and optimal. The algorithm settles nodes in non-decreasing order of distance. When we pop the closest unsettled node u with distance d, no other unsettled node can offer a shorter route to u, because every other route would first have to pass through some node at distance >= d, and all edges are non-negative, so it could only add to that.` },
+        { type: "p", text: `That argument collapses the moment an edge can be negative. A path that first steps to a far-away node could later take a negative edge and end up shorter than the greedy choice. Dijkstra has already finalised the node by then, so it never revisits and returns a wrong answer. This is not a performance issue — it is a correctness failure. Use Bellman-Ford (or Johnson's algorithm for all pairs) when negatives are possible.` },
+        { type: "callout", text: `A tempting but wrong fix is to add a big constant to every weight to make them non-negative, then run Dijkstra. This changes the answer: a path with more edges accumulates more of the added constant, so the algorithm is biased against long paths. Shifting weights only preserves shortest paths when every path between two nodes has the same edge count, which is almost never true.` },
+        { type: "h3", text: "15.2 Lazy heap vs decrease-key" },
+        { type: "p", text: `There are two ways to keep the heap in sync with improving distances.` },
+        { type: "ul", items: [
+          `Lazy deletion (the standard Python approach). When you find a shorter path to a node, push a fresh (new_dist, node) entry and leave the old, larger entry in the heap as a ghost. When a ghost eventually pops, its distance exceeds dist[node], so you skip it. The heap can hold up to O(E) entries, but each is pushed and popped once, giving O((V + E) log V).`,
+          `Decrease-key. Keep exactly one entry per node and update its priority in place when you find a shorter path. This keeps the heap at O(V) entries but requires an indexed priority queue, which Python's heapq does not provide. In practice, lazy deletion is simpler and just as fast asymptotically, so it is what you write in interviews.`
+        ]},
+        { type: "table",
+          headers: ["Approach", "Heap size", "Extra structure", "In Python?"],
+          rows: [
+            ["Lazy deletion", "up to O(E)", "none", "Yes, idiomatic"],
+            ["Decrease-key", "O(V)", "indexed heap / position map", "No stdlib support"]
+          ]
+        },
+        { type: "h3", text: "15.3 Reconstructing the actual path" },
+        { type: "p", text: `The basic template returns distances only. To recover the path itself, record a predecessor for each node whenever you relax an edge, then walk the predecessors backwards from the target and reverse.` },
+        { type: "code", code: `import heapq
+
+def dijkstra_path(graph, start, target):
+    # graph[u] = list of (neighbour, weight)
+    dist = {node: float('inf') for node in graph}
+    prev = {node: None for node in graph}
+    dist[start] = 0
+    heap = [(0, start)]
+
+    while heap:
+        d, node = heapq.heappop(heap)
+        if d > dist[node]:
+            continue                 # stale entry, skip
+        if node == target:
+            break                    # target settled; distance is final
+        for neighbour, weight in graph[node]:
+            nd = d + weight
+            if nd < dist[neighbour]:
+                dist[neighbour] = nd
+                prev[neighbour] = node
+                heapq.heappush(heap, (nd, neighbour))
+
+    if dist[target] == float('inf'):
+        return None, float('inf')    # unreachable
+
+    # Walk predecessors backwards, then reverse.
+    path = []
+    cur = target
+    while cur is not None:
+        path.append(cur)
+        cur = prev[cur]
+    path.reverse()
+    return path, dist[target]` },
+        { type: "p", text: `Early exit is safe: once the target pops from the heap, its distance is final, so you can break immediately instead of settling the whole graph. Do not break earlier (for example, when you first push the target) — a shorter route to it may still be discovered.` },
+        { type: "callout", text: `Complexity: O((V + E) log V) with a binary heap. Each edge triggers at most one push, so the heap holds O(E) entries; each push and pop is O(log E) = O(log V) since E <= V^2. The predecessor bookkeeping adds only O(V) space.` }
+      ]
+    },
+    {
+      heading: "16. Bellman-Ford and negative cycles",
+      blocks: [
+        { type: "p", text: `Bellman-Ford trades speed for generality: it handles negative edge weights and, uniquely among the standard algorithms, it can detect a negative cycle. The idea is pure relaxation with no cleverness about ordering.` },
+        { type: "h3", text: "16.1 Relaxation and the V - 1 bound" },
+        { type: "p", text: `A shortest path in a graph with V vertices and no negative cycle uses at most V - 1 edges (any more would repeat a vertex, and removing the loop can only help). Each full pass over all edges guarantees that shortest paths using one more edge become correct. So after V - 1 passes, every shortest path is settled, regardless of the order in which edges are relaxed.` },
+        { type: "h3", text: "16.2 Detecting a negative cycle with one extra pass" },
+        { type: "p", text: `After V - 1 passes the distances are final if and only if there is no negative cycle reachable from the source. Run one more pass: if any edge can still be relaxed, a negative cycle exists, because only an endlessly improvable loop could keep shrinking the distance past the V - 1 bound.` },
+        { type: "code", code: `def bellman_ford(edges, n, start):
+    # edges: list of (u, v, w); vertices are 0..n-1
+    dist = [float('inf')] * n
+    dist[start] = 0
+
+    # V - 1 relaxation passes
+    for _ in range(n - 1):
+        changed = False
+        for u, v, w in edges:
+            if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                changed = True
+        if not changed:
+            break                    # early exit: nothing improved
+
+    # One extra pass: any relaxation now means a negative cycle
+    for u, v, w in edges:
+        if dist[u] != float('inf') and dist[u] + w < dist[v]:
+            return None              # negative cycle reachable from start
+    return dist` },
+        { type: "callout", text: `The dist[u] != float('inf') guard matters. Without it, inf + w overflows to inf and the comparison inf < inf is False, which is harmless in Python, but a negative w could make inf + w still look like inf while some languages wrap or error. Guarding also makes the intent explicit: only relax from reachable nodes.` },
+        { type: "h3", text: "16.3 Currency arbitrage: negative cycles in disguise" },
+        { type: "p", text: `This is the connection that ties Bellman-Ford directly to trading problems. Model each currency as a vertex and each exchange rate r(u -> v) as an edge from u to v. Converting along a cycle multiplies the rates together; an arbitrage opportunity exists when some cycle has a product of rates greater than 1 (you end with more than you started).` },
+        { type: "p", text: `Products are awkward for a shortest-path algorithm, which adds edge weights. The standard trick is to take negative logarithms: set the edge weight to -log(rate). Then the sum of weights around a cycle is -log of the product of rates. A product greater than 1 means log(product) > 0, which means the summed weight is negative. So:` },
+        { type: "ul", items: [
+          `Arbitrage exists  <=>  some cycle has product of rates > 1  <=>  that same cycle has negative total weight under w = -log(rate).`,
+          `Detecting arbitrage is therefore exactly detecting a negative cycle, which Bellman-Ford does with its extra pass.`
+        ]},
+        { type: "code", code: `import math
+
+def has_arbitrage(rates):
+    # rates[i][j] = units of currency j obtained per unit of currency i
+    n = len(rates)
+    edges = []
+    for i in range(n):
+        for j in range(n):
+            if i != j and rates[i][j] > 0:
+                edges.append((i, j, -math.log(rates[i][j])))
+
+    # Bellman-Ford from a virtual source: start all nodes at distance 0
+    # so a negative cycle anywhere in the graph is detectable.
+    dist = [0.0] * n
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+
+    # Extra pass: any further relaxation reveals a negative cycle => arbitrage
+    for u, v, w in edges:
+        if dist[u] + w < dist[v]:
+            return True
+    return False` },
+        { type: "p", text: `Note the initialisation: all distances start at 0 rather than seeding a single source. This is equivalent to adding a virtual node with a zero-weight edge to every currency, so a negative cycle in any part of the graph is found even if it is not reachable from one fixed start. Complexity is O(V * E) = O(n^3) for a fully connected currency graph of n currencies.` },
+        { type: "callout", text: `Recovering the arbitrage sequence, not just its existence, is the natural follow-up: track predecessors during the extra pass, then walk back n steps from the relaxed vertex to guarantee you land inside the cycle, and follow predecessors until a vertex repeats. This yields the actual list of trades to execute.` }
+      ]
+    },
+    {
+      heading: "17. Floyd-Warshall (all-pairs shortest paths)",
+      blocks: [
+        { type: "p", text: `Floyd-Warshall computes the shortest path between every pair of vertices in one triple-nested loop. It is the go-to when the graph is small and dense and you need the full distance matrix rather than paths from a single source.` },
+        { type: "h3", text: "17.1 The DP recurrence" },
+        { type: "p", text: `The insight is to consider intermediate vertices one at a time. Let dist[i][j] hold the shortest path from i to j using only vertices from a growing allowed set. After considering vertex k, the recurrence is:` },
+        { type: "code", code: `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])` },
+        { type: "p", text: `Read it as: the shortest i-to-j path either avoids k (the existing value) or routes through k (i to k, then k to j). Sweeping k from 0 to V - 1 progressively allows every vertex as an intermediate, and by the end dist holds true all-pairs shortest paths.` },
+        { type: "code", code: `def floyd_warshall(weight, n):
+    # weight[i][j] = edge cost i->j, or float('inf') if no edge; weight[i][i] = 0
+    INF = float('inf')
+    dist = [row[:] for row in weight]     # copy so we don't clobber input
+
+    for k in range(n):
+        for i in range(n):
+            if dist[i][k] == INF:
+                continue                  # no path i->k, skip the row
+            dik = dist[i][k]
+            for j in range(n):
+                if dik + dist[k][j] < dist[i][j]:
+                    dist[i][j] = dik + dist[k][j]
+    return dist
+
+def has_negative_cycle(dist, n):
+    # After Floyd-Warshall, a negative dist[i][i] means i sits on a negative cycle.
+    return any(dist[i][i] < 0 for i in range(n))` },
+        { type: "callout", text: `The loop order is not negotiable: k must be the outermost loop. If you put i or j outside k, the recurrence uses distances that have not yet accounted for all intermediates and produces wrong answers. Memorise "k, then i, then j".` },
+        { type: "h3", text: "17.2 When to prefer it" },
+        { type: "table",
+          headers: ["Situation", "Floyd-Warshall?", "Reason"],
+          rows: [
+            ["Need all-pairs distances, V <= ~400", "Yes", "O(V^3) is fine and the code is tiny."],
+            ["Need distances from one source only", "No", "Dijkstra / BFS is O((V+E) log V), far cheaper."],
+            ["Sparse graph, need all pairs", "Maybe", "V runs of Dijkstra is O(V(V+E) log V), often better than V^3 when E << V^2."],
+            ["Negative edges present", "Yes", "Handles them directly; also detects negative cycles via dist[i][i] < 0."],
+            ["Transitive closure (reachability only)", "Yes", "Same triple loop with OR/AND instead of min/plus."]
+          ]
+        },
+        { type: "p", text: `Complexity: O(V^3) time and O(V^2) space. The constant factor is tiny (one addition and one comparison in the inner loop), so for V in the low hundreds it often outruns V separate Dijkstra runs despite the worse asymptotics.` }
+      ]
+    },
+    {
+      heading: "18. 0-1 BFS and multi-source BFS",
+      blocks: [
+        { type: "p", text: `Two BFS variants close the gap between plain BFS (all edges cost 1) and full Dijkstra. Both keep BFS's simplicity while handling cases that would otherwise need a heap.` },
+        { type: "h3", text: "18.1 0-1 BFS with a deque" },
+        { type: "p", text: `When every edge weight is either 0 or 1, you do not need a heap. Use a double-ended queue: relaxing a 0-weight edge pushes the neighbour to the front (same distance layer), and relaxing a 1-weight edge pushes to the back (next layer). The deque stays sorted by distance automatically, so each node is settled in O(1) amortised and the whole run is O(V + E) instead of Dijkstra's O((V + E) log V).` },
+        { type: "code", code: `from collections import deque
+
+def zero_one_bfs(graph, n, start):
+    # graph[u] = list of (neighbour, weight) with weight in {0, 1}
+    INF = float('inf')
+    dist = [INF] * n
+    dist[start] = 0
+    dq = deque([start])
+
+    while dq:
+        node = dq.popleft()
+        for nb, w in graph[node]:
+            nd = dist[node] + w
+            if nd < dist[nb]:
+                dist[nb] = nd
+                if w == 0:
+                    dq.appendleft(nb)     # same layer: front
+                else:
+                    dq.append(nb)         # next layer: back
+    return dist` },
+        { type: "callout", text: `A classic 0-1 BFS problem: a grid where you may move freely (cost 0) but flipping/breaking a wall costs 1, and you want the minimum number of walls to break to reach the exit. Model each move as a 0-edge and each wall-break as a 1-edge, then run 0-1 BFS.` },
+        { type: "h3", text: "18.2 Multi-source BFS" },
+        { type: "p", text: `Standard BFS answers "distance from one source". Multi-source BFS answers "distance to the nearest of many sources" in a single pass: seed the queue with every source at distance 0, then expand exactly as usual. Each node is first reached by whichever source is closest, so its recorded distance is the nearest-source distance.` },
+        { type: "code", code: `from collections import deque
+
+def nearest_source_distance(grid, sources):
+    # grid: R x C; sources: list of (r, c) seed cells. Returns a distance grid.
+    R, C = len(grid), len(grid[0])
+    dist = [[-1] * C for _ in range(R)]
+    dq = deque()
+    for r, c in sources:
+        dist[r][c] = 0
+        dq.append((r, c))                 # seed ALL sources at distance 0
+
+    while dq:
+        r, c = dq.popleft()
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < R and 0 <= nc < C and dist[nr][nc] == -1:
+                dist[nr][nc] = dist[r][c] + 1
+                dq.append((nr, nc))
+    return dist` },
+        { type: "p", text: `Running single-source BFS from each source separately and taking the minimum is O(sources * (V + E)); multi-source BFS folds it into one O(V + E) sweep. The trigger phrase is "nearest of these K things": rotting oranges, walls and gates, and "01 matrix" (distance of each cell to the nearest zero) are all multi-source BFS.` },
+        { type: "callout", text: `Multi-source BFS only gives correct nearest-source distances when all edges have equal weight. If sources have different start costs, or edges are weighted, you need a multi-source Dijkstra instead: push every source onto the heap with its start cost, then run Dijkstra normally.` }
+      ]
+    },
+    {
+      heading: "19. Union-Find, deeper",
+      blocks: [
+        { type: "p", text: `The union-find section earlier introduced the data structure; this one sharpens the two optimisations and surveys the applications that show up most in interviews. The two tricks together — path compression and union by rank or size — are what make union-find effectively constant time.` },
+        { type: "h3", text: "19.1 Path compression plus union by size" },
+        { type: "p", text: `Union by size is a common alternative to union by rank: attach the smaller tree under the larger, tracking the number of elements in each set. It is slightly more useful than rank because the size is often the answer to the problem (largest component, component of a given node). Combined with path compression, either variant gives amortised O(α(n)) per operation, where α is the inverse Ackermann function — at most 4 or 5 for any n that fits in memory, so effectively constant.` },
+        { type: "code", code: `class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size   = [1] * n          # number of elements per root
+        self.count  = n                # number of disjoint sets
+
+    def find(self, x):
+        # Iterative find with path compression (avoids recursion depth limits)
+        root = x
+        while self.parent[root] != root:
+            root = self.parent[root]
+        while self.parent[x] != root:  # second walk: point everyone at root
+            self.parent[x], x = root, self.parent[x]
+        return root
+
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+        if px == py:
+            return False               # already connected
+        if self.size[px] < self.size[py]:
+            px, py = py, px            # px is the larger root
+        self.parent[py] = px
+        self.size[px] += self.size[py]
+        self.count -= 1                # one fewer disjoint set
+        return True` },
+        { type: "p", text: `The iterative find shown here does the same path compression as the recursive version but never risks a deep-recursion crash on a long chain. The count field means the number of connected components is available in O(1) at any moment, which is handy for streaming problems.` },
+        { type: "h3", text: "19.2 The application catalogue" },
+        { type: "table",
+          headers: ["Problem", "How union-find applies"],
+          rows: [
+            ["Kruskal's MST", "Sort edges by weight; union each edge whose endpoints differ; skip edges that would connect an already-joined pair."],
+            ["Connected components over a stream", "Union each incoming edge; self.count is the live component total after every edge."],
+            ["Cycle in an undirected graph", "For edge (u, v): if find(u) == find(v) before unioning, this edge closes a cycle."],
+            ["Number of islands (via DSU)", "Give each land cell an id; union horizontally/vertically adjacent land cells; the answer is the number of distinct land roots."],
+            ["Accounts merge / friend circles", "Union by shared attribute (email, friendship); group elements by their final root."],
+            ["Redundant connection", "The first edge that finds its endpoints already connected is the one to remove."]
+          ]
+        },
+        { type: "h3", text: "19.3 Number of islands via DSU" },
+        { type: "p", text: `DFS/BFS is the usual answer to number-of-islands, but union-find is a clean alternative and the natural choice when land cells are added one at a time (the "number of islands II" streaming variant).` },
+        { type: "code", code: `def num_islands_dsu(grid):
+    if not grid or not grid[0]:
+        return 0
+    R, C = len(grid), len(grid[0])
+    uf = UnionFind(R * C)
+
+    def idx(r, c):
+        return r * C + c
+
+    land = 0
+    for r in range(R):
+        for c in range(C):
+            if grid[r][c] != '1':
+                continue
+            land += 1
+            for dr, dc in ((-1, 0), (0, -1)):   # only up/left needed in a sweep
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < R and 0 <= nc < C and grid[nr][nc] == '1':
+                    if uf.union(idx(r, c), idx(nr, nc)):
+                        land -= 1                # two land cells merged
+    return land` },
+        { type: "callout", text: `Track a running land counter and decrement it on every successful union rather than scanning all roots at the end. This keeps the whole thing O(R * C * α) and generalises directly to the streaming "add land one cell at a time" variant, where you report the island count after each addition.` }
+      ]
+    },
+    {
+      heading: "20. Strongly connected components (SCCs)",
+      blocks: [
+        { type: "p", text: `In a directed graph, a strongly connected component is a maximal set of vertices where every vertex can reach every other vertex following edge directions. SCCs are the directed-graph analogue of connected components, but finding them is more involved because reachability is one-way.` },
+        { type: "h3", text: "20.1 What SCCs are for: the condensation DAG" },
+        { type: "p", text: `Collapse each SCC into a single super-node and you get the condensation: a graph with one node per SCC and an edge between two super-nodes whenever an edge crosses between their SCCs. The condensation is always a DAG (any cycle among SCCs would merge them into one larger SCC). This is powerful because it lets you run DAG-only algorithms — topological sort, DP over a DAG, 2-SAT — on graphs that originally had cycles.` },
+        { type: "h3", text: "20.2 Kosaraju's algorithm (two DFS passes)" },
+        { type: "p", text: `Kosaraju is the easiest SCC algorithm to remember. It runs DFS twice:` },
+        { type: "ol", items: [
+          `First DFS on the original graph, recording vertices in order of finish time (postorder), pushing each onto a stack as it finishes.`,
+          `Transpose the graph (reverse every edge).`,
+          `Pop vertices off the stack in reverse-finish order; each DFS in the transposed graph that starts from an unvisited vertex discovers exactly one SCC.`
+        ]},
+        { type: "p", text: `The intuition: finishing order in the first pass ranks vertices so that a source SCC finishes last. Reversing the edges traps each DFS inside a single SCC, because the only way out of an SCC in the transpose leads to already-visited vertices.` },
+        { type: "code", code: `def kosaraju_sccs(graph, n):
+    # graph[u] = list of successors v (directed edge u -> v)
+    visited = [False] * n
+    order = []
+
+    def dfs1(u):
+        visited[u] = True
+        for v in graph[u]:
+            if not visited[v]:
+                dfs1(v)
+        order.append(u)                 # postorder: finished vertices
+
+    for u in range(n):
+        if not visited[u]:
+            dfs1(u)
+
+    # Build the transpose (all edges reversed)
+    transpose = [[] for _ in range(n)]
+    for u in range(n):
+        for v in graph[u]:
+            transpose[v].append(u)
+
+    visited = [False] * n
+    sccs = []
+
+    def dfs2(u, comp):
+        visited[u] = True
+        comp.append(u)
+        for v in transpose[u]:
+            if not visited[v]:
+                dfs2(v, comp)
+
+    for u in reversed(order):           # process in reverse finish order
+        if not visited[u]:
+            comp = []
+            dfs2(u, comp)
+            sccs.append(comp)
+    return sccs` },
+        { type: "p", text: `Tarjan's algorithm is the single-pass alternative: one DFS that tracks each vertex's discovery index and the lowest index reachable from its subtree (the "low-link"), popping a complete SCC off an explicit stack whenever a vertex's low-link equals its own index. It is more efficient (one pass, no transpose) but harder to reproduce correctly under pressure; Kosaraju's two clear passes are usually the safer interview choice.` },
+        { type: "callout", text: `Both Kosaraju and Tarjan run in O(V + E). Kosaraju does two full traversals plus building the transpose; Tarjan does one traversal but needs careful low-link bookkeeping. Reach for SCCs whenever a directed graph has cycles and you want to reason about it as a DAG.` }
+      ]
+    },
+    {
+      heading: "21. Grid as a graph, and topological sort recap",
+      blocks: [
+        { type: "p", text: `Two consolidating topics: a fully worked grid-as-graph example that ties the implicit-graph idea to Dijkstra, and a side-by-side of the two ways to topologically sort a DAG (which also detect cycles).` },
+        { type: "h3", text: "21.1 A worked grid-as-graph example: path with minimum effort" },
+        { type: "p", text: `A grid of heights; you move between 4-adjacent cells and the "effort" of a path is the maximum absolute height difference between consecutive cells along it. Find the minimum possible effort from the top-left to the bottom-right. The cells are vertices, adjacency gives edges, and the edge weight is the height difference — but the path cost is the maximum edge, not the sum, so it is a Dijkstra variant where "distance" means "worst edge so far".` },
+        { type: "code", code: `import heapq
+
+def minimum_effort_path(heights):
+    R, C = len(heights), len(heights[0])
+    # effort[r][c] = minimal possible max-edge to reach (r, c)
+    effort = [[float('inf')] * C for _ in range(R)]
+    effort[0][0] = 0
+    heap = [(0, 0, 0)]                  # (effort_so_far, r, c)
+
+    while heap:
+        e, r, c = heapq.heappop(heap)
+        if e > effort[r][c]:
+            continue                    # stale entry
+        if r == R - 1 and c == C - 1:
+            return e                    # target settled; effort is final
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < R and 0 <= nc < C:
+                # cost to step here is the height difference;
+                # path cost is the MAX edge, so combine with max not +
+                step = abs(heights[nr][nc] - heights[r][c])
+                new_effort = max(e, step)
+                if new_effort < effort[nr][nc]:
+                    effort[nr][nc] = new_effort
+                    heapq.heappush(heap, (new_effort, nr, nc))
+    return 0` },
+        { type: "p", text: `The only change from textbook Dijkstra is the relaxation: new_effort = max(e, step) instead of e + weight. Because max is monotonic and the step costs are non-negative, the greedy heap argument still holds — the first time a cell pops, its effort is final. Complexity O(R * C * log(R * C)).` },
+        { type: "callout", text: `This "Dijkstra with a different combine operator" pattern generalises: minimise the maximum edge (as here), maximise the minimum edge (widest path), or multiply probabilities (most-reliable path, using max and product). As long as the combine keeps the greedy invariant, the same heap loop works.` },
+        { type: "h3", text: "21.2 Topological sort: Kahn vs DFS, and DAG cycle detection" },
+        { type: "p", text: `Both algorithms produce a valid topological order of a DAG, and both detect a cycle (which is exactly when no topological order exists). They differ in mechanics and in what they hand you along the way.` },
+        { type: "table",
+          headers: ["Aspect", "Kahn (BFS, in-degrees)", "DFS (reverse postorder)"],
+          rows: [
+            ["Core mechanism", "Repeatedly remove an in-degree-0 vertex.", "Postorder finish times, then reverse."],
+            ["Cycle detection", "Output length < V means a cycle remains.", "A back-edge to a GRAY (on-stack) node is a cycle."],
+            ["Natural output", "One order; easy to get lexicographically smallest (use a min-heap as the queue).", "One order; reverse of finish sequence."],
+            ["Best when", "You want cycle detection 'for free' or a specific tie-break order.", "You are already doing DFS on the graph."],
+            ["Complexity", "O(V + E)", "O(V + E)"]
+          ]
+        },
+        { type: "p", text: `Detecting a cycle in a DAG (or proving there is none) is therefore a by-product of either sort. If you only need the yes/no answer and not the order, run whichever you find easier: Kahn's length check is often the tersest, and the three-colour DFS from the cycle-detection section gives the same answer. Both are already implemented in the topological-sort section above; the point here is that "is this directed graph acyclic?" and "give me a topological order" are the same computation.` }
+      ]
+    },
+    {
+      heading: "22. Minimum spanning tree (MST)",
       blocks: [
         { type: "p", text: `A spanning tree of a connected undirected graph is a subset of edges forming a tree that touches every vertex (n - 1 edges, no cycles). A minimum spanning tree minimises the total edge weight. Two classic greedy algorithms.` },
         { type: "h3", text: "15.1 Prim's algorithm (heap-based)" },
@@ -718,7 +1110,7 @@ def prim(graph, n):
       ]
     },
     {
-      heading: "16. Bipartite checking",
+      heading: "23. Bipartite checking",
       blocks: [
         { type: "p", text: `A graph is bipartite if its vertices can be split into two sets such that every edge crosses between them. Equivalently: the graph is 2-colourable. Equivalently: the graph contains no odd-length cycle.` },
         { type: "p", text: `The standard algorithm: BFS or DFS, trying to 2-colour the graph. Each neighbour must get the opposite colour of the current node. A conflict means the graph isn't bipartite.` },
@@ -741,10 +1133,10 @@ def prim(graph, n):
       ]
     },
     {
-      heading: "17. Grid problems",
+      heading: "24. Grid problems",
       blocks: [
         { type: "p", text: `A 2D grid is implicitly a graph: each cell is a vertex, edges go to adjacent cells (4-directional by default, sometimes 8). Most "matrix" problems on LeetCode are graph problems in disguise. Recognising this unlocks a large family of questions.` },
-        { type: "h3", text: "17.1 The standard skeleton" },
+        { type: "h3", text: "24.1 The standard skeleton" },
         { type: "code", code: `DIRS = [(-1, 0), (1, 0), (0, -1), (0, 1)]    # up, down, left, right
 def solve(grid):
     R, C = len(grid), len(grid[0])
@@ -757,7 +1149,7 @@ def solve(grid):
     #     nr, nc = r + dr, c + dc
     #     if in_bounds(nr, nc) and ...:
     #         ...` },
-        { type: "h3", text: "17.2 Common grid problem patterns" },
+        { type: "h3", text: "24.2 Common grid problem patterns" },
         { type: "table",
           headers: ["Problem", "Pattern"],
           rows: [
@@ -772,7 +1164,7 @@ def solve(grid):
             ["Word search", "DFS with backtracking. Mark cells as visited (in place or via a set), undo after returning."]
           ]
         },
-        { type: "h3", text: "17.3 Marking cells: in-place vs separate visited set" },
+        { type: "h3", text: "24.3 Marking cells: in-place vs separate visited set" },
         { type: "p", text: `Two common styles for tracking visited cells:` },
         { type: "ul", items: [
           `In-place mutation: overwrite the cell with a sentinel (e.g., set grid[r][c] = '#'). Saves memory, but mutates input. Works for many problems; check if the problem allows mutation.`,
@@ -782,7 +1174,7 @@ def solve(grid):
       ]
     },
     {
-      heading: "18. Common graph bugs",
+      heading: "25. Common graph bugs",
       blocks: [
         { type: "table",
           headers: ["Bug", "What goes wrong"],
@@ -802,7 +1194,7 @@ def solve(grid):
       ]
     },
     {
-      heading: "19. Study plan",
+      heading: "26. Study plan",
       blocks: [
         { type: "p", text: `Drill these problems in order. Each one introduces or reinforces a pattern. If you can solve all 30, you can handle nearly any heap or graph problem in interviews.` },
         { type: "table",
@@ -848,9 +1240,9 @@ def solve(grid):
       ]
     },
     {
-      heading: "20. One-page mental cheat sheet",
+      heading: "27. One-page mental cheat sheet",
       blocks: [
-        { type: "h3", text: "20.1 Heaps & priority queues" },
+        { type: "h3", text: "27.1 Heaps & priority queues" },
         { type: "table",
           headers: ["Trigger", "Use"],
           rows: [
@@ -863,7 +1255,7 @@ def solve(grid):
             ["Tied priorities + non-comparable payload", "Insert a unique counter as tie-breaker."]
           ]
         },
-        { type: "h3", text: "20.2 Graphs" },
+        { type: "h3", text: "27.2 Graphs" },
         { type: "table",
           headers: ["Trigger", "Use"],
           rows: [
@@ -881,7 +1273,7 @@ def solve(grid):
             ["\"Nearest of K sources\"", "Multi-source BFS — enqueue all sources at distance 0."]
           ]
         },
-        { type: "h3", text: "20.3 The meta-trick" },
+        { type: "h3", text: "27.3 The meta-trick" },
         { type: "p", text: `When you read a problem, the first question is always: is there a graph hiding in this? Cities and roads, courses and prerequisites, words differing by one letter, board positions and moves, equations and variables — these are all graphs. Once you see the graph, picking the algorithm is mostly mechanical: ask yourself whether you need shortest path or structural information, then check whether weights are involved, then pick from the table above.` },
         { type: "p", text: `The second question is whether a heap can speed something up. "Always process the smallest/largest thing next" is the signature. If that phrase fits the algorithm, you're going to want a heap.` }
       ]
@@ -912,6 +1304,12 @@ def solve(grid):
     `MST → Prim's (heap, like Dijkstra, adjacency list) or Kruskal's (sort edges + union-find, edge list). Cheapest edge across any cut is in some MST.`,
     `Bipartite = 2-colourable = no odd cycle → BFS/DFS giving neighbours the opposite colour; conflict ⇒ not bipartite.`,
     `Grids are implicit graphs: each cell a vertex, 4 (or 8) neighbours. DIRS = [(-1,0),(1,0),(0,-1),(0,1)]. Mark in-place sentinel or separate visited set; unmark for backtracking (word search).`,
-    `Meta-trick: first ask "is there a graph hiding here?", then choose shortest-path vs structural and check for weights. "Always process the smallest/largest next" ⇒ use a heap.`
+    `Meta-trick: first ask "is there a graph hiding here?", then choose shortest-path vs structural and check for weights. "Always process the smallest/largest next" ⇒ use a heap.`,
+    `Dijkstra path recovery: store prev[node] on each relaxation; walk prev backwards from target and reverse. Early-exit safely when the target pops (its distance is then final).`,
+    `Currency arbitrage = negative cycle: set edge weight w = -log(rate); product of rates > 1 ⇔ negative-weight cycle. Detect with Bellman-Ford's extra pass (init all dist to 0 to catch cycles anywhere).`,
+    `Floyd-Warshall = all-pairs SP in O(V^3); recurrence dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j]) with k as the OUTERMOST loop. dist[i][i] < 0 ⇒ negative cycle.`,
+    `0-1 BFS: edges of weight 0/1 → deque, appendleft for 0-edges, append for 1-edges, O(V+E) (no heap). Multi-source Dijkstra when sources have differing start costs.`,
+    `SCCs (directed): Kosaraju = DFS for finish order, transpose, DFS in reverse-finish order; condensation of SCCs is always a DAG. Tarjan does it in one pass via low-links. Both O(V+E).`,
+    `Dijkstra with a different combine still works if greedy stays valid: max-of-edges (minimum-effort path), min-of-edges (widest path), product (most-reliable path).`
   ]
 }
